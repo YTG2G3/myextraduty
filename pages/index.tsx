@@ -1,5 +1,9 @@
+import { signIn } from "next-auth/react";
+
 export default function Home() {
     return (
-        <div>hello world</div>
+        <div>
+            <button onClick={() => signIn("google")}>dadsa</button>
+        </div>
     );
 }
