@@ -44,17 +44,3 @@ export async function createUser(email: string, name: string, picture: string, a
         return false;
     }
 }
-
-/**
- * Change user name
- * @param email 
- * @param name 
- * @returns {Promise<Boolean>}
- */
-export async function setUserName(email: string, name: string) {
-    try {
-
-    } catch (error) {
-        return false;
-    }
-}

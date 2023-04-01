@@ -14,7 +14,6 @@ export default NextAuth({
             let { email, name, picture }: any = profile;
             let u = await getUser(email);
 
-            // First time logging in 
             return u ? true : await createUser(email, name, picture);
         }
     }
