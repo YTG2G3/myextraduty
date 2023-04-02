@@ -10,23 +10,11 @@ import { User, School } from '@/lib/schema';
 
 export default function App({ Component, pageProps }: AppProps) {
     return (
-        <>
-            <Head>
-                <title>MyExtraDuty</title>
-            </Head>
-
-            <SessionProvider>
-                <Layout>
-                    <MantineProvider
-                        withGlobalStyles
-                        withNormalizeCSS
-                        theme={theme()}
-                    >
-                        <Component {...pageProps} />
-                    </MantineProvider>
-                </Layout>
-            </SessionProvider>
-        </>
+        <SessionProvider>
+            <Layout>
+                <Component {...pageProps} />
+            </Layout>
+        </SessionProvider>
     );
 }
 
@@ -55,12 +43,27 @@ function Layout(props: any) {
             let u = await (await fetch("/api/user")).json();
             setUser(u);
 
-            let s = await (await fetch("/api/school")).json();
+            // Get school if it's stored
+            let sid = localStorage.getItem("school");
+            let s = sid ? await (await fetch(`/api/school?${new URLSearchParams({ school: sid })}`)).json() : undefined;
             setSchool(s);
         } catch (error) {
             return;
         }
     }
 
-    return <SiteContext.Provider value={{ user }} {...props} />
+    return (
+        <SiteContext.Provider value={{ user, school }} >
+            <Head>
+                <title>{user ? `Welcome, ${user.name}` : "MyExtraDuty"}</title>
+            </Head>
+
+            <MantineProvider
+                withGlobalStyles
+                withNormalizeCSS
+                theme={theme(school?.primary_color ?? "blue")}
+                {...props}
+            />
+        </SiteContext.Provider>
+    );
 }

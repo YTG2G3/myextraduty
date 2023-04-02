@@ -7,4 +7,4 @@ export default AuthRoute({
         let s = await getSchool(Number(req.query.school));
         res.json(s);
     }
-}, true);
+}, false, true);

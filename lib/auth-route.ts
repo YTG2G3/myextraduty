@@ -8,7 +8,7 @@ import { getEnrollments, getUser } from "./db";
  * @param param0 Functions to call on each HTTP request method 
  * @param school /school/** only. Must be associated with school?
  */
-export default function AuthRoute({ GET, POST }: any, school = false): Function {
+export default function AuthRoute({ GET, POST }: any, admin = false, school = false, manager = false): Function {
     return async (req: NextApiRequest, res: NextApiResponse) => {
         // Check if logged in
         let session = await getServerSession(req, res, authOptions);
@@ -18,12 +18,21 @@ export default function AuthRoute({ GET, POST }: any, school = false): Function 
         let user = await getUser(session.user.email);
         if (!user) return res.status(401).end();
 
+        // Check if admin
+        if (admin && !user.is_admin) return res.status(403).end();
+
         // Check association with this school
         if (school) {
             if (!req.query.school) return res.status(400).end();
 
             let er = await getEnrollments(session.user.email);
-            if (er.find(v => v.school === Number(req.query.school))) return res.status(403).end();
+            let s = er.find(v => v.school === Number(req.query.school));
+
+            // Check if enrolled
+            if (!s) return res.status(403).end();
+
+            // Check if manager
+            if (manager && !s.is_manager) return res.status(403).end();
         }
 
         switch (req.method) {
