@@ -1,6 +1,9 @@
 # MyExtraDuty
 Extra Duties website for schools. Powered by Algorix.
 
+# Note
+This repository will be moved to Algorix once entering production.
+
 # For Contributors
 
 ## MySQL
