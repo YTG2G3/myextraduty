@@ -1,9 +1,16 @@
+import { Container, Group, Header } from "@mantine/core";
 import { signIn } from "next-auth/react";
 
 export default function Home() {
     return (
-        <div>
+        <Container>
+            <Header height={60}>
+                <Container fluid>
+                    <Group>
 
-        </div>
+                    </Group>
+                </Container>
+            </Header>
+        </Container>
     );
 }
