@@ -1,6 +1,12 @@
-// Provide global context
 import { createContext } from "react";
+import { School, User } from "./schema";
 
-let SiteContext = createContext({});
+// TS Context
+type AuthContext = {
+    user: User,
+    school: School
+};
+
+let SiteContext = createContext({} as AuthContext);
 
 export default SiteContext;
