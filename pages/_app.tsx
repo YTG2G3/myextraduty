@@ -7,6 +7,7 @@ import { SessionProvider, useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import SiteContext from '@/lib/site-context';
+import { User } from '@/lib/db';
 
 export default function App({ Component, pageProps }: AppProps) {
     return (
@@ -48,10 +49,8 @@ function Layout(props: any) {
             return;
         }
 
-        console.log("yeee");
-
         // When logged in
-        await fetch("/api/user");
+        setUser(await (await fetch("/api/user")).json());
     }
 
     return <SiteContext.Provider value={{ user }} {...props} />
