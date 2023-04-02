@@ -1,8 +1,9 @@
 import { createUser, getUser } from "@/lib/db";
+import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import GoogleProvider from 'next-auth/providers/google';
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -14,7 +15,11 @@ export default NextAuth({
             let { email, name, picture }: any = profile;
             let u = await getUser(email);
 
-            return u ? true : await createUser(email, name, picture);
+            return u
+                ? await updateUserPicture(email, name, picture)
+                : await createUser(email, name, picture);
         }
     }
-});
+}
+
+export default NextAuth(authOptions);

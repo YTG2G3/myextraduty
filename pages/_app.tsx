@@ -3,16 +3,38 @@ import type { AppProps } from 'next/app';
 import { MantineProvider } from '@mantine/core';
 import theme from '@/lib/theme';
 import Head from 'next/head';
-import { useSession } from 'next-auth/react';
+import { SessionProvider, useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import SiteContext from '@/lib/site-context';
 
 export default function App({ Component, pageProps }: AppProps) {
+    return (
+        <>
+            <Head>
+                <title>MyExtraDuty</title>
+            </Head>
+
+            <SessionProvider>
+                <Layout>
+                    <MantineProvider
+                        withGlobalStyles
+                        withNormalizeCSS
+                        theme={theme()}
+                    >
+                        <Component {...pageProps} />
+                    </MantineProvider>
+                </Layout>
+            </SessionProvider>
+        </>
+    );
+}
+
+function Layout(props: any) {
     let [user, setUser] = useState(undefined);
     let { data: session, status } = useSession();
 
-    useEffect(() => { loadData() }, [status]);
+    useEffect(() => { loadData() }, [status])
 
     // Load user data
     const loadData = async () => {
@@ -26,25 +48,11 @@ export default function App({ Component, pageProps }: AppProps) {
             return;
         }
 
+        console.log("yeee");
+
         // When logged in
-        let u = axios.get
+        await fetch("/api/user");
     }
 
-    return (
-        <>
-            <Head>
-                <title>MyExtraDuty</title>
-            </Head>
-
-            <SiteContext.Provider value={{ user }}>
-                <MantineProvider
-                    withGlobalStyles
-                    withNormalizeCSS
-                    theme={theme()}
-                >
-                    <Component {...pageProps} />
-                </MantineProvider>
-            </SiteContext.Provider>
-        </>
-    );
+    return <SiteContext.Provider value={{ user }} {...props} />
 }

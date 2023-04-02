@@ -1,4 +1,5 @@
 import { createConnection } from 'mysql2/promise';
+import { Session } from 'next-auth';
 
 const connectDB = async () => createConnection({
     host: process.env.MYSQL_HOST,
@@ -7,12 +8,14 @@ const connectDB = async () => createConnection({
     database: process.env.MYSQL_DATABASE
 });
 
-/**
- * Retrieve account using email
- * @param email
- * @returns User
- */
-export async function getUser(email: string) {
+export type User = {
+    email: string,
+    name: string,
+    picture: string,
+    is_admin: boolean
+} | null;
+
+export async function getUser(email: string): Promise<User> {
     try {
         let db = await connectDB();
 
@@ -25,19 +28,23 @@ export async function getUser(email: string) {
     }
 }
 
-/**
- * Create new account
- * @param email 
- * @param name 
- * @param picture 
- * @param admin 
- * @returns {Promise<Boolean>}
- */
-export async function createUser(email: string, name: string, picture: string, admin = false) {
+export async function createUser(email: string, name: string, picture: string, admin = false): Promise<boolean> {
     try {
         let db = await connectDB();
 
         await db.execute(`INSERT INTO user VALUES (?,?,?,?)`, [email, name, picture, admin]);
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+export async function updateUserInfo(email: string, name: string, picture: string, admin = false): Promise<boolean> {
+    try {
+        let db = await connectDB();
+
+        await db.execute(`UPDATE user SET name = ? picture = ? admin = ? WHERE email = ?`, [name, picture, admin, email]);
 
         return true;
     } catch (error) {
