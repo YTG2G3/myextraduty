@@ -1,5 +1,5 @@
 # MyExtraDuty
-Extra Duties website for schools. Developed in Centennial High School.
+Extra Duties website for schools. Powered by Algorix.
 
 # For Contributors
 
