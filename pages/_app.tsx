@@ -39,18 +39,23 @@ function Layout(props: any) {
 
     // Load user data
     const loadData = async () => {
-        // When loading
-        if (status === "loading") return;
+        try {
+            // When loading
+            if (status === "loading") return;
 
-        // When not logged in
-        if (status === "unauthenticated") {
-            setUser(undefined);
-            localStorage.removeItem("school");
+            // When not logged in
+            if (status === "unauthenticated") {
+                setUser(undefined);
+                localStorage.removeItem("school");
+                return;
+            }
+
+            // When logged in
+            let u = await (await fetch("/api/user")).json()
+            setUser(u);
+        } catch (error) {
             return;
         }
-
-        // When logged in
-        setUser(await (await fetch("/api/user")).json());
     }
 
     return <SiteContext.Provider value={{ user }} {...props} />
