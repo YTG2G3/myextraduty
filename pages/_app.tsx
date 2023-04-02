@@ -5,9 +5,8 @@ import theme from '@/lib/theme';
 import Head from 'next/head';
 import { SessionProvider, useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import SiteContext from '@/lib/site-context';
-import { User } from '@/lib/db';
+import { User, School } from '@/lib/schema';
 
 export default function App({ Component, pageProps }: AppProps) {
     return (
@@ -32,8 +31,10 @@ export default function App({ Component, pageProps }: AppProps) {
 }
 
 function Layout(props: any) {
-    let [user, setUser] = useState(undefined);
-    let { data: session, status } = useSession();
+    let { status } = useSession();
+
+    let [user, setUser] = useState<User>(undefined);
+    let [school, setSchool] = useState<School>(undefined);
 
     useEffect(() => { loadData() }, [status])
 
@@ -51,8 +52,11 @@ function Layout(props: any) {
             }
 
             // When logged in
-            let u = await (await fetch("/api/user")).json()
+            let u = await (await fetch("/api/user")).json();
             setUser(u);
+
+            let s = await (await fetch("/api/school")).json();
+            setSchool(s);
         } catch (error) {
             return;
         }

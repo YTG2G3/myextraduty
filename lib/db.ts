@@ -1,5 +1,5 @@
 import { createConnection } from 'mysql2/promise';
-import { Session } from 'next-auth';
+import { User, School, Enrollment } from './schema';
 
 const connectDB = async () => createConnection({
     host: process.env.MYSQL_HOST,
@@ -7,13 +7,6 @@ const connectDB = async () => createConnection({
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE
 });
-
-export type User = {
-    email: string,
-    name: string,
-    picture: string,
-    is_admin: boolean
-} | null;
 
 export async function getUser(email: string): Promise<User> {
     try {
@@ -44,10 +37,35 @@ export async function updateUserInfo(email: string, name: string, picture: strin
     try {
         let db = await connectDB();
 
-        await db.execute(`UPDATE user SET name = ? picture = ? admin = ? WHERE email = ?`, [name, picture, admin, email]);
+        await db.execute(`UPDATE user SET name=? picture=? admin=? WHERE email=?`, [name, picture, admin, email]);
 
         return true;
     } catch (error) {
         return false;
+    }
+}
+
+export async function getSchool(sid: number): Promise<School> {
+    try {
+        let db = await connectDB();
+
+        let [rows]: any = await db.execute(`SELECT * FROM school WHERE id=?`, [sid]);
+        if (rows.length === 0) return null;
+
+        return rows[0];
+    } catch (error) {
+        return null;
+    }
+}
+
+export async function getEnrollments(email: string): Promise<Enrollment[]> {
+    try {
+        let db = await connectDB();
+
+        let [rows] = await db.execute(`SELECT * FROM enrollment WHERE user=?`, [email]);
+
+        return rows as Enrollment[];
+    } catch (error) {
+        return null;
     }
 }

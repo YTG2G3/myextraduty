@@ -1,18 +1,10 @@
+import AuthRoute from "@/lib/auth-route";
 import { getUser } from "@/lib/db";
+import { User } from "@/lib/schema";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    let session = await getServerSession(req, res, authOptions);
-    if (!session?.user || !session?.user.email) return;
-
-    switch (req.method) {
-        case "GET":
-            let u = await getUser(session.user.email);
-            res.json(u);
-            return;
+export default AuthRoute({
+    GET: async (req: NextApiRequest, res: NextApiResponse, user: User) => {
+        res.json(user);
     }
-
-    res.status(404).end();
-}
+})
