@@ -1,12 +1,14 @@
 import { Button, Card, Center, Flex, Group, Image, ScrollArea, Text, Tooltip } from "@mantine/core";
 import styles from '@/styles/School.module.scss';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { Enrollment, School } from "@/lib/schema";
 import LoadingPage from "@/components/LoadingPage";
 import { useRouter } from "next/router";
+import SiteContext from "@/lib/site-context";
 
 export default function SchoolSelection() {
+    let { user } = useContext(SiteContext);
     let [enrollments, setEnrollments] = useState<Enrollment[]>(undefined);
     let [schools, setSchools] = useState<School[]>(undefined);
     let router = useRouter();
@@ -81,6 +83,10 @@ export default function SchoolSelection() {
                     )}
                 </Flex>
             </ScrollArea>
+
+            {user.is_admin ? (
+                <Button onClick={() => router.push("/console/admin")}>Admin Portal</Button>
+            ) : undefined}
         </Center>
     );
 }
