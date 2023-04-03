@@ -21,8 +21,8 @@ export default function AuthRoute({ GET, POST }: any, admin = false, school = fa
         // Check if admin
         if (admin && !user.is_admin) return res.status(403).end();
 
-        // Check association with this school
-        if (school) {
+        // Check association with this school (unnecessary if admin)
+        if (school && !user.is_admin) {
             if (!req.query.school) return res.status(400).end();
 
             let er = await getEnrollments(session.user.email);

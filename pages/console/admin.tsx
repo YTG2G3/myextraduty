@@ -1,22 +1,32 @@
-import AdminHeader from "@/components/AdminHeader";
-import AdminNavbar from "@/components/AdminNavbar";
+import AdminHeader from "@/components/Admin/AdminHeader";
+import AdminNavbar from "@/components/Admin/AdminNavbar";
+import AdminSchools from "@/components/Admin/AdminSchools";
+import AdminUsers from "@/components/Admin/AdminUsers";
+import LoadingPage from "@/components/LoadingPage";
 import SiteContext from "@/lib/site-context";
 import { AppShell, Header, Navbar, Text } from "@mantine/core";
+import { IconChalkboard, IconUsersGroup } from "@tabler/icons-react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 export default function Admin() {
     let { user } = useContext(SiteContext);
     let { status } = useSession();
     let router = useRouter();
+    let [pageIndex, setPageIndex] = useState(0);
+
+    let pgs = [
+        { label: "Schools", icon: <IconChalkboard />, page: <AdminSchools /> },
+        { label: "Users", icon: <IconUsersGroup />, page: <AdminUsers /> }
+    ];
 
     if (status === "unauthenticated") {
         signIn();
         return <></>;
     }
 
-    if (!user) return <></>;
+    if (!user) return <LoadingPage />;
 
     if (!user.is_admin) {
         router.replace("/console");
@@ -26,10 +36,10 @@ export default function Admin() {
     return (
         <AppShell
             padding="md"
-            navbar={<AdminNavbar />}
+            navbar={<AdminNavbar pageIndex={pageIndex} setPageIndex={setPageIndex} user={user} pgs={pgs} />}
             header={<AdminHeader />}
         >
-
+            {pgs[pageIndex].page}
         </AppShell>
     );
 }
