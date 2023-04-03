@@ -24,7 +24,7 @@ function Layout(props: any) {
     let [user, setUser] = useState<User>(undefined);
     let [school, setSchool] = useState<School>(undefined);
 
-    useEffect(() => { loadData() }, [status])
+    useEffect(() => { loadData() }, [status]);
 
     // Load user data
     const loadData = async () => {
@@ -44,7 +44,7 @@ function Layout(props: any) {
             setUser(u);
 
             // Get school if it's stored
-            let sid = localStorage.getItem("school");
+            let sid = JSON.parse(localStorage.getItem("school"));
             let s = sid ? await (await fetch(`/api/school?${new URLSearchParams({ school: sid })}`)).json() : undefined;
             setSchool(s);
         } catch (error) {

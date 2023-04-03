@@ -1,0 +1,28 @@
+.page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.card {
+    width: 300px;
+}
+
+.wr {
+    flex-wrap: nowrap;
+}
+
+.t1 {
+    width: 70%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.t2 {
+    width: 30%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0.5;
+}

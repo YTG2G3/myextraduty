@@ -11,8 +11,9 @@ export type School = {
     domain: string,
     name: string,
     address: string,
-    opening_at: Date,
+    logo: string,
     primary_color: string,
+    opening_at: Date,
     quota: number,
     max_assigned: number
 };
