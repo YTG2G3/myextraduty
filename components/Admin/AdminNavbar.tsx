@@ -7,7 +7,7 @@ export default function AdminNavbar({ pageIndex, setPageIndex, user, pgs }: any)
         <Navbar width={{ base: 300 }} p="xs">
             <Navbar.Section grow>
                 <Stack>
-                    {pgs.map((v, i) => <NavLink onClick={() => setPageIndex(i)} key={i} active={i === pageIndex} label={v.label} icon={v.icon} rightSection={<IconChevronRight size="1rem" stroke={1.5} />} />)}
+                    {pgs.map((v: any, i: number) => <NavLink onClick={() => setPageIndex(i)} key={i} active={i === pageIndex} label={v.label} icon={v.icon} rightSection={<IconChevronRight size="1rem" stroke={1.5} />} />)}
                 </Stack>
             </Navbar.Section>
 

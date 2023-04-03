@@ -69,3 +69,15 @@ export async function getEnrollments(email: string): Promise<Enrollment[]> {
         return null;
     }
 }
+
+export async function listSchools(): Promise<School[]> {
+    try {
+        let db = await connectDB();
+
+        let [rows] = await db.execute(`SELECT * FROM school`);
+
+        return rows as School[];
+    } catch (error) {
+        return null;
+    }
+}
