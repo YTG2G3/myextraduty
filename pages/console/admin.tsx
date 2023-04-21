@@ -30,7 +30,7 @@ export default function Admin(props: any) {
 
     if (!user) return <LoadingPage />;
 
-    if (!user.is_admin) {
+    if (!user.admin) {
         router.replace("/console");
         return <></>;
     }

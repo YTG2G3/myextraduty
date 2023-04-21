@@ -9,75 +9,81 @@ const connectDB = async () => createConnection({
 });
 
 export async function getUser(email: string): Promise<User> {
+    let db = await connectDB();
     try {
-        let db = await connectDB();
-
         let [rows]: any = await db.execute(`SELECT * FROM user WHERE email=?`, [email]);
         if (rows.length === 0) return null;
 
+        db.end();
         return rows[0];
     } catch (error) {
+        db.end();
         return null;
     }
 }
 
 export async function createUser(email: string, name: string, picture: string, admin = false): Promise<boolean> {
+    let db = await connectDB();
     try {
-        let db = await connectDB();
-
         await db.execute(`INSERT INTO user VALUES (?,?,?,?)`, [email, name, picture, admin]);
 
+        db.end();
         return true;
     } catch (error) {
+        db.end();
         return false;
     }
 }
 
 export async function updateUserInfo(email: string, name: string, picture: string, admin = false): Promise<boolean> {
+    let db = await connectDB();
     try {
-        let db = await connectDB();
+        await db.execute(`UPDATE user SET name=?, picture=?, admin=? WHERE email=?`, [name, picture, admin, email]);
 
-        await db.execute(`UPDATE user SET name=? picture=? admin=? WHERE email=?`, [name, picture, admin, email]);
-
+        db.end();
         return true;
     } catch (error) {
+        db.end();
         return false;
     }
 }
 
 export async function getSchool(sid: number): Promise<School> {
+    let db = await connectDB();
     try {
-        let db = await connectDB();
-
         let [rows]: any = await db.execute(`SELECT * FROM school WHERE id=?`, [sid]);
         if (rows.length === 0) return null;
 
+        db.end();
         return rows[0];
     } catch (error) {
+        db.end();
         return null;
     }
 }
 
 export async function getEnrollments(email: string): Promise<Enrollment[]> {
+    let db = await connectDB();
     try {
-        let db = await connectDB();
-
         let [rows] = await db.execute(`SELECT * FROM enrollment WHERE user=?`, [email]);
 
+        db.end();
         return rows as Enrollment[];
     } catch (error) {
+        db.end();
         return null;
     }
 }
 
 export async function listSchools(): Promise<School[]> {
+    let db = await connectDB();
     try {
-        let db = await connectDB();
-
         let [rows] = await db.execute(`SELECT * FROM school`);
 
+        db.end();
         return rows as School[];
     } catch (error) {
+        db.end();
         return null;
     }
 }

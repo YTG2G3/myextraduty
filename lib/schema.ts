@@ -2,7 +2,7 @@ export type User = {
     email: string,
     name: string,
     picture: string,
-    is_admin: boolean
+    admin: boolean
 };
 
 export type School = {
@@ -21,5 +21,5 @@ export type School = {
 export type Enrollment = {
     school: number,
     user: string,
-    is_manager: boolean
+    manager: boolean
 }

@@ -45,7 +45,7 @@ export default function SchoolSelection() {
     // TODO - design
     return (
         <Center className={styles.page}>
-            <Text>Select your school</Text>
+            {schools.length > 0 ? <Text>Select your school</Text> : undefined}
 
             <ScrollArea w="80%">
                 <Flex gap="md" justify="center" align="center" direction="row" wrap="nowrap">
@@ -65,7 +65,7 @@ export default function SchoolSelection() {
                                 </Tooltip>
                             </Group>
 
-                            {enrollments[i].is_manager ? (
+                            {enrollments[i].manager ? (
                                 <Text color="blue">Manager</Text>
                             ) : undefined}
 
@@ -84,7 +84,7 @@ export default function SchoolSelection() {
                 </Flex>
             </ScrollArea>
 
-            {user.is_admin ? (
+            {user.admin ? (
                 <Button onClick={() => router.push("/console/admin")}>Admin Portal</Button>
             ) : undefined}
         </Center>
