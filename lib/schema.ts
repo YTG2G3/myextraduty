@@ -8,7 +8,6 @@ export type User = {
 export type School = {
     id: number,
     owner: string,
-    domain: string,
     name: string,
     address: string,
     logo: string,

@@ -1,4 +1,4 @@
-import { ActionIcon, Center, Container, Flex, Group, Modal, Pagination, Stack, Text, TextInput } from "@mantine/core";
+import { ActionIcon, Center, Container, Flex, Group, MANTINE_COLORS, Modal, Pagination, Select, Stack, Text, TextInput } from "@mantine/core";
 import styles from '@/styles/AdminSchools.module.scss';
 import { useState } from "react";
 import { School } from "@/lib/schema";
@@ -14,7 +14,6 @@ export default function AdminSchools({ schools }: any) {
     let form = useForm({
         initialValues: {
             name: "",
-            domain: "",
             owner: "",
             address: "",
             primary_color: "blue",
@@ -22,9 +21,9 @@ export default function AdminSchools({ schools }: any) {
         },
         validate: {
             name: (v) => v.length > 0 ? null : "Please do not leave this empty",
-            domain: (v) => v.length > 0 ? !v.startsWith("@") ? null : "Please remove '@'" : "Please do not leave this empty",
             owner: (v) => v.length > 0 ? null : "Please do not leave this empty",
             address: (v) => v.length > 0 ? null : "Please do not leave this empty",
+            logo: (v) => v.length > 0 ? null : "Please do not leave this empty",
         }
     });
 
@@ -39,6 +38,7 @@ export default function AdminSchools({ schools }: any) {
         }
     }
 
+    // TODO - replace select with color picker for advanced control
     return (
         <>
             <Container fluid className={styles.container}>
@@ -48,19 +48,17 @@ export default function AdminSchools({ schools }: any) {
                         <ActionIcon className={styles.ico} variant="filled" onClick={open}><IconPlus /></ActionIcon>
                     </Group>
 
-                    {sch.length > 0 ? (
-                        <>
-                            <Pagination total={sch.length / 10} />
-                        </>
-                    ) : (
-                        <Text m="lg">Add a new school to start!</Text>
-                    )}
+                    <Pagination total={sch.length / 10} />
                 </Flex>
             </Container>
 
             <Modal opened={opened} onClose={close} title="Create a New School" centered>
-                <form onSubmit={form.onSubmit(createSchool)}>
-
+                <form onSubmit={form.onSubmit(createSchool)} style={{ padding: 30 }}>
+                    <TextInput withAsterisk label="Name" {...form.getInputProps('name')} />
+                    <TextInput withAsterisk label="Owner Email" {...form.getInputProps('owner')} />
+                    <TextInput withAsterisk label="Address" {...form.getInputProps('address')} />
+                    <Select withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} {...form.getInputProps('primary_color')} />
+                    <TextInput withAsterisk label="School Logo URL" {...form.getInputProps('logo')} />
                 </form>
             </Modal>
         </>

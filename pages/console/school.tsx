@@ -60,8 +60,8 @@ export default function SchoolSelection() {
                                     <Text className={styles.t1} color={v.primary_color}>{v.name}</Text>
                                 </Tooltip>
 
-                                <Tooltip label={v.domain}>
-                                    <Text className={styles.t2} color={v.primary_color}>@{v.domain}</Text>
+                                <Tooltip label={v.address}>
+                                    <Text className={styles.t2} color={v.primary_color}>{v.address}</Text>
                                 </Tooltip>
                             </Group>
 

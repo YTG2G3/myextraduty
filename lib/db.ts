@@ -87,3 +87,16 @@ export async function listSchools(): Promise<School[]> {
         return null;
     }
 }
+
+export async function createSchool(name: string, owner: string, address: string, primary_color: string, logo: string): Promise<Boolean> {
+    let db = await connectDB();
+    try {
+        await db.execute(`INSERT INTO school(name, owner, address, primary_color, logo) VALUES (?, ?, ?, ?, ?)`, [name, owner, address, primary_color, logo]);
+
+        db.end();
+        return true;
+    } catch (error) {
+        db.end();
+        return false;
+    }
+}
