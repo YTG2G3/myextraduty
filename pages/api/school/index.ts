@@ -9,6 +9,7 @@ export default AuthRoute({
     },
     POST: async (req: NextApiRequest, res: NextApiResponse) => {
         let { name, owner, address, primary_color, logo } = req.body;
+
         let r = await createSchool(name, owner, address, primary_color, logo);
 
         res.status(r ? 200 : 400).end();

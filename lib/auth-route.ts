@@ -19,10 +19,10 @@ export default function AuthRoute({ GET, POST }: any, admin = false, school = fa
         if (!user) return res.status(401).end();
 
         // Check if admin
-        if (admin && !user.is_admin) return res.status(403).end();
+        if (admin && !user.admin) return res.status(403).end();
 
         // Check association with this school (unnecessary if admin)
-        if (school && !user.is_admin) {
+        if (school && !user.admin) {
             if (!req.query.school) return res.status(400).end();
 
             let er = await getEnrollments(session.user.email);
@@ -32,7 +32,7 @@ export default function AuthRoute({ GET, POST }: any, admin = false, school = fa
             if (!s) return res.status(403).end();
 
             // Check if manager
-            if (manager && !s.is_manager) return res.status(403).end();
+            if (manager && !s.manager) return res.status(403).end();
         }
 
         switch (req.method) {

@@ -1,4 +1,4 @@
-import { ActionIcon, Center, Container, Flex, Group, MANTINE_COLORS, Modal, Pagination, Select, Stack, Text, TextInput } from "@mantine/core";
+import { ActionIcon, Button, Center, Container, Flex, Group, MANTINE_COLORS, Modal, Pagination, Select, Stack, Text, TextInput } from "@mantine/core";
 import styles from '@/styles/AdminSchools.module.scss';
 import { useState } from "react";
 import { School } from "@/lib/schema";
@@ -32,10 +32,14 @@ export default function AdminSchools({ schools }: any) {
         setSearch(str);
     }
 
-    const createSchool = (sd: any) => {
-        let s: School = {
-            ...sd
+    const createSchool = async (body: any) => {
+        let s = (await fetch("/api/school", { method: "POST", body })).status;
+
+        if (s === 200) {
+            close();
+            alert("Success! Wait a bit to bit applied"); // TODO - alert to wait 10 sec
         }
+        else alert("Fail"); // TODO - alert error
     }
 
     // TODO - replace select with color picker for advanced control
@@ -59,6 +63,10 @@ export default function AdminSchools({ schools }: any) {
                     <TextInput withAsterisk label="Address" {...form.getInputProps('address')} />
                     <Select withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} {...form.getInputProps('primary_color')} />
                     <TextInput withAsterisk label="School Logo URL" {...form.getInputProps('logo')} />
+
+                    <Group position="right" mt="md">
+                        <Button type="submit">Submit</Button>
+                    </Group>
                 </form>
             </Modal>
         </>
