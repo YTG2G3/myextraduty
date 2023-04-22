@@ -1,15 +1,16 @@
-import { ActionIcon, Button, Container, Flex, Group, MANTINE_COLORS, Modal, Pagination, Select, TextInput, Text, Avatar, Image } from "@mantine/core";
+import { ActionIcon, Button, Group, MANTINE_COLORS, Modal, Pagination, Select, TextInput, Image, Card, Text, Space } from "@mantine/core";
 import styles from '@/styles/AdminSchools.module.scss';
 import { useState } from "react";
 import { School } from "@/lib/schema";
-import { IconPlus } from "@tabler/icons-react";
+import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { notifications } from '@mantine/notifications';
+import { modals } from '@mantine/modals';
 
 export default function AdminSchools({ schools }: any) {
     let [search, setSearch] = useState("");
-    let sch: School[] = schools.filter((v: School) => v.name.indexOf(search) >= 0);
+    let sch: School[] = schools.filter((v: School) => v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0);
     let [opened, { open, close }] = useDisclosure(false);
     let [page, setPage] = useState(1);
 
@@ -36,7 +37,7 @@ export default function AdminSchools({ schools }: any) {
     }
 
     const createSchool = async (b: any) => {
-        let s = (await fetch("/api/school", { method: "POST", body: JSON.stringify(b) })).status;
+        let s = (await fetch("/api/school/create", { method: "POST", body: JSON.stringify(b) })).status;
 
         if (s === 200) {
             close();
@@ -45,6 +46,21 @@ export default function AdminSchools({ schools }: any) {
         else notifications.show({ title: "Failed to add school", message: "Please confirm that the owner's MyExtraDuty account has been created.", color: "red" });
     }
 
+    const deleteSchool = (s: School) => modals.openConfirmModal({
+        title: `Are you sure about deleting ${s.name}?`,
+        children: <Text size="sm">This action is irreversible.</Text>,
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        confirmProps: { color: 'red' },
+        centered: true,
+        onConfirm: async () => {
+            let x = (await fetch("/api/school/delete", { method: "POST", body: String(s.id) })).status;
+
+            if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
+            else notifications.show({ title: "Failed to delete school", message: "Please contact Algorix to fix this error.", color: "red" });
+        },
+    })
+
+    // TODO - check if pagination works correctly
     // TODO - replace select with color picker for advanced control
     return (
         <>
@@ -55,21 +71,32 @@ export default function AdminSchools({ schools }: any) {
                 </div>
 
                 <div className={styles.li}>
-                    <Pagination value={page} onChange={setPage} total={(sch.length - 1) / 10 + 1} />
+                    <Group>
+                        <Pagination value={page} onChange={setPage} total={(sch.length - 1) / 10 + 1} />
+                        <Text size="sm" color="dimmed">Displaying 10 per page</Text>
+                    </Group>
 
                     <div className={styles.list}>
-                        <Text className={styles.tt}>Name</Text>
-                        <Text className={styles.tt}>Owner</Text>
-                        <Text className={styles.tt}>Address</Text>
-                        <Text className={styles.tt}>Primary Color</Text>
+                        {sch.slice((page - 1) * 10, (page - 1) * 10 + 10).map((v, i) => (
+                            <Card key={i} style={{ width: 300 }} shadow="sm" padding="lg" radius="md" withBorder>
+                                <Card.Section>
+                                    <Image src={v.logo} height={160} alt={v.name} fit="cover" />
+                                </Card.Section>
 
-                        {sch.slice((page - 1) * 10, (page - 1) * 10 + 10).map(v => (
-                            <>
-                                <Text className={styles.tt} style={{ borderTop: "1px solid gray" }}>{v.name}</Text>
-                                <Text className={styles.tt} style={{ borderTop: "1px solid gray" }}>{v.owner}</Text>
-                                <Text className={styles.tt} style={{ borderTop: "1px solid gray" }}>{v.address}</Text>
-                                <Text className={styles.tt} style={{ borderTop: "1px solid gray" }}>{v.primary_color}</Text>
-                            </>
+                                <Group position="apart" mt="md" mb="xs">
+                                    <Text weight={500}>{v.name}</Text>
+                                </Group>
+
+                                <Text size="sm" color="dimmed">Owned by {v.owner}</Text>
+                                <Text size="sm" color="dimmed">{v.address}</Text>
+
+                                <Space h="md" />
+
+                                <Group position="right">
+                                    <ActionIcon><IconEdit /></ActionIcon>
+                                    <ActionIcon onClick={() => deleteSchool(v)}><IconTrash color="red" /></ActionIcon>
+                                </Group>
+                            </Card>
                         ))}
                     </div>
                 </div>

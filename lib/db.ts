@@ -88,7 +88,7 @@ export async function listSchools(): Promise<School[]> {
     }
 }
 
-export async function createSchool(name: string, owner: string, address: string, primary_color: string, logo: string): Promise<Boolean> {
+export async function createSchool(name: string, owner: string, address: string, primary_color: string, logo: string): Promise<boolean> {
     let db = await connectDB();
     try {
         let [rows]: any = await db.execute(`INSERT INTO school(name, owner, address, primary_color, logo) VALUES (?, ?, ?, ?, ?) RETURNING id`, [name, owner, address, primary_color, logo]);
@@ -101,8 +101,19 @@ export async function createSchool(name: string, owner: string, address: string,
         db.end();
         return true;
     } catch (error) {
-        console.log(error);
+        db.end();
+        return false;
+    }
+}
 
+export async function deleteSchool(id: number): Promise<boolean> {
+    let db = await connectDB();
+    try {
+        await db.execute(`DELETE FROM school WHERE id=?`, [id]);
+
+        db.end();
+        return true;
+    } catch (error) {
         db.end();
         return false;
     }

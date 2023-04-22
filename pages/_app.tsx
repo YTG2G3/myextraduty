@@ -9,6 +9,7 @@ import SiteContext from '@/lib/site-context';
 import { User, School } from '@/lib/schema';
 import { RouterTransition } from '@/components/RouterTransition';
 import { Notifications } from '@mantine/notifications';
+import { ModalsProvider } from '@mantine/modals';
 
 function Layout({ children, ...props }: any) {
     let { status } = useSession();
@@ -58,7 +59,10 @@ function Layout({ children, ...props }: any) {
             >
                 <RouterTransition />
                 <Notifications />
-                {children}
+
+                <ModalsProvider>
+                    {children}
+                </ModalsProvider>
             </MantineProvider>
         </SiteContext.Provider>
     );

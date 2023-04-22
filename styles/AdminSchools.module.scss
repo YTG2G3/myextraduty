@@ -24,17 +24,9 @@
 }
 
 .list {
-    display: grid;
-    grid-template-columns: 2fr 3fr 3fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
     margin-top: 40px;
-}
-
-.tt {
-    width: 100%;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    text-align: center;
 }
 
 .li {
