@@ -8,7 +8,7 @@ export default AuthRoute({
         res.json(s);
     },
     POST: async (req: NextApiRequest, res: NextApiResponse) => {
-        let { name, owner, address, primary_color, logo } = req.body;
+        let { name, owner, address, primary_color, logo } = JSON.parse(req.body);
 
         let r = await createSchool(name, owner, address, primary_color, logo);
 

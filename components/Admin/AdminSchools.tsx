@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Center, Container, Flex, Group, MANTINE_COLORS, Modal, Pagination, Select, Stack, Text, TextInput } from "@mantine/core";
+import { ActionIcon, Button, Container, Flex, Group, MANTINE_COLORS, Modal, Pagination, Select, TextInput } from "@mantine/core";
 import styles from '@/styles/AdminSchools.module.scss';
 import { useState } from "react";
 import { School } from "@/lib/schema";
@@ -32,8 +32,8 @@ export default function AdminSchools({ schools }: any) {
         setSearch(str);
     }
 
-    const createSchool = async (body: any) => {
-        let s = (await fetch("/api/school", { method: "POST", body })).status;
+    const createSchool = async (b: any) => {
+        let s = (await fetch("/api/school", { method: "POST", body: JSON.stringify(b) })).status;
 
         if (s === 200) {
             close();
