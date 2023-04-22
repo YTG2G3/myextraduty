@@ -35,10 +35,10 @@ export async function createUser(email: string, name: string, picture: string, a
     }
 }
 
-export async function updateUserInfo(email: string, name: string, picture: string, admin = false): Promise<boolean> {
+export async function updateUserInfo(email: string, name: string, picture: string): Promise<boolean> {
     let db = await connectDB();
     try {
-        await db.execute(`UPDATE user SET name=?, picture=?, admin=? WHERE email=?`, [name, picture, admin, email]);
+        await db.execute(`UPDATE user SET name=?, picture=? WHERE email=?`, [name, picture, email]);
 
         db.end();
         return true;

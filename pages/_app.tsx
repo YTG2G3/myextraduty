@@ -7,18 +7,9 @@ import { SessionProvider, useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import SiteContext from '@/lib/site-context';
 import { User, School } from '@/lib/schema';
+import { RouterTransition } from '@/components/RouterTransition';
 
-export default function App({ Component, pageProps }: AppProps) {
-    return (
-        <SessionProvider>
-            <Layout>
-                <Component {...pageProps} />
-            </Layout>
-        </SessionProvider>
-    );
-}
-
-function Layout(props: any) {
+function Layout({ children, ...props }: any) {
     let { status } = useSession();
 
     let [user, setUser] = useState<User>(undefined);
@@ -63,7 +54,21 @@ function Layout(props: any) {
                 withNormalizeCSS
                 theme={theme(school?.primary_color ?? "blue")}
                 {...props}
-            />
+            >
+                <RouterTransition />
+
+                {children}
+            </MantineProvider>
         </SiteContext.Provider>
+    );
+}
+
+export default function App({ Component, pageProps }: AppProps) {
+    return (
+        <SessionProvider>
+            <Layout>
+                <Component {...pageProps} />
+            </Layout>
+        </SessionProvider>
     );
 }
