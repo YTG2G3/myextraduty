@@ -1,34 +1,17 @@
-import { ActionIcon, Button, Group, MANTINE_COLORS, Modal, Pagination, Select, TextInput, Image, Card, Text, Space } from "@mantine/core";
+import { ActionIcon, Button, Group, MANTINE_COLORS, Modal, Pagination, Select, TextInput, Image, Card, Text, Space, Tooltip } from "@mantine/core";
 import styles from '@/styles/AdminSchools.module.scss';
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { School } from "@/lib/schema";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
-import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { notifications } from '@mantine/notifications';
 import { modals } from '@mantine/modals';
+import { setImmediate } from "timers";
 
 export default function AdminSchools({ schools }: any) {
     let [search, setSearch] = useState("");
     let sch: School[] = schools.filter((v: School) => v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0);
-    let [opened, { open, close }] = useDisclosure(false);
     let [page, setPage] = useState(1);
-
-    let form = useForm({
-        initialValues: {
-            name: "",
-            owner: "",
-            address: "",
-            primary_color: "blue",
-            logo: ""
-        },
-        validate: {
-            name: (v) => v.length > 0 ? null : "Please do not leave this empty",
-            owner: (v) => v.length > 0 ? null : "Please do not leave this empty",
-            address: (v) => v.length > 0 ? null : "Please do not leave this empty",
-            logo: (v) => v.length > 0 ? null : "Please do not leave this empty",
-        }
-    });
 
     const onSearch = (e: any) => {
         let str = e.currentTarget.value;
@@ -36,15 +19,43 @@ export default function AdminSchools({ schools }: any) {
         setSearch(str);
     }
 
-    const createSchool = async (b: any) => {
+    const createSchoolReq = async (e: any) => {
+        e.preventDefault();
+
+        let b = {
+            name: e.target.name.value,
+            owner: e.target.owner.value,
+            address: e.target.address.value,
+            primary_color: e.target.primary_color.value,
+            logo: e.target.logo.value
+        }
+
         let s = (await fetch("/api/school/create", { method: "POST", body: JSON.stringify(b) })).status;
 
         if (s === 200) {
-            close();
+            modals.closeAll();
             notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
         }
         else notifications.show({ title: "Failed to add school", message: "Please confirm that the owner's MyExtraDuty account has been created.", color: "red" });
     }
+
+    const createSchool = () => modals.open({
+        title: "Adding a new school",
+        centered: true,
+        children: (
+            <form onSubmit={createSchoolReq} style={{ padding: 30 }}>
+                <TextInput name="name" withAsterisk label="Name" />
+                <TextInput name="owner" withAsterisk label="Owner Email" />
+                <TextInput name="address" withAsterisk label="Address" />
+                <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue="blue" />
+                <TextInput name="logo" withAsterisk label="School Logo URL" />
+
+                <Group position="right" mt="md">
+                    <Button type="submit">Submit</Button>
+                </Group>
+            </form>
+        )
+    });
 
     const deleteSchool = (s: School) => modals.openConfirmModal({
         title: `Are you sure about deleting ${s.name}?`,
@@ -58,16 +69,54 @@ export default function AdminSchools({ schools }: any) {
             if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
             else notifications.show({ title: "Failed to delete school", message: "Please contact Algorix to fix this error.", color: "red" });
         },
-    })
+    });
 
-    // TODO - check if pagination works correctly
-    // TODO - replace select with color picker for advanced control
+    const editSchoolReq = async (e: any, sc: School) => {
+        e.preventDefault();
+
+        let b = {
+            owner: e.target.owner.value,
+            address: e.target.address.value,
+            primary_color: e.target.primary_color.value,
+            logo: e.target.logo.value
+        }
+
+        let s = (await fetch("/api/school/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(sc.id) } })).status;
+
+        if (s === 200) {
+            modals.closeAll();
+            notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
+        }
+        else notifications.show({ title: "Failed to edit school", message: "Please confirm that the owner's MyExtraDuty account has been created.", color: "red" });
+    }
+
+    const editSchool = (s: School) => modals.open({
+        title: `Editing ${s.name}`,
+        centered: true,
+        children: (
+            <form onSubmit={(e) => editSchoolReq(e, s)} style={{ padding: 30 }}>
+                <TextInput name="owner" withAsterisk label="Owner Email" defaultValue={s.owner} />
+                <TextInput name="address" withAsterisk label="Address" defaultValue={s.address} />
+                <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue={s.primary_color} />
+                <TextInput name="logo" withAsterisk label="School Logo URL" defaultValue={s.logo} />
+
+                <Group position="right" mt="md">
+                    <Button type="submit">Save</Button>
+                </Group>
+            </form>
+        )
+    });
+
+    // TODO - fixed searchbar
     return (
         <>
             <div className={styles.container}>
                 <div className={styles.gro} >
                     <TextInput className={styles.inp} placeholder="School name" value={search} onChange={onSearch} />
-                    <ActionIcon className={styles.ico} variant="filled" onClick={open}><IconPlus /></ActionIcon>
+
+                    <Tooltip label="Add">
+                        <ActionIcon className={styles.ico} variant="filled" onClick={createSchool}><IconPlus /></ActionIcon>
+                    </Tooltip>
                 </div>
 
                 <div className={styles.li}>
@@ -78,7 +127,7 @@ export default function AdminSchools({ schools }: any) {
 
                     <div className={styles.list}>
                         {sch.slice((page - 1) * 10, (page - 1) * 10 + 10).map((v, i) => (
-                            <Card key={i} style={{ width: 300 }} shadow="sm" padding="lg" radius="md" withBorder>
+                            <Card key={i} m="md" style={{ maxWidth: 500, minWidth: 200, width: "30%" }} shadow="sm" padding="lg" radius="md" withBorder>
                                 <Card.Section>
                                     <Image src={v.logo} height={160} alt={v.name} fit="cover" />
                                 </Card.Section>
@@ -87,34 +136,25 @@ export default function AdminSchools({ schools }: any) {
                                     <Text weight={500}>{v.name}</Text>
                                 </Group>
 
-                                <Text size="sm" color="dimmed">Owned by {v.owner}</Text>
-                                <Text size="sm" color="dimmed">{v.address}</Text>
+                                <Text size="sm" color="dimmed" className={styles.t}>Owned by {v.owner}.</Text>
+                                <Text size="sm" color="dimmed" className={styles.t}>{v.address}</Text>
 
                                 <Space h="md" />
 
                                 <Group position="right">
-                                    <ActionIcon><IconEdit /></ActionIcon>
-                                    <ActionIcon onClick={() => deleteSchool(v)}><IconTrash color="red" /></ActionIcon>
+                                    <Tooltip label="Edit">
+                                        <ActionIcon onClick={() => editSchool(v)}><IconEdit /></ActionIcon>
+                                    </Tooltip>
+
+                                    <Tooltip label="Delete">
+                                        <ActionIcon onClick={() => deleteSchool(v)}><IconTrash color="red" /></ActionIcon>
+                                    </Tooltip>
                                 </Group>
                             </Card>
                         ))}
                     </div>
                 </div>
             </div>
-
-            <Modal opened={opened} onClose={close} title="Create a New School" centered>
-                <form onSubmit={form.onSubmit(createSchool)} style={{ padding: 30 }}>
-                    <TextInput withAsterisk label="Name" {...form.getInputProps('name')} />
-                    <TextInput withAsterisk label="Owner Email" {...form.getInputProps('owner')} />
-                    <TextInput withAsterisk label="Address" {...form.getInputProps('address')} />
-                    <Select withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} {...form.getInputProps('primary_color')} />
-                    <TextInput withAsterisk label="School Logo URL" {...form.getInputProps('logo')} />
-
-                    <Group position="right" mt="md">
-                        <Button type="submit">Submit</Button>
-                    </Group>
-                </form>
-            </Modal>
         </>
     );
 }

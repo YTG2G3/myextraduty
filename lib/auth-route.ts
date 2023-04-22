@@ -1,14 +1,9 @@
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
-import { getEnrollments, getUser } from "./db";
+import { getEnrollments, getSchool, getUser } from "./db";
 
-/**
- * Auth route. Must be logged in
- * @param param0 Functions to call on each HTTP request method 
- * @param school /school/** only. Must be associated with school?
- */
-export default function AuthRoute({ GET, POST }: any, admin = false, school = false, manager = false): Function {
+export default function AuthRoute({ GET, POST }: any, admin = false, school = false, owner = false, manager = false): Function {
     return async (req: NextApiRequest, res: NextApiResponse) => {
         // Check if logged in
         let session = await getServerSession(req, res, authOptions);
@@ -23,13 +18,19 @@ export default function AuthRoute({ GET, POST }: any, admin = false, school = fa
 
         // Check association with this school (unnecessary if admin)
         if (school && !user.admin) {
-            if (!req.query.school) return res.status(400).end();
+            if (!req.headers.school) return res.status(400).end();
 
             let er = await getEnrollments(session.user.email);
-            let s = er.find(v => v.school === Number(req.query.school));
+            let s = er.find(v => v.school === Number(req.headers.school));
 
             // Check if enrolled
             if (!s) return res.status(403).end();
+
+            // Check if owner
+            if (owner) {
+                let ss = await getSchool(s.school);
+                if (ss.owner !== user.email) return res.status(403).end();
+            }
 
             // Check if manager
             if (manager && !s.manager) return res.status(403).end();

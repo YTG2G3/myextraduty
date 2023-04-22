@@ -106,6 +106,19 @@ export async function createSchool(name: string, owner: string, address: string,
     }
 }
 
+export async function updateSchool(id: number, owner: string, address: string, primary_color: string, logo: string): Promise<boolean> {
+    let db = await connectDB();
+    try {
+        await db.execute(`UPDATE school SET owner=?, address=?, primary_color=?, logo=? WHERE id=?`, [owner, address, primary_color, logo, id]);
+
+        db.end();
+        return true;
+    } catch (error) {
+        db.end();
+        return false;
+    }
+}
+
 export async function deleteSchool(id: number): Promise<boolean> {
     let db = await connectDB();
     try {

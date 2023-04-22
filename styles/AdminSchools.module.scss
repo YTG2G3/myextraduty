@@ -32,3 +32,9 @@
 .li {
     width: 100%;
 }
+
+.t {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
