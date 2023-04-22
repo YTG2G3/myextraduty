@@ -48,9 +48,9 @@ export default function SchoolSelection() {
             {schools.length > 0 ? <Text>Select your school</Text> : undefined}
 
             <ScrollArea w="80%">
-                <Flex gap="md" justify="center" align="center" direction="row" wrap="nowrap">
+                <Flex justify="center" align="center" direction="row" wrap="nowrap">
                     {schools.length > 0 ? schools.map((v, i) => (
-                        <Card className={styles.card} key={i} shadow="sm" padding="lg" radius="md" withBorder>
+                        <Card m="lg" style={{ width: 300 }} key={i} shadow="sm" padding="lg" radius="md" withBorder>
                             <Card.Section>
                                 <Image src={v.logo} height={160} width={300} alt={v.name} />
                             </Card.Section>

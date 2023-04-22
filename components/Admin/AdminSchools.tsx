@@ -108,6 +108,7 @@ export default function AdminSchools({ schools }: any) {
     });
 
     // TODO - fixed searchbar
+    // TODO - scroll only the li
     return (
         <>
             <div className={styles.container}>
