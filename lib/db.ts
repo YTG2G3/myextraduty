@@ -91,11 +91,18 @@ export async function listSchools(): Promise<School[]> {
 export async function createSchool(name: string, owner: string, address: string, primary_color: string, logo: string): Promise<Boolean> {
     let db = await connectDB();
     try {
-        await db.execute(`INSERT INTO school(name, owner, address, primary_color, logo) VALUES (?, ?, ?, ?, ?)`, [name, owner, address, primary_color, logo]);
+        let [rows]: any = await db.execute(`INSERT INTO school(name, owner, address, primary_color, logo) VALUES (?, ?, ?, ?, ?) RETURNING id`, [name, owner, address, primary_color, logo]);
+        let sid = rows[0].id;
+
+        console.log(sid);
+
+        await db.execute(`INSERT INTO enrollment VALUES (1, ?, ?)`, [sid, owner]);
 
         db.end();
         return true;
     } catch (error) {
+        console.log(error);
+
         db.end();
         return false;
     }

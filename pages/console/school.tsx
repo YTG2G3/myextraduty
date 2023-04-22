@@ -65,15 +65,14 @@ export default function SchoolSelection() {
                                 </Tooltip>
                             </Group>
 
-                            {enrollments[i].manager ? (
-                                <Text color="blue">Manager</Text>
-                            ) : undefined}
-
                             {v.id === JSON.parse(localStorage.getItem("school")) ? (
                                 <Text>Currently Selected</Text>
                             ) : undefined}
 
-                            <Button color={v.primary_color} fullWidth mt="md" radius="md" onClick={() => selectSchool(i)}>Select</Button>
+                            <Button color={v.primary_color} fullWidth mt="md" radius="md" onClick={() => selectSchool(i)}>{
+                                v.owner === user.email ? "Administer" :
+                                    enrollments[i].manager ? "Manage" : "Select"
+                            }</Button>
                         </Card>
                     )) : (
                         <>

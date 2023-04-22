@@ -2,22 +2,41 @@
     height: 100%;
     display: flex;
     justify-content: center;
-}
-
-.pad {
-    width: 60%;
-    max-width: 600px;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 10%;
 }
 
 .gro {
     width: 100%;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr auto;
 }
 
-.inp {
-    width: 90%;
+.ico {
+    margin: 0 10px;
 }
 
 .g {
     width: 100%;
     justify-content: center;
+}
+
+.list {
+    display: grid;
+    grid-template-columns: 2fr 3fr 3fr 1fr;
+    margin-top: 40px;
+}
+
+.tt {
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.li {
+    width: 100%;
 }

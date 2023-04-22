@@ -1,15 +1,17 @@
-import { ActionIcon, Button, Container, Flex, Group, MANTINE_COLORS, Modal, Pagination, Select, TextInput } from "@mantine/core";
+import { ActionIcon, Button, Container, Flex, Group, MANTINE_COLORS, Modal, Pagination, Select, TextInput, Text, Avatar, Image } from "@mantine/core";
 import styles from '@/styles/AdminSchools.module.scss';
 import { useState } from "react";
 import { School } from "@/lib/schema";
 import { IconPlus } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
+import { notifications } from '@mantine/notifications';
 
 export default function AdminSchools({ schools }: any) {
     let [search, setSearch] = useState("");
     let sch: School[] = schools.filter((v: School) => v.name.indexOf(search) >= 0);
     let [opened, { open, close }] = useDisclosure(false);
+    let [page, setPage] = useState(1);
 
     let form = useForm({
         initialValues: {
@@ -29,6 +31,7 @@ export default function AdminSchools({ schools }: any) {
 
     const onSearch = (e: any) => {
         let str = e.currentTarget.value;
+        setPage(1);
         setSearch(str);
     }
 
@@ -37,24 +40,40 @@ export default function AdminSchools({ schools }: any) {
 
         if (s === 200) {
             close();
-            alert("Success! Wait a bit to bit applied"); // TODO - alert to wait 10 sec
+            notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
         }
-        else alert("Fail"); // TODO - alert error
+        else notifications.show({ title: "Failed to add school", message: "Please confirm that the owner's MyExtraDuty account has been created.", color: "red" });
     }
 
     // TODO - replace select with color picker for advanced control
     return (
         <>
-            <Container fluid className={styles.container}>
-                <Flex className={styles.pad} direction="column" justify="center">
-                    <Group className={styles.gro} align="center">
-                        <TextInput className={styles.inp} placeholder="School name" value={search} onChange={onSearch} />
-                        <ActionIcon className={styles.ico} variant="filled" onClick={open}><IconPlus /></ActionIcon>
-                    </Group>
+            <div className={styles.container}>
+                <div className={styles.gro} >
+                    <TextInput className={styles.inp} placeholder="School name" value={search} onChange={onSearch} />
+                    <ActionIcon className={styles.ico} variant="filled" onClick={open}><IconPlus /></ActionIcon>
+                </div>
 
-                    <Pagination total={sch.length / 10} />
-                </Flex>
-            </Container>
+                <div className={styles.li}>
+                    <Pagination value={page} onChange={setPage} total={(sch.length - 1) / 10 + 1} />
+
+                    <div className={styles.list}>
+                        <Text className={styles.tt}>Name</Text>
+                        <Text className={styles.tt}>Owner</Text>
+                        <Text className={styles.tt}>Address</Text>
+                        <Text className={styles.tt}>Primary Color</Text>
+
+                        {sch.slice((page - 1) * 10, (page - 1) * 10 + 10).map(v => (
+                            <>
+                                <Text className={styles.tt} style={{ borderTop: "1px solid gray" }}>{v.name}</Text>
+                                <Text className={styles.tt} style={{ borderTop: "1px solid gray" }}>{v.owner}</Text>
+                                <Text className={styles.tt} style={{ borderTop: "1px solid gray" }}>{v.address}</Text>
+                                <Text className={styles.tt} style={{ borderTop: "1px solid gray" }}>{v.primary_color}</Text>
+                            </>
+                        ))}
+                    </div>
+                </div>
+            </div>
 
             <Modal opened={opened} onClose={close} title="Create a New School" centered>
                 <form onSubmit={form.onSubmit(createSchool)} style={{ padding: 30 }}>

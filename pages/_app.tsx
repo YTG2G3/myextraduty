@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import SiteContext from '@/lib/site-context';
 import { User, School } from '@/lib/schema';
 import { RouterTransition } from '@/components/RouterTransition';
+import { Notifications } from '@mantine/notifications';
 
 function Layout({ children, ...props }: any) {
     let { status } = useSession();
@@ -56,7 +57,7 @@ function Layout({ children, ...props }: any) {
                 {...props}
             >
                 <RouterTransition />
-
+                <Notifications />
                 {children}
             </MantineProvider>
         </SiteContext.Provider>
