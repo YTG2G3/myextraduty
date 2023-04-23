@@ -38,7 +38,7 @@ function Layout({ children, ...props }: any) {
 
             // Get school if it's stored
             let sid = JSON.parse(localStorage.getItem("school"));
-            let s = sid ? await (await fetch(`/api/school?${new URLSearchParams({ school: sid })}`)).json() : undefined;
+            let s = sid ? await (await fetch(`/api/school`, { headers: { school: sid } })).json() : undefined;
             setSchool(s);
         } catch (error) {
             return;

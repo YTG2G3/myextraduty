@@ -11,3 +11,5 @@ export default AuthRoute({
         res.status(r ? 200 : 400).end();
     }
 }, true);
+
+export const config = { api: { externalResolver: true, } }

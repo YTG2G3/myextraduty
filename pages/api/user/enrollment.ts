@@ -9,3 +9,5 @@ export default AuthRoute({
         res.json(er);
     }
 });
+
+export const config = { api: { externalResolver: true, } }

@@ -27,7 +27,7 @@ export default function SchoolSelection() {
 
         // Schools based on enrollments
         let s: School[] = [];
-        for (let { school } of er) s.push(await (await fetch(`/api/school?${new URLSearchParams({ school })}`)).json());
+        for (let { school } of er) s.push(await (await fetch(`/api/school`, { headers: { school } })).json());
 
         // Save
         setEnrollments(er);
