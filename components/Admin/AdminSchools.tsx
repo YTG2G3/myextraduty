@@ -1,12 +1,10 @@
-import { ActionIcon, Button, Group, MANTINE_COLORS, Modal, Pagination, Select, TextInput, Image, Card, Text, Space, Tooltip } from "@mantine/core";
+import { ActionIcon, Button, Group, MANTINE_COLORS, Pagination, Select, TextInput, Image, Card, Text, Space, Tooltip } from "@mantine/core";
 import styles from '@/styles/AdminSchools.module.scss';
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { School } from "@/lib/schema";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
-import { useForm } from "@mantine/form";
 import { notifications } from '@mantine/notifications';
 import { modals } from '@mantine/modals';
-import { setImmediate } from "timers";
 
 const viewPerPage = 9;
 
@@ -112,52 +110,50 @@ export default function AdminSchools({ schools }: any) {
     // TODO - fixed searchbar
     // TODO - scroll only the li
     return (
-        <>
-            <div className={styles.container}>
-                <div className={styles.gro} >
-                    <TextInput className={styles.inp} placeholder="School name" value={search} onChange={onSearch} />
+        <div className={styles.container}>
+            <div className={styles.gro} >
+                <TextInput className={styles.inp} placeholder="School name" value={search} onChange={onSearch} />
 
-                    <Tooltip label="Add">
-                        <ActionIcon className={styles.ico} variant="filled" onClick={createSchool}><IconPlus /></ActionIcon>
-                    </Tooltip>
-                </div>
+                <Tooltip label="Add">
+                    <ActionIcon className={styles.ico} variant="filled" onClick={createSchool}><IconPlus /></ActionIcon>
+                </Tooltip>
+            </div>
 
-                <div className={styles.li}>
-                    <Group>
-                        <Pagination value={page} onChange={setPage} total={(sch.length - 1) / viewPerPage + 1} />
-                        <Text size="sm" color="dimmed">Displaying {viewPerPage} per page</Text>
-                    </Group>
+            <div className={styles.li}>
+                <Group>
+                    <Pagination value={page} onChange={setPage} total={(sch.length - 1) / viewPerPage + 1} />
+                    <Text size="sm" color="dimmed">Displaying {viewPerPage} per page</Text>
+                </Group>
 
-                    <div className={styles.list}>
-                        {sch.slice((page - 1) * viewPerPage, (page - 1) * viewPerPage + viewPerPage).map((v, i) => (
-                            <Card key={i} m="md" style={{ maxWidth: 500, minWidth: 200, width: "30%" }} shadow="sm" padding="lg" radius="md" withBorder>
-                                <Card.Section>
-                                    <Image src={v.logo} height={160} alt={v.name} fit="cover" />
-                                </Card.Section>
+                <div className={styles.list}>
+                    {sch.slice((page - 1) * viewPerPage, (page - 1) * viewPerPage + viewPerPage).map((v, i) => (
+                        <Card key={i} m="md" style={{ maxWidth: 500, minWidth: 200, width: "30%" }} shadow="sm" padding="lg" radius="md" withBorder>
+                            <Card.Section>
+                                <Image src={v.logo} height={160} alt={v.name} fit="cover" />
+                            </Card.Section>
 
-                                <Group position="apart" mt="md" mb="xs">
-                                    <Text weight={500}>{v.name}</Text>
-                                </Group>
+                            <Group position="apart" mt="md" mb="xs">
+                                <Text weight={500}>{v.name}</Text>
+                            </Group>
 
-                                <Text size="sm" color="dimmed" className={styles.t}>Owned by {v.owner}.</Text>
-                                <Text size="sm" color="dimmed" className={styles.t}>{v.address}</Text>
+                            <Text size="sm" color="dimmed" className={styles.t}>Owned by {v.owner}.</Text>
+                            <Text size="sm" color="dimmed" className={styles.t}>{v.address}</Text>
 
-                                <Space h="md" />
+                            <Space h="md" />
 
-                                <Group position="right">
-                                    <Tooltip label="Edit">
-                                        <ActionIcon onClick={() => editSchool(v)}><IconEdit /></ActionIcon>
-                                    </Tooltip>
+                            <Group position="right">
+                                <Tooltip label="Edit">
+                                    <ActionIcon onClick={() => editSchool(v)}><IconEdit /></ActionIcon>
+                                </Tooltip>
 
-                                    <Tooltip label="Delete">
-                                        <ActionIcon onClick={() => deleteSchool(v)}><IconTrash color="red" /></ActionIcon>
-                                    </Tooltip>
-                                </Group>
-                            </Card>
-                        ))}
-                    </div>
+                                <Tooltip label="Delete">
+                                    <ActionIcon onClick={() => deleteSchool(v)}><IconTrash color="red" /></ActionIcon>
+                                </Tooltip>
+                            </Group>
+                        </Card>
+                    ))}
                 </div>
             </div>
-        </>
+        </div>
     );
 }
