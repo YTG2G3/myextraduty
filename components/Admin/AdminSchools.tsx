@@ -8,6 +8,8 @@ import { notifications } from '@mantine/notifications';
 import { modals } from '@mantine/modals';
 import { setImmediate } from "timers";
 
+const viewPerPage = 9;
+
 export default function AdminSchools({ schools }: any) {
     let [search, setSearch] = useState("");
     let sch: School[] = schools.filter((v: School) => v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0);
@@ -122,12 +124,12 @@ export default function AdminSchools({ schools }: any) {
 
                 <div className={styles.li}>
                     <Group>
-                        <Pagination value={page} onChange={setPage} total={(sch.length - 1) / 10 + 1} />
-                        <Text size="sm" color="dimmed">Displaying 10 per page</Text>
+                        <Pagination value={page} onChange={setPage} total={(sch.length - 1) / viewPerPage + 1} />
+                        <Text size="sm" color="dimmed">Displaying {viewPerPage} per page</Text>
                     </Group>
 
                     <div className={styles.list}>
-                        {sch.slice((page - 1) * 10, (page - 1) * 10 + 10).map((v, i) => (
+                        {sch.slice((page - 1) * viewPerPage, (page - 1) * viewPerPage + viewPerPage).map((v, i) => (
                             <Card key={i} m="md" style={{ maxWidth: 500, minWidth: 200, width: "30%" }} shadow="sm" padding="lg" radius="md" withBorder>
                                 <Card.Section>
                                     <Image src={v.logo} height={160} alt={v.name} fit="cover" />

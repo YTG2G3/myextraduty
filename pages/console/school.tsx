@@ -21,6 +21,7 @@ export default function SchoolSelection() {
         return <></>;
     }
 
+    // TODO - Quicker load with sync instead of async
     const loadData = async () => {
         // Enrollment
         let er = await (await fetch("/api/user/enrollment")).json();
