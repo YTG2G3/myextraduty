@@ -131,3 +131,16 @@ export async function deleteSchool(id: number): Promise<boolean> {
         return false;
     }
 }
+
+export async function listUsers(): Promise<User[]> {
+    let db = await connectDB();
+    try {
+        let [rows] = await db.execute(`SELECT * FROM user`);
+
+        db.end();
+        return rows as User[];
+    } catch (error) {
+        db.end();
+        return null;
+    }
+}

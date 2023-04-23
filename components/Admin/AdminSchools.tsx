@@ -10,7 +10,14 @@ const viewPerPage = 9;
 
 export default function AdminSchools({ schools }: any) {
     let [search, setSearch] = useState("");
-    let sch: School[] = schools.filter((v: School) => v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0);
+
+    const searchForSchool = (v: School) => (
+        v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
+        v.owner.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
+        v.address.toLowerCase().indexOf(search.toLowerCase()) >= 0
+    );
+
+    let sch: School[] = schools.filter(searchForSchool);
     let [page, setPage] = useState(1);
 
     const onSearch = (e: any) => {
@@ -112,7 +119,7 @@ export default function AdminSchools({ schools }: any) {
     return (
         <div className={styles.container}>
             <div className={styles.gro} >
-                <TextInput className={styles.inp} placeholder="School name" value={search} onChange={onSearch} />
+                <TextInput placeholder="School name" value={search} onChange={onSearch} />
 
                 <Tooltip label="Add">
                     <ActionIcon className={styles.ico} variant="filled" onClick={createSchool}><IconPlus /></ActionIcon>

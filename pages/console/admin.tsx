@@ -3,7 +3,7 @@ import AdminNavbar from "@/components/Admin/AdminNavbar";
 import AdminSchools from "@/components/Admin/AdminSchools";
 import AdminUsers from "@/components/Admin/AdminUsers";
 import LoadingPage from "@/components/LoadingPage";
-import { listSchools } from "@/lib/db";
+import { listSchools, listUsers } from "@/lib/db";
 import SiteContext from "@/lib/site-context";
 import { AppShell } from "@mantine/core";
 import { IconChalkboard, IconUsersGroup } from "@tabler/icons-react";
@@ -49,5 +49,8 @@ export async function getStaticProps() {
     let schools = await listSchools();
     schools.sort((a, b) => a.name.localeCompare(b.name));
 
-    return { props: { schools }, revalidate: 10 };
+    let users = await listUsers();
+    users.sort((a, b) => a.name.localeCompare(b.name));
+
+    return { props: { schools, users }, revalidate: 10 };
 }
