@@ -51,7 +51,7 @@ export async function getStaticProps() {
 
     let users = await listUsers();
     // TODO - test if this sorts correctly
-    users.sort((a, b) => a.admin ? 1 : b.admin ? -1 : a.name.localeCompare(b.name));
+    users.sort((a, b) => a.admin ? -1 : b.admin ? 1 : a.name.localeCompare(b.name));
 
     return { props: { schools, users }, revalidate: 10 };
 }

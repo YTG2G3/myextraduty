@@ -1,6 +1,8 @@
 import { User } from '@/lib/schema';
 import styles from '@/styles/AdminUsers.module.scss';
 import { Accordion, ActionIcon, Group, Stack, Text, TextInput, Tooltip } from '@mantine/core';
+import { modals } from '@mantine/modals';
+import { notifications } from '@mantine/notifications';
 import { IconUserShield, IconUserX } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useState } from "react";
@@ -20,9 +22,18 @@ export default function AdminUsers({ users }: any) {
         setSearch(str);
     }
 
-    const promoteUser = async (u: User) => {
+    const promoteUser = async (u: User) => modals.openConfirmModal({
+        title: `Are you sure about promoting ${u.name}?`,
+        children: <Text size="sm">This action is irreversible.</Text>,
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        centered: true,
+        onConfirm: async () => {
+            let x = (await fetch("/api/user/promote", { method: "POST", body: String(s.id) })).status;
 
-    }
+            if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
+            else notifications.show({ title: "Failed to delete school", message: "Please contact Algorix to fix this error.", color: "red" });
+        }
+    });
 
     const resetUser = async (u: User) => {
 
@@ -37,7 +48,7 @@ export default function AdminUsers({ users }: any) {
             <Accordion style={{ width: "100%", marginTop: 20 }}>
                 {us.map((v, i) => (
                     <Accordion.Item key={i} value={v.email}>
-                        <Accordion.Control><Text color={v.admin ? "#339AF0" : undefined}>{v.name}</Text></Accordion.Control>
+                        <Accordion.Control><Text color={v.admin ? "#339AF0" : undefined}>{v.name} {v.admin ? "(Admin)" : undefined}</Text></Accordion.Control>
 
                         <Accordion.Panel>
                             <Group>

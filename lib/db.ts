@@ -144,3 +144,16 @@ export async function listUsers(): Promise<User[]> {
         return null;
     }
 }
+
+export async function promoteUser(email: string): Promise<boolean> {
+    let db = await connectDB();
+    try {
+        await db.execute(`UPDATE user SET admin=1 WHERE email=?`, [email]);
+
+        db.end();
+        return true;
+    } catch (error) {
+        db.end();
+        return false;
+    }
+}
