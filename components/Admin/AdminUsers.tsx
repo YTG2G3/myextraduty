@@ -20,6 +20,14 @@ export default function AdminUsers({ users }: any) {
         setSearch(str);
     }
 
+    const promoteUser = async (u: User) => {
+
+    }
+
+    const resetUser = async (u: User) => {
+
+    }
+
     // TODO - pagination and effcient searching without loading the whole table
     // TODO - manage users' enrollments
     return (
@@ -29,7 +37,7 @@ export default function AdminUsers({ users }: any) {
             <Accordion style={{ width: "100%", marginTop: 20 }}>
                 {us.map((v, i) => (
                     <Accordion.Item key={i} value={v.email}>
-                        <Accordion.Control>{v.name}</Accordion.Control>
+                        <Accordion.Control><Text color={v.admin ? "#339AF0" : undefined}>{v.name}</Text></Accordion.Control>
 
                         <Accordion.Panel>
                             <Group>
@@ -39,12 +47,12 @@ export default function AdminUsers({ users }: any) {
                                     <Text>Email: {v.email}</Text>
 
                                     <Group style={{ width: "100%", justifyContent: "center" }}>
-                                        <Tooltip label="Assign Admin Role">
-                                            <ActionIcon><IconUserShield color="#339AF0" /></ActionIcon>
-                                        </Tooltip>
+                                        {!v.admin ? <Tooltip label="Assign Admin Role">
+                                            <ActionIcon onClick={() => promoteUser(v)}><IconUserShield color="#339AF0" /></ActionIcon>
+                                        </Tooltip> : undefined}
 
                                         <Tooltip label="Reset">
-                                            <ActionIcon><IconUserX color='red' /></ActionIcon>
+                                            <ActionIcon onClick={() => resetUser}><IconUserX color='red' /></ActionIcon>
                                         </Tooltip>
                                     </Group>
                                 </Stack>
