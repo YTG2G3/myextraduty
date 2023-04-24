@@ -4,14 +4,14 @@ import { IconLogout, IconSchool } from '@tabler/icons-react';
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 
-export default function AdminHeader() {
+export default function AppHeader() {
     let router = useRouter();
 
     return (
         <Header height={60} p="xs">
             <Container className={styles.inner} fluid>
                 <Group>
-                    <Text>MyExtraDuty Admin</Text>
+                    <Text>MyExtraDuty</Text>
                 </Group>
 
                 <Group>

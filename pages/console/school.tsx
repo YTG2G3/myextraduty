@@ -38,7 +38,7 @@ export default function SchoolSelection() {
     const selectSchool = (index: number) => {
         let s = schools[index];
         localStorage.setItem("school", JSON.stringify(s.id));
-        router.push("/console/dashboard");
+        router.push("/console/app");
     }
 
     if (!schools) return <LoadingPage />
@@ -67,7 +67,7 @@ export default function SchoolSelection() {
                             </Group>
 
                             {v.id === JSON.parse(localStorage.getItem("school")) ? (
-                                <Text>Currently Selected</Text>
+                                <Group position="center"><Text>Currently Selected</Text></Group>
                             ) : undefined}
 
                             <Button color={v.primary_color} fullWidth mt="md" radius="md" onClick={() => selectSchool(i)}>{

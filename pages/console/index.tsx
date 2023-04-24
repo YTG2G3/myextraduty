@@ -8,7 +8,7 @@ export default function Console() {
     let router = useRouter();
 
     useEffect(() => {
-        if (school) router.replace("/console/dashboard");
+        if (school) router.replace("/console/app");
         else if (!localStorage.getItem("school")) router.replace("/console/school");
 
         // elsewise loading
