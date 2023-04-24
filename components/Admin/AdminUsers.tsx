@@ -27,7 +27,7 @@ export default function AdminUsers({ users }: any) {
             <TextInput style={{ width: "100%" }} placeholder="Search" value={search} onChange={onSearch} />
 
             <Accordion style={{ width: "100%", marginTop: 20 }}>
-                {new Array(30).fill(us[0]).map((v, i) => (
+                {us.map((v, i) => (
                     <Accordion.Item key={i} value={v.email}>
                         <Accordion.Control>{v.name}</Accordion.Control>
 
