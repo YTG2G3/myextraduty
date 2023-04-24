@@ -51,6 +51,7 @@ export default function AdminUsers({ users }: any) {
 
     // TODO - pagination and effcient searching without loading the whole table
     // TODO - manage users' enrollments
+    // TODO - test the functions
     return (
         <div className={styles.container}>
             <TextInput style={{ width: "100%" }} placeholder="Search" value={search} onChange={onSearch} />
