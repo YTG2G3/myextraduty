@@ -2,7 +2,6 @@ import { Avatar, NavLink, Navbar, Stack, Image } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
 
 export default function AdminNavbar({ pageIndex, setPageIndex, user, pgs }: any) {
-    // TODO - powered by algorix
     return (
         <Navbar width={{ base: 300 }} p="xs">
             <Navbar.Section grow>

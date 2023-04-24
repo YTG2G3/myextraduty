@@ -74,7 +74,7 @@ export default function AdminSchools({ schools }: any) {
             let x = (await fetch("/api/school/delete", { method: "POST", body: String(s.id) })).status;
 
             if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-            else notifications.show({ title: "Failed to delete school", message: "Please contact Algorix to fix this error.", color: "red" });
+            else notifications.show({ title: "Failed to delete school", message: "Please contact the developer to fix this error.", color: "red" });
         },
     });
 

@@ -31,7 +31,7 @@ export default function AdminUsers({ users }: any) {
             let x = (await fetch("/api/user/promote", { method: "POST", body: u.email })).status;
 
             if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-            else notifications.show({ title: "Failed to promote user", message: "Please contact Algorix to fix this error.", color: "red" });
+            else notifications.show({ title: "Failed to promote user", message: "Please contact the developer to fix this error.", color: "red" });
         }
     });
 
@@ -45,7 +45,7 @@ export default function AdminUsers({ users }: any) {
             let x = (await fetch("/api/user/reset", { method: "POST", body: u.email })).status;
 
             if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-            else notifications.show({ title: "Failed to remove user", message: "Please contact Algorix to fix this error.", color: "red" });
+            else notifications.show({ title: "Failed to remove user", message: "Please contact the developer to fix this error.", color: "red" });
         }
     });
 
