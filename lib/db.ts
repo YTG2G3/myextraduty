@@ -157,3 +157,17 @@ export async function promoteUser(email: string): Promise<boolean> {
         return false;
     }
 }
+
+export async function removeUser(email: string): Promise<boolean> {
+    let db = await connectDB();
+    try {
+        // Only removes non-admins
+        await db.execute(`DELETE FROM user WHERE email=? AND admin=0`, [email]);
+
+        db.end();
+        return true;
+    } catch (error) {
+        db.end();
+        return false;
+    }
+}

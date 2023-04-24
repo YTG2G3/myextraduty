@@ -28,16 +28,26 @@ export default function AdminUsers({ users }: any) {
         labels: { confirm: "Confirm", cancel: "Cancel" },
         centered: true,
         onConfirm: async () => {
-            let x = (await fetch("/api/user/promote", { method: "POST", body: String(s.id) })).status;
+            let x = (await fetch("/api/user/promote", { method: "POST", body: u.email })).status;
 
             if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-            else notifications.show({ title: "Failed to delete school", message: "Please contact Algorix to fix this error.", color: "red" });
+            else notifications.show({ title: "Failed to promote user", message: "Please contact Algorix to fix this error.", color: "red" });
         }
     });
 
-    const resetUser = async (u: User) => {
+    const removeUser = async (u: User) => modals.openConfirmModal({
+        title: `Are you sure about removing ${u.name}?`,
+        children: <Text size="sm">Any schools that the user owns will also be removed and this action is irreversible.</Text>,
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        confirmProps: { color: 'red' },
+        centered: true,
+        onConfirm: async () => {
+            let x = (await fetch("/api/user/reset", { method: "POST", body: u.email })).status;
 
-    }
+            if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
+            else notifications.show({ title: "Failed to remove user", message: "Please contact Algorix to fix this error.", color: "red" });
+        }
+    });
 
     // TODO - pagination and effcient searching without loading the whole table
     // TODO - manage users' enrollments
@@ -57,15 +67,17 @@ export default function AdminUsers({ users }: any) {
                                 <Stack ml="lg">
                                     <Text>Email: {v.email}</Text>
 
-                                    <Group style={{ width: "100%", justifyContent: "center" }}>
-                                        {!v.admin ? <Tooltip label="Assign Admin Role">
-                                            <ActionIcon onClick={() => promoteUser(v)}><IconUserShield color="#339AF0" /></ActionIcon>
-                                        </Tooltip> : undefined}
+                                    {!v.admin ? (
+                                        <Group style={{ width: "100%", justifyContent: "center" }}>
+                                            <Tooltip label="Assign Admin Role">
+                                                <ActionIcon onClick={() => promoteUser(v)}><IconUserShield color="#339AF0" /></ActionIcon>
+                                            </Tooltip>
 
-                                        <Tooltip label="Reset">
-                                            <ActionIcon onClick={() => resetUser}><IconUserX color='red' /></ActionIcon>
-                                        </Tooltip>
-                                    </Group>
+                                            <Tooltip label="Remove">
+                                                <ActionIcon onClick={() => removeUser}><IconUserX color='red' /></ActionIcon>
+                                            </Tooltip>
+                                        </Group>
+                                    ) : undefined}
                                 </Stack>
                             </Group>
                         </Accordion.Panel>
