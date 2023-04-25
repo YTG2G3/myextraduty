@@ -36,11 +36,13 @@ export default function App(props: any) {
         { label: "Settings", icon: <IconSettings />, page: <ManagerSettings {...props} /> },
     ]
 
+    // Protected route
     if (status === "unauthenticated") {
         signIn();
         return <></>;
     }
 
+    // Loading?
     if (!user || !school || !enrollments) return <LoadingPage />;
 
     // Associated?

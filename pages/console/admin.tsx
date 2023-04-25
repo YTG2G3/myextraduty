@@ -22,13 +22,16 @@ export default function Admin(props: any) {
         { label: "Users", icon: <IconUsersGroup />, page: <AdminUsers {...props} /> }
     ];
 
+    // Protected route
     if (status === "unauthenticated") {
         signIn();
         return <></>;
     }
 
+    // Loading?
     if (!user) return <LoadingPage />;
 
+    // Is admin?
     if (!user.admin) {
         router.replace("/console");
         return <></>;
