@@ -22,7 +22,7 @@ export default function App(props: any) {
     let router = useRouter();
 
     // Manager?
-    useEffect(() => setManager(enrollments.find(v => v.school === school.id).manager), [enrollments]);
+    useEffect(() => enrollments ? setManager(enrollments.find(v => v.school === school.id).manager) : undefined, [enrollments]);
 
     let pgs = [
         { label: "Dashboard", icon: <IconLayoutDashboard />, page: <AppDashboard {...props} /> },
