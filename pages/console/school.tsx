@@ -13,7 +13,7 @@ export default function SchoolSelection() {
     let router = useRouter();
     let { status } = useSession();
 
-    useEffect(() => { loadData() }, []);
+    useEffect(() => { loadData() }, [enrollments]);
 
     if (status === "unauthenticated") {
         signIn();
@@ -22,6 +22,8 @@ export default function SchoolSelection() {
 
     // TODO - Quicker load with sync instead of async
     const loadData = async () => {
+        if (!enrollments) return;
+
         // Schools based on enrollments
         let s: School[] = [];
         for (let { school } of enrollments) s.push(await (await fetch(`/api/school`, { headers: { school: String(school) } })).json());

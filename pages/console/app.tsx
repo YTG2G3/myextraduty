@@ -1,10 +1,8 @@
 import AppDashboard from "@/components/App/AppDashboard";
-import AppEvents from "@/components/App/AppEvents";
 import AppHeader from "@/components/App/AppHeader";
 import AppNavbar from "@/components/App/AppNavbar";
 import LoadingPage from "@/components/LoadingPage";
 import ManagerDashboard from "@/components/Manager/ManagerDashboard";
-import ManagerEvents from "@/components/Manager/ManagerEvents";
 import ManagerSettings from "@/components/Manager/ManagerSettings";
 import ManagerUsers from "@/components/Manager/ManagerUsers";
 import SiteContext from "@/lib/site-context";
@@ -13,6 +11,8 @@ import { IconCalendarEvent, IconLayoutDashboard, IconSettings, IconUsersGroup } 
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
+import AppTasks from "@/components/App/AppTasks";
+import ManagerTasks from "@/components/Manager/ManagerTasks";
 
 export default function App(props: any) {
     let { user, school, enrollments } = useContext(SiteContext);
@@ -22,16 +22,16 @@ export default function App(props: any) {
     let router = useRouter();
 
     // Manager?
-    useEffect(() => enrollments ? setManager(enrollments.find(v => v.school === school.id).manager) : undefined, [enrollments]);
+    useEffect(() => enrollments && school ? setManager(enrollments.find(v => v.school === school.id).manager) : undefined, [enrollments, school]);
 
     let pgs = [
         { label: "Dashboard", icon: <IconLayoutDashboard />, page: <AppDashboard {...props} /> },
-        { label: "Events", icon: <IconCalendarEvent />, page: <AppEvents {...props} /> },
+        { label: "Tasks", icon: <IconCalendarEvent />, page: <AppTasks {...props} /> },
     ];
 
     let mgs = [
         { label: "Dashboard", icon: <IconLayoutDashboard />, page: <ManagerDashboard {...props} /> },
-        { label: "Events", icon: <IconCalendarEvent />, page: <ManagerEvents {...props} /> },
+        { label: "Tasks", icon: <IconCalendarEvent />, page: <ManagerTasks {...props} /> },
         { label: "Users", icon: <IconUsersGroup />, page: <ManagerUsers {...props} /> },
         { label: "Settings", icon: <IconSettings />, page: <ManagerSettings {...props} /> },
     ]

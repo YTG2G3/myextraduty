@@ -1,5 +1,5 @@
 // TODO - manage events / sign up
-export default function ManagerEvents(props: any) {
+export default function ManagerTasks(props: any) {
     return (
         <div>
 
