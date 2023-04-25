@@ -1,10 +1,11 @@
 import { createContext } from "react";
-import { School, User } from "./schema";
+import { Enrollment, School, User } from "./schema";
 
 // TS Context
 type AuthContext = {
     user: User,
-    school: School
+    school: School,
+    enrollments: Enrollment[]
 };
 
 let SiteContext = createContext({} as AuthContext);

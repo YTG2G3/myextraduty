@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { SessionProvider, useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import SiteContext from '@/lib/site-context';
-import { User, School } from '@/lib/schema';
+import { User, School, Enrollment } from '@/lib/schema';
 import { RouterTransition } from '@/components/RouterTransition';
 import { Notifications } from '@mantine/notifications';
 import { ModalsProvider } from '@mantine/modals';
@@ -16,6 +16,7 @@ function Layout({ children, ...props }: any) {
 
     let [user, setUser] = useState<User>(undefined);
     let [school, setSchool] = useState<School>(undefined);
+    let [enrollments, setEnrollments] = useState<Enrollment[]>(undefined);
 
     useEffect(() => { loadData() }, [status]);
 
@@ -40,13 +41,17 @@ function Layout({ children, ...props }: any) {
             let sid = JSON.parse(localStorage.getItem("school"));
             let s = sid ? await (await fetch(`/api/school`, { headers: { school: sid } })).json() : undefined;
             setSchool(s);
+
+            // Get enrollments
+            let er = await (await fetch("/api/user/enrollment")).json();
+            setEnrollments(er);
         } catch (error) {
             return;
         }
     }
 
     return (
-        <SiteContext.Provider value={{ user, school }} >
+        <SiteContext.Provider value={{ user, school, enrollments }} >
             <Head>
                 <title>{user ? `Welcome, ${user.name}` : "MyExtraDuty"}</title>
             </Head>

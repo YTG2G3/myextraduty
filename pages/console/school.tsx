@@ -2,14 +2,13 @@ import { Button, Card, Center, Flex, Group, Image, ScrollArea, Text, Tooltip } f
 import styles from '@/styles/School.module.scss';
 import { useEffect, useState, useContext } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { Enrollment, School } from "@/lib/schema";
+import { School } from "@/lib/schema";
 import LoadingPage from "@/components/LoadingPage";
 import { useRouter } from "next/router";
 import SiteContext from "@/lib/site-context";
 
 export default function SchoolSelection() {
-    let { user } = useContext(SiteContext);
-    let [enrollments, setEnrollments] = useState<Enrollment[]>(undefined);
+    let { user, enrollments } = useContext(SiteContext);
     let [schools, setSchools] = useState<School[]>(undefined);
     let router = useRouter();
     let { status } = useSession();
@@ -23,15 +22,11 @@ export default function SchoolSelection() {
 
     // TODO - Quicker load with sync instead of async
     const loadData = async () => {
-        // Enrollment
-        let er = await (await fetch("/api/user/enrollment")).json();
-
         // Schools based on enrollments
         let s: School[] = [];
-        for (let { school } of er) s.push(await (await fetch(`/api/school`, { headers: { school } })).json());
+        for (let { school } of enrollments) s.push(await (await fetch(`/api/school`, { headers: { school: String(school) } })).json());
 
         // Save
-        setEnrollments(er);
         setSchools(s);
     }
 
