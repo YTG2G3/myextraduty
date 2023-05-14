@@ -40,7 +40,6 @@ export default function SchoolSelection() {
 
     if (!schools) return <LoadingPage />
 
-    // TODO - design
     return (
         <Center className={styles.page}>
             {schools.length > 0 ? <Text>Select your school</Text> : undefined}

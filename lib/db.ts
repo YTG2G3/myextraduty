@@ -106,10 +106,10 @@ export async function createSchool(name: string, owner: string, address: string,
     }
 }
 
-export async function updateSchool(id: number, owner: string, address: string, primary_color: string, logo: string): Promise<boolean> {
+export async function updateSchool(id: number, address: string, primary_color: string, logo: string): Promise<boolean> {
     let db = await connectDB();
     try {
-        await db.execute(`UPDATE school SET owner=?, address=?, primary_color=?, logo=? WHERE id=?`, [owner, address, primary_color, logo, id]);
+        await db.execute(`UPDATE school SET address=?, primary_color=?, logo=? WHERE id=?`, [address, primary_color, logo, id]);
 
         db.end();
         return true;
@@ -163,6 +163,19 @@ export async function removeUser(email: string): Promise<boolean> {
     try {
         // Only removes non-admins
         await db.execute(`DELETE FROM user WHERE email=? AND admin=0`, [email]);
+
+        db.end();
+        return true;
+    } catch (error) {
+        db.end();
+        return false;
+    }
+}
+
+export async function transferSchoolOwnership(id: number, email: string): Promise<boolean> {
+    let db = await connectDB();
+    try {
+        await db.execute(`UPDATE school SET owner=? WHERE id=?`, [email, id]);
 
         db.end();
         return true;
