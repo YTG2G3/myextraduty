@@ -6,7 +6,6 @@ import { notifications } from '@mantine/notifications';
 import { useContext, useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
 
-// TODO - manage settings
 export default function ManagerSettings() {
     let { school, user } = useContext(SiteContext);
     let [loading, setLoading] = useState(false);
