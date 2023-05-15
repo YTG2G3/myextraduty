@@ -1,6 +1,6 @@
 import SiteContext from '@/lib/site-context';
 import styles from '@/styles/ManagerSettings.module.scss';
-import { Button, Group, MANTINE_COLORS, Select, TextInput } from '@mantine/core';
+import { Button, Group, MANTINE_COLORS, NumberInput, Select, TextInput } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
 import { useContext, useState } from 'react';
@@ -63,13 +63,13 @@ export default function ManagerSettings() {
         )
     });
 
-    // TODO - opening at and quota etc
     return (
         <form className={styles.container} onSubmit={saveChanges}>
             <TextInput name="address" label="Address" defaultValue={school.address} />
             <TextInput name="logo" label="Logo URL" defaultValue={school.logo} />
             <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue="blue" />
             <DateTimePicker name="opening_at" label="Opening At" defaultValue={new Date(school.opening_at)} />
+            <NumberInput name="quota" label="Quota" type='number' min={0} defaultValue={school.quota} />
 
             <div className={styles.ho}>
                 <Button loading={loading} m="lg" color="red" onClick={transferOwner} disabled={school.owner !== user.email}>Transfer Ownership</Button>
