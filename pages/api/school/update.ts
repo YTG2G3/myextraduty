@@ -5,9 +5,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 export default AuthRoute({
     POST: async (req: NextApiRequest, res: NextApiResponse) => {
         let { school } = req.headers;
-        let { address, primary_color, logo } = JSON.parse(req.body);
+        let { address, primary_color, logo, opening_at } = JSON.parse(req.body);
 
-        let r = await updateSchool(Number(school), address, primary_color, logo);
+        let r = await updateSchool(Number(school), address, primary_color, logo, new Date(opening_at));
 
         res.status(r ? 200 : 400).end();
     }

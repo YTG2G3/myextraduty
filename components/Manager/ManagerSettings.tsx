@@ -4,6 +4,7 @@ import { Button, Group, MANTINE_COLORS, Select, TextInput } from '@mantine/core'
 import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
 import { useContext, useState } from 'react';
+import { DateTimePicker } from '@mantine/dates';
 
 // TODO - manage settings
 export default function ManagerSettings() {
@@ -18,7 +19,8 @@ export default function ManagerSettings() {
             owner: user.email,
             address: e.target.address.value,
             primary_color: e.target.primary_color.value,
-            logo: e.target.logo.value
+            logo: e.target.logo.value,
+            opening_at: e.target.opening_at.value === "" ? null : e.target.opening_at.value
         }
 
         try {
@@ -67,9 +69,10 @@ export default function ManagerSettings() {
             <TextInput name="address" label="Address" defaultValue={school.address} />
             <TextInput name="logo" label="Logo URL" defaultValue={school.logo} />
             <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue="blue" />
+            <DateTimePicker name="opening_at" label="Opening At" defaultValue={new Date(school.opening_at)} />
 
             <div className={styles.ho}>
-                <Button loading={loading} m="lg" color="red" onClick={transferOwner}>Transfer Ownership</Button>
+                <Button loading={loading} m="lg" color="red" onClick={transferOwner} disabled={school.owner !== user.email}>Transfer Ownership</Button>
                 <Button loading={loading} m="lg" type="submit">Save</Button>
             </div>
         </form>

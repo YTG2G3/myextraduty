@@ -10,6 +10,7 @@ import { User, School, Enrollment } from '@/lib/schema';
 import { RouterTransition } from '@/components/RouterTransition';
 import { Notifications } from '@mantine/notifications';
 import { ModalsProvider } from '@mantine/modals';
+import { DatesProvider } from '@mantine/dates';
 
 function Layout({ children, ...props }: any) {
     let { status } = useSession();
@@ -66,7 +67,9 @@ function Layout({ children, ...props }: any) {
                 <Notifications />
 
                 <ModalsProvider>
-                    {children}
+                    <DatesProvider settings={{ firstDayOfWeek: 0 }}>
+                        {children}
+                    </DatesProvider>
                 </ModalsProvider>
             </MantineProvider>
         </SiteContext.Provider>

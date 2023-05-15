@@ -24,6 +24,13 @@ export default function App(props: any) {
     // Manager?
     useEffect(() => enrollments && school ? setManager(enrollments.find(v => v.school === school.id).manager) : undefined, [enrollments, school]);
 
+    // School selected?
+    useEffect(() => {
+        if (!localStorage.getItem("school")) {
+            router.replace("/console/school");
+        }
+    }, []);
+
     let pgs = [
         { label: "Dashboard", icon: <IconLayoutDashboard />, page: <AppDashboard {...props} /> },
         { label: "Tasks", icon: <IconCalendarEvent />, page: <AppTasks {...props} /> },

@@ -94,8 +94,6 @@ export async function createSchool(name: string, owner: string, address: string,
         let [rows]: any = await db.execute(`INSERT INTO school(name, owner, address, primary_color, logo) VALUES (?, ?, ?, ?, ?) RETURNING id`, [name, owner, address, primary_color, logo]);
         let sid = rows[0].id;
 
-        console.log(sid);
-
         await db.execute(`INSERT INTO enrollment VALUES (1, ?, ?)`, [sid, owner]);
 
         db.end();
@@ -106,10 +104,10 @@ export async function createSchool(name: string, owner: string, address: string,
     }
 }
 
-export async function updateSchool(id: number, address: string, primary_color: string, logo: string): Promise<boolean> {
+export async function updateSchool(id: number, address: string, primary_color: string, logo: string, opening_at: Date): Promise<boolean> {
     let db = await connectDB();
     try {
-        await db.execute(`UPDATE school SET address=?, primary_color=?, logo=? WHERE id=?`, [address, primary_color, logo, id]);
+        await db.execute(`UPDATE school SET address=?, primary_color=?, logo=?, opening_at=? WHERE id=?`, [address, primary_color, logo, opening_at, id]);
 
         db.end();
         return true;
