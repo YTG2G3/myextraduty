@@ -53,6 +53,7 @@ export async function getSchool(sid: number): Promise<School> {
     try {
         let [rows]: any = await db.execute(`SELECT * FROM school WHERE id=?`, [sid]);
         if (rows.length === 0) return null;
+        rows[0] = { ...rows[0], opening_at: String(rows[0].opening_at) };
 
         db.end();
         return rows[0];
@@ -78,7 +79,8 @@ export async function getEnrollments(email: string): Promise<Enrollment[]> {
 export async function listSchools(): Promise<School[]> {
     let db = await connectDB();
     try {
-        let [rows] = await db.execute(`SELECT * FROM school`);
+        let [rows]: any[] = await db.execute(`SELECT * FROM school`);
+        rows = rows.map((v: School) => ({ ...v, opening_at: String(v.opening_at) }));
 
         db.end();
         return rows as School[];

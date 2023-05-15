@@ -48,6 +48,7 @@ export default function Admin(props: any) {
     );
 }
 
+// TODO - consider removing SSR here
 export async function getStaticProps() {
     let schools = await listSchools();
     schools.sort((a, b) => a.name.localeCompare(b.name));

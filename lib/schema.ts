@@ -12,7 +12,7 @@ export type School = {
     address: string,
     logo: string,
     primary_color: string,
-    opening_at: Date,
+    opening_at: string,
     quota: number,
     max_assigned: number
 };
