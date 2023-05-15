@@ -13,16 +13,40 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import AppTasks from "@/components/App/AppTasks";
 import ManagerTasks from "@/components/Manager/ManagerTasks";
+import { Task, User } from "@/lib/schema";
 
 export default function App(props: any) {
     let { user, school, enrollments } = useContext(SiteContext);
     let { status } = useSession();
     let [pageIndex, setPageIndex] = useState(0);
     let [manager, setManager] = useState(false);
+    let [tasks, setTasks] = useState<Task[]>(undefined);
+    let [members, setMembers] = useState<User[]>(undefined);
     let router = useRouter();
 
-    // Manager?
-    useEffect(() => enrollments && school ? setManager(enrollments.find(v => v.school === school.id).manager) : undefined, [enrollments, school]);
+    const loadTasks = async (id: number) => {
+        let t: Task[] = await (await fetch("/api/school/task", { method: "GET", headers: { school: String(id) } })).json();
+        setTasks(t);
+    }
+
+    const loadMembers = async (id: number) => {
+        let u: User[] = await (await fetch("/api/school/member", { method: "GET", headers: { school: String(id) } })).json();
+        setMembers(u);
+    }
+
+    useEffect(() => {
+        if (enrollments && school) {
+            let isManager = enrollments.find(v => v.school === school.id).manager
+            setManager(isManager);
+
+            // Load tasks
+            loadTasks(school.id);
+
+            // Load members
+            if (isManager) loadMembers(school.id);
+            else setMembers([]); // no auth
+        }
+    }, [enrollments, school]);
 
     // School selected?
     useEffect(() => {
@@ -50,7 +74,7 @@ export default function App(props: any) {
     }
 
     // Loading?
-    if (!user || !school || !enrollments) return <LoadingPage />;
+    if (!user || !school || !enrollments || !tasks || !members) return <LoadingPage />;
 
     // Associated?
     if (!enrollments.find(v => v.school === school.id)) {

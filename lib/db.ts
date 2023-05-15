@@ -1,5 +1,5 @@
 import { createConnection } from 'mysql2/promise';
-import { User, School, Enrollment } from './schema';
+import { User, School, Enrollment, Task } from './schema';
 
 const connectDB = async () => createConnection({
     host: process.env.MYSQL_HOST,
@@ -182,5 +182,37 @@ export async function transferSchoolOwnership(id: number, email: string): Promis
     } catch (error) {
         db.end();
         return false;
+    }
+}
+
+export async function listTasks(id: number): Promise<Task[]> {
+    let db = await connectDB();
+    try {
+        let [rows]: any[] = await db.execute(`SELECT * FROM tasks WHERE school=?`, [id]);
+
+        db.end();
+        return rows as Task[];
+    } catch (error) {
+        db.end();
+        return null;
+    }
+}
+
+export async function listMembers(id: number): Promise<User[]> {
+    let db = await connectDB();
+    try {
+        let [rows]: any[] = await db.execute(`SELECT * FROM enrollment WHERE school=?`, [id]);
+
+        let u = [];
+        for (let er of (rows as Enrollment[])) {
+            let [x]: any[] = await db.execute(`SELECT * FROM user WHERE email=?`, [er.user]);
+            u.push(x[0]);
+        }
+
+        db.end();
+        return u as User[];
+    } catch (error) {
+        db.end();
+        return null;
     }
 }

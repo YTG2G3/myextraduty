@@ -22,3 +22,15 @@ export type Enrollment = {
     user: string,
     manager: boolean
 }
+
+export type Task = {
+    id: number,
+    category: string,
+    name: string,
+    description: string,
+    starting_date: string,
+    ending_date: string,
+    starting_time: string,
+    ending_time: string,
+    capacity: number
+}
