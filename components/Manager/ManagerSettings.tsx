@@ -19,7 +19,8 @@ export default function ManagerSettings() {
             address: e.target.address.value,
             primary_color: e.target.primary_color.value,
             logo: e.target.logo.value,
-            opening_at: e.target.opening_at.value === "" ? null : e.target.opening_at.value
+            opening_at: e.target.opening_at.value === "" ? null : e.target.opening_at.value,
+            quota: e.target.quota.value
         }
 
         try {

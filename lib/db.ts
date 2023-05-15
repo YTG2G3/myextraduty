@@ -104,10 +104,10 @@ export async function createSchool(name: string, owner: string, address: string,
     }
 }
 
-export async function updateSchool(id: number, address: string, primary_color: string, logo: string, opening_at: Date): Promise<boolean> {
+export async function updateSchool(id: number, address: string, primary_color: string, logo: string, opening_at: Date, quota: number): Promise<boolean> {
     let db = await connectDB();
     try {
-        await db.execute(`UPDATE school SET address=?, primary_color=?, logo=?, opening_at=? WHERE id=?`, [address, primary_color, logo, opening_at, id]);
+        await db.execute(`UPDATE school SET address=?, primary_color=?, logo=?, opening_at=?, quota=? WHERE id=?`, [address, primary_color, logo, opening_at, quota, id]);
 
         db.end();
         return true;
