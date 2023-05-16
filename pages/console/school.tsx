@@ -22,6 +22,10 @@ export default function SchoolSelection() {
 
     // TODO - Quicker load with sync instead of async
     const loadData = async () => {
+        // Reset localstorage
+        localStorage.removeItem("school");
+
+        // Loaded?
         if (!enrollments) return;
 
         // Schools based on enrollments
@@ -61,10 +65,6 @@ export default function SchoolSelection() {
                                     <Text className={styles.t2} color={v.primary_color}>{v.address}</Text>
                                 </Tooltip>
                             </Group>
-
-                            {v.id === JSON.parse(localStorage.getItem("school")) ? (
-                                <Group position="center"><Text>Currently Selected</Text></Group>
-                            ) : undefined}
 
                             <Button color={v.primary_color} fullWidth mt="md" radius="md" onClick={() => selectSchool(i)}>{
                                 v.owner === user.email ? "Administer" :

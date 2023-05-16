@@ -1,4 +1,4 @@
-import { Accordion, Group, Stack, Text, TextInput } from "@mantine/core";
+import { Accordion, ActionIcon, Group, Stack, Text, TextInput, Tooltip } from "@mantine/core";
 import styles from '@/styles/ManagerUsers.module.scss';
 import { useContext, useState } from "react";
 import { Member } from "@/lib/schema";
@@ -26,6 +26,12 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
         <div className={styles.container}>
             <div className={styles.gro} >
                 <TextInput style={{ width: "100%" }} placeholder="Search" value={search} onChange={onSearch} />
+
+                <Group>
+                    <Tooltip label="Add">
+                        <ActionIcon></ActionIcon>
+                    </Tooltip>
+                </Group>
             </div>
 
             <Accordion style={{ width: "100%", marginTop: 20 }}>
