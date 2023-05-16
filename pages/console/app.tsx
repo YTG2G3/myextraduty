@@ -31,6 +31,8 @@ export default function App() {
 
     const loadMembers = async (id: number) => {
         let m: Member[] = await (await fetch("/api/school/member", { method: "GET", headers: { school: String(id) } })).json();
+        // TODO - test if this sorts correctly
+        m.sort((a, b) => a.admin ? -1 : b.admin ? 1 : a.name.localeCompare(b.name));
         setMembers(m);
     }
 
