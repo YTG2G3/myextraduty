@@ -70,7 +70,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                                     <ActionIcon><IconArchive /></ActionIcon>
                                                 </Tooltip>
                                             </>
-                                        ) : ( // Me manager, you me
+                                        ) : ( // You me
                                             <>
                                                 <Tooltip label="Record">
                                                     <ActionIcon><IconArchive /></ActionIcon>
