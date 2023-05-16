@@ -5,6 +5,10 @@ export type User = {
     admin: boolean
 };
 
+export type Member = User & {
+    manager: boolean
+}
+
 export type School = {
     id: number,
     owner: string,

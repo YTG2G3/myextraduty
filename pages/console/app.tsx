@@ -13,15 +13,15 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import AppTasks from "@/components/App/AppTasks";
 import ManagerTasks from "@/components/Manager/ManagerTasks";
-import { Task, User } from "@/lib/schema";
+import { Member, Task } from "@/lib/schema";
 
-export default function App(props: any) {
+export default function App() {
     let { user, school, enrollments } = useContext(SiteContext);
     let { status } = useSession();
     let [pageIndex, setPageIndex] = useState(0);
     let [manager, setManager] = useState(false);
     let [tasks, setTasks] = useState<Task[]>(undefined);
-    let [members, setMembers] = useState<User[]>(undefined);
+    let [members, setMembers] = useState<Member[]>(undefined);
     let router = useRouter();
 
     const loadTasks = async (id: number) => {
@@ -30,8 +30,8 @@ export default function App(props: any) {
     }
 
     const loadMembers = async (id: number) => {
-        let u: User[] = await (await fetch("/api/school/member", { method: "GET", headers: { school: String(id) } })).json();
-        setMembers(u);
+        let m: Member[] = await (await fetch("/api/school/member", { method: "GET", headers: { school: String(id) } })).json();
+        setMembers(m);
     }
 
     useEffect(() => {
@@ -56,15 +56,15 @@ export default function App(props: any) {
     }, []);
 
     let pgs = [
-        { label: "Dashboard", icon: <IconLayoutDashboard />, page: <AppDashboard {...props} /> },
-        { label: "Tasks", icon: <IconCalendarEvent />, page: <AppTasks {...props} /> },
+        { label: "Dashboard", icon: <IconLayoutDashboard />, page: <AppDashboard tasks={tasks} /> },
+        { label: "Tasks", icon: <IconCalendarEvent />, page: <AppTasks tasks={tasks} /> },
     ];
 
     let mgs = [
-        { label: "Dashboard", icon: <IconLayoutDashboard />, page: <ManagerDashboard {...props} /> },
-        { label: "Tasks", icon: <IconCalendarEvent />, page: <ManagerTasks {...props} /> },
-        { label: "Users", icon: <IconUsersGroup />, page: <ManagerUsers {...props} /> },
-        { label: "Settings", icon: <IconSettings />, page: <ManagerSettings {...props} /> },
+        { label: "Dashboard", icon: <IconLayoutDashboard />, page: <ManagerDashboard members={members} tasks={tasks} /> },
+        { label: "Tasks", icon: <IconCalendarEvent />, page: <ManagerTasks members={members} tasks={tasks} /> },
+        { label: "Users", icon: <IconUsersGroup />, page: <ManagerUsers members={members} tasks={tasks} /> },
+        { label: "Settings", icon: <IconSettings />, page: <ManagerSettings /> },
     ]
 
     // Protected route
