@@ -4,11 +4,12 @@ import { useContext, useState } from "react";
 import { Member } from "@/lib/schema";
 import Image from "next/image";
 import SiteContext from "@/lib/site-context";
+import { IconArchive, IconPlus, IconUpload } from "@tabler/icons-react";
 
 // TODO - manage users
 export default function ManagerUsers({ members }: { members: Member[] }) {
     let [search, setSearch] = useState("");
-    let { school } = useContext(SiteContext);
+    let { school, user } = useContext(SiteContext);
 
     const searchForMember = (v: Member) => (
         v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
@@ -27,11 +28,15 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
             <div className={styles.gro} >
                 <TextInput style={{ width: "100%" }} placeholder="Search" value={search} onChange={onSearch} />
 
-                <Group>
+                <div className={styles.wr}>
                     <Tooltip label="Add">
-                        <ActionIcon></ActionIcon>
+                        <ActionIcon variant="filled" mr="xs"><IconPlus /></ActionIcon>
                     </Tooltip>
-                </Group>
+
+                    <Tooltip label="Upload">
+                        <ActionIcon variant="filled"><IconUpload /></ActionIcon>
+                    </Tooltip>
+                </div>
             </div>
 
             <Accordion style={{ width: "100%", marginTop: 20 }}>
@@ -46,7 +51,33 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                 <Stack ml="lg">
                                     <Text>Email: {v.email}</Text>
 
-
+                                    <Group className={styles.g}>
+                                        {v.email !== user.email ? user.email === school.owner ? ( // Me owner
+                                            <>
+                                                <Tooltip label="Record">
+                                                    <ActionIcon><IconArchive /></ActionIcon>
+                                                </Tooltip>
+                                            </>
+                                        ) : !v.manager ? ( // Me manager, you user
+                                            <>
+                                                <Tooltip label="Record">
+                                                    <ActionIcon><IconArchive /></ActionIcon>
+                                                </Tooltip>
+                                            </>
+                                        ) : ( // Me manager, you manager
+                                            <>
+                                                <Tooltip label="Record">
+                                                    <ActionIcon><IconArchive /></ActionIcon>
+                                                </Tooltip>
+                                            </>
+                                        ) : ( // Me manager, you me
+                                            <>
+                                                <Tooltip label="Record">
+                                                    <ActionIcon><IconArchive /></ActionIcon>
+                                                </Tooltip>
+                                            </>
+                                        )}
+                                    </Group>
                                 </Stack>
                             </Group>
                         </Accordion.Panel>
