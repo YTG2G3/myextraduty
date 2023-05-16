@@ -1,10 +1,11 @@
-import { ActionIcon, Button, Group, MANTINE_COLORS, Pagination, Select, TextInput, Image, Card, Text, Space, Tooltip } from "@mantine/core";
+import { ActionIcon, Button, Group, MANTINE_COLORS, Pagination, Select, TextInput, Image, Card, Text, Space, Tooltip, NumberInput } from "@mantine/core";
 import styles from '@/styles/AdminSchools.module.scss';
 import { useState } from "react";
 import { School } from "@/lib/schema";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { notifications } from '@mantine/notifications';
 import { modals } from '@mantine/modals';
+import { DateTimePicker } from "@mantine/dates";
 
 const viewPerPage = 9;
 
@@ -81,12 +82,18 @@ export default function AdminSchools({ schools }: any) {
     const editSchoolReq = async (e: any, sc: School) => {
         e.preventDefault();
 
+        let o = { email: e.target.owner.value };
         let b = {
-            owner: e.target.owner.value,
             address: e.target.address.value,
             primary_color: e.target.primary_color.value,
-            logo: e.target.logo.value
-        }
+            logo: e.target.logo.value,
+            opening_at: e.target.opening_at.value === "" ? null : e.target.opening_at.value,
+            quota: e.target.quota.value
+        };
+
+        let x = (await fetch("/api/school/transfer", { method: "POST", body: JSON.stringify(o), headers: { school: String(sc.id) } })).status;
+
+        if (x !== 200) notifications.show({ title: "Failed to transfer ownership", message: "Please confirm that the owner's MyExtraDuty account has been created.", color: "red" });
 
         let s = (await fetch("/api/school/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(sc.id) } })).status;
 
@@ -106,6 +113,8 @@ export default function AdminSchools({ schools }: any) {
                 <TextInput name="address" withAsterisk label="Address" defaultValue={s.address} />
                 <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue={s.primary_color} />
                 <TextInput name="logo" withAsterisk label="School Logo URL" defaultValue={s.logo} />
+                <DateTimePicker valueFormat='MMM DD YYYY hh:mm A' name="opening_at" label="Opening At" defaultValue={s.opening_at !== "null" ? new Date(s.opening_at) : null} />
+                <NumberInput name="quota" label="Quota" type='number' min={0} defaultValue={s.quota} />
 
                 <Group position="right" mt="md">
                     <Button type="submit">Save</Button>

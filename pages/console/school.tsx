@@ -73,8 +73,10 @@ export default function SchoolSelection() {
                         </Card>
                     )) : (
                         <>
-                            <Text>No schools associated with this account.</Text>
-                            <Button variant="outline" radius="xl" compact onClick={() => signIn("google")}>Try another account</Button>
+                            <div className={styles.c}>
+                                <Text>No schools associated with this account.</Text>
+                                <Button m="sm" variant="outline" radius="xl" compact onClick={() => signIn("google")}>Try another account</Button>
+                            </div>
                         </>
                     )}
                 </Flex>

@@ -22,3 +22,10 @@
     white-space: nowrap;
     opacity: 0.5;
 }
+
+.c {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}

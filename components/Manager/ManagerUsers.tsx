@@ -1,10 +1,12 @@
-import { Accordion, ActionIcon, Group, Stack, Text, TextInput, Tooltip } from "@mantine/core";
+import { Accordion, ActionIcon, Button, Group, Stack, Text, TextInput, Tooltip } from "@mantine/core";
 import styles from '@/styles/ManagerUsers.module.scss';
 import { useContext, useState } from "react";
 import { Member } from "@/lib/schema";
 import Image from "next/image";
 import SiteContext from "@/lib/site-context";
 import { IconArchive, IconArrowBigUp, IconPlus, IconUpload, IconUserX } from "@tabler/icons-react";
+import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 
 // TODO - manage users
 export default function ManagerUsers({ members }: { members: Member[] }) {
@@ -23,14 +25,41 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
         setSearch(str);
     }
 
+    const inviteMemberReq = async (e: any) => {
+        e.preventDefault();
+
+        let b = { email: e.target.email.value };
+        let s = (await fetch("/api/school/member", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
+
+        if (s === 200) {
+            modals.closeAll();
+            notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
+        }
+        else notifications.show({ title: "Failed to edit school", message: "Please confirm that the owner's MyExtraDuty account has been created.", color: "red" });
+    }
+
+    const inviteMember = () => modals.open({
+        title: `Invite to ${school.name}`,
+        centered: true,
+        children: (
+            <form onSubmit={inviteMemberReq}>
+                <TextInput name="email" withAsterisk label="Email" />
+
+                <Group position="right" mt="md">
+                    <Button type="submit">Invite</Button>
+                </Group>
+            </form>
+        )
+    })
+
     return (
         <div className={styles.container}>
             <div className={styles.gro} >
                 <TextInput style={{ width: "100%" }} placeholder="Search" value={search} onChange={onSearch} />
 
                 <div className={styles.wr}>
-                    <Tooltip label="Add">
-                        <ActionIcon variant="filled" mr="xs"><IconPlus /></ActionIcon>
+                    <Tooltip label="Invite">
+                        <ActionIcon variant="filled" mr="xs" onClick={inviteMember}><IconPlus /></ActionIcon>
                     </Tooltip>
 
                     <Tooltip label="Upload">
