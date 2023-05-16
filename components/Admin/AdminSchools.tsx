@@ -123,7 +123,7 @@ export default function AdminSchools({ schools }: any) {
                 <TextInput placeholder="School name" value={search} onChange={onSearch} />
 
                 <Tooltip label="Add">
-                    <ActionIcon className={styles.ico} variant="filled" onClick={createSchool}><IconPlus /></ActionIcon>
+                    <ActionIcon m="md" className={styles.ico} variant="filled" onClick={createSchool}><IconPlus /></ActionIcon>
                 </Tooltip>
             </div>
 

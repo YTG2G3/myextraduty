@@ -36,7 +36,7 @@ export default function App() {
 
     useEffect(() => {
         if (enrollments && school) {
-            let isManager = enrollments.find(v => v.school === school.id).manager
+            let isManager = enrollments.find(v => v.school === school.id).manager;
             setManager(isManager);
 
             // Load tasks
@@ -63,7 +63,7 @@ export default function App() {
     let mgs = [
         { label: "Dashboard", icon: <IconLayoutDashboard />, page: <ManagerDashboard members={members} tasks={tasks} /> },
         { label: "Tasks", icon: <IconCalendarEvent />, page: <ManagerTasks members={members} tasks={tasks} /> },
-        { label: "Users", icon: <IconUsersGroup />, page: <ManagerUsers members={members} tasks={tasks} /> },
+        { label: "Users", icon: <IconUsersGroup />, page: <ManagerUsers members={members} /> },
         { label: "Settings", icon: <IconSettings />, page: <ManagerSettings /> },
     ]
 

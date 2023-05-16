@@ -6,3 +6,10 @@
     flex-direction: column;
     margin: 0 10%;
 }
+
+.gro {
+    width: 100%;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr auto;
+}
