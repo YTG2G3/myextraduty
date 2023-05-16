@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { Member } from "@/lib/schema";
 import Image from "next/image";
 import SiteContext from "@/lib/site-context";
-import { IconArchive, IconPlus, IconUpload } from "@tabler/icons-react";
+import { IconArchive, IconArrowBigUp, IconPlus, IconUpload, IconUserX } from "@tabler/icons-react";
 
 // TODO - manage users
 export default function ManagerUsers({ members }: { members: Member[] }) {
@@ -57,11 +57,23 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                                 <Tooltip label="Record">
                                                     <ActionIcon><IconArchive /></ActionIcon>
                                                 </Tooltip>
+
+                                                <Tooltip label="Promote">
+                                                    <ActionIcon><IconArrowBigUp /></ActionIcon>
+                                                </Tooltip>
+
+                                                <Tooltip label="Remove">
+                                                    <ActionIcon><IconUserX color="red" /></ActionIcon>
+                                                </Tooltip>
                                             </>
                                         ) : !v.manager ? ( // Me manager, you user
                                             <>
                                                 <Tooltip label="Record">
                                                     <ActionIcon><IconArchive /></ActionIcon>
+                                                </Tooltip>
+
+                                                <Tooltip label="Remove">
+                                                    <ActionIcon><IconUserX color="red" /></ActionIcon>
                                                 </Tooltip>
                                             </>
                                         ) : ( // Me manager, you manager
