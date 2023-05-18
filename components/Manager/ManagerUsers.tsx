@@ -1,17 +1,19 @@
-import { Accordion, ActionIcon, Button, Group, Stack, Text, TextInput, Tooltip } from "@mantine/core";
+import { Accordion, ActionIcon, Button, Group, Stack, Text, TextInput, Tooltip, rem, useMantineTheme } from "@mantine/core";
 import styles from '@/styles/ManagerUsers.module.scss';
 import { useContext, useState } from "react";
 import { Member } from "@/lib/schema";
 import Image from "next/image";
 import SiteContext from "@/lib/site-context";
-import { IconArchive, IconArrowBigUp, IconPlus, IconUpload, IconUserX } from "@tabler/icons-react";
+import { IconArchive, IconArrowBigUp, IconFile, IconPhoto, IconPlus, IconUpload, IconUserX, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
+import { Dropzone, MS_EXCEL_MIME_TYPE } from "@mantine/dropzone";
 
 // TODO - manage users
 export default function ManagerUsers({ members }: { members: Member[] }) {
     let [search, setSearch] = useState("");
     let { school, user } = useContext(SiteContext);
+    const theme = useMantineTheme();
 
     const searchForMember = (v: Member) => (
         v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
@@ -50,6 +52,50 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                 </Group>
             </form>
         )
+    });
+
+    const uploadInvitationsReq = async (files) => {
+
+    }
+
+    const uploadInvitations = () => modals.open({
+        title: `Upload Invitations`,
+        centered: true,
+        children: (
+            <Dropzone onDrop={uploadInvitationsReq} accept={["text/csv"]}>
+                <Group position="center" spacing="xl" style={{ minHeight: rem(220), pointerEvents: 'none' }}>
+                    <Dropzone.Accept>
+                        <IconUpload
+                            size="3.2rem"
+                            stroke={1.5}
+                            color={theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 4 : 6]}
+                        />
+                    </Dropzone.Accept>
+
+                    <Dropzone.Reject>
+                        <IconX
+                            size="3.2rem"
+                            stroke={1.5}
+                            color={theme.colors.red[theme.colorScheme === 'dark' ? 4 : 6]}
+                        />
+                    </Dropzone.Reject>
+
+                    <Dropzone.Idle>
+                        <IconFile size="3.2rem" stroke={1.5} />
+                    </Dropzone.Idle>
+
+                    <div>
+                        <Text size="xl" inline>
+                            Drag the file here or click to select file
+                        </Text>
+
+                        <Text size="sm" color="dimmed" inline align="center" mt={7}>
+                            *.csv files accepted
+                        </Text>
+                    </div>
+                </Group>
+            </Dropzone>
+        )
     })
 
     return (
@@ -63,7 +109,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                     </Tooltip>
 
                     <Tooltip label="Upload">
-                        <ActionIcon variant="filled"><IconUpload /></ActionIcon>
+                        <ActionIcon variant="filled" onClick={uploadInvitations}><IconUpload /></ActionIcon>
                     </Tooltip>
                 </div>
             </div>
