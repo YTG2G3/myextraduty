@@ -7,7 +7,8 @@ import SiteContext from "@/lib/site-context";
 import { IconArchive, IconArrowBigUp, IconFile, IconPhoto, IconPlus, IconUpload, IconUserX, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
-import { Dropzone, MS_EXCEL_MIME_TYPE } from "@mantine/dropzone";
+import { Dropzone, FileWithPath } from "@mantine/dropzone";
+import Papa from 'papaparse';
 
 // TODO - manage users
 export default function ManagerUsers({ members }: { members: Member[] }) {
@@ -54,15 +55,21 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
         )
     });
 
-    const uploadInvitationsReq = async (files) => {
+    const uploadInvitationsReq = async (files: FileWithPath[]) => {
+        let file = files[0];
 
+        Papa.parse(file, {
+            complete: (csv) => {
+
+            }
+        });
     }
 
     const uploadInvitations = () => modals.open({
         title: `Upload Invitations`,
         centered: true,
         children: (
-            <Dropzone onDrop={uploadInvitationsReq} accept={["text/csv"]}>
+            <Dropzone onDrop={uploadInvitationsReq} accept={["text/csv"]} multiple={false}>
                 <Group position="center" spacing="xl" style={{ minHeight: rem(220), pointerEvents: 'none' }}>
                     <Dropzone.Accept>
                         <IconUpload
