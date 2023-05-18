@@ -40,7 +40,7 @@ function Layout({ children, ...props }: any) {
 
             // Get school if it's stored
             let sid = JSON.parse(localStorage.getItem("school"));
-            let s = sid ? await (await fetch(`/api/school`, { headers: { school: sid } })).json() : undefined;
+            let s = sid !== undefined ? await (await fetch(`/api/school`, { headers: { school: sid } })).json() : undefined;
             setSchool(s);
 
             // Get enrollments
