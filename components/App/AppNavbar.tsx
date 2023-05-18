@@ -1,5 +1,6 @@
-import { Avatar, NavLink, Navbar, Stack, Image } from "@mantine/core";
+import { Avatar, NavLink, Navbar, Stack } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
+import Image from "next/image";
 
 export default function AppNavbar({ pageIndex, setPageIndex, user, pgs }: any) {
     return (
@@ -11,7 +12,7 @@ export default function AppNavbar({ pageIndex, setPageIndex, user, pgs }: any) {
             </Navbar.Section>
 
             <Navbar.Section>
-                <NavLink label={user.name} description={user.email} icon={<Avatar radius="xl"><Image src={user.picture} alt={user.name} /></Avatar>} />
+                <NavLink label={user.name} description={user.email} icon={<Avatar radius="xl"><Image src={user.picture} alt={user.name} fill={true} /></Avatar>} />
             </Navbar.Section>
         </Navbar>
     );
