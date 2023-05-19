@@ -254,3 +254,7 @@ export async function enrollUsers(id: number, emails: string[]): Promise<number>
     db.end();
     return i;
 }
+
+export async function getAssignedTasks(id: number, email: string): Promise<Task[]> {
+
+}

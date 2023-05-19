@@ -9,6 +9,7 @@ import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
 import Papa from 'papaparse';
+import RecordsModal from "./RecordsModal";
 
 // TODO - manage users
 export default function ManagerUsers({ members }: { members: Member[] }) {
@@ -111,8 +112,10 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
     });
 
     const openRecords = (email: string) => modals.open({
-
-    })
+        title: `Records of ${email}`,
+        centered: true,
+        children: <RecordsModal school={school.id} email={email} />
+    });
 
     return (
         <div className={styles.container}>
@@ -150,7 +153,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                         {v.email !== user.email ? user.email === school.owner ? ( // Me owner
                                             <>
                                                 <Tooltip label="Record">
-                                                    <ActionIcon><IconArchive /></ActionIcon>
+                                                    <ActionIcon onClick={() => openRecords(v.email)}><IconArchive /></ActionIcon>
                                                 </Tooltip>
 
                                                 <Tooltip label="Promote">
@@ -164,7 +167,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                         ) : !v.manager ? ( // Me manager, you user
                                             <>
                                                 <Tooltip label="Record">
-                                                    <ActionIcon><IconArchive /></ActionIcon>
+                                                    <ActionIcon onClick={() => openRecords(v.email)}><IconArchive /></ActionIcon>
                                                 </Tooltip>
 
                                                 <Tooltip label="Remove">
@@ -174,13 +177,13 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                         ) : ( // Me manager, you manager
                                             <>
                                                 <Tooltip label="Record">
-                                                    <ActionIcon><IconArchive /></ActionIcon>
+                                                    <ActionIcon onClick={() => openRecords(v.email)}><IconArchive /></ActionIcon>
                                                 </Tooltip>
                                             </>
                                         ) : ( // You me
                                             <>
                                                 <Tooltip label="Record">
-                                                    <ActionIcon><IconArchive /></ActionIcon>
+                                                    <ActionIcon onClick={() => openRecords(v.email)}><IconArchive /></ActionIcon>
                                                 </Tooltip>
                                             </>
                                         )}
