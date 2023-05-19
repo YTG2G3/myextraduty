@@ -8,7 +8,9 @@ export default AuthRoute({
         res.json(s);
     },
     POST: async (req: NextApiRequest, res: NextApiResponse) => {
-        let s = await enrollUser(Number(req.headers.school), req.body.email);
+        let { email } = JSON.parse(req.body);
+
+        let s = await enrollUser(Number(req.headers.school), email);
         res.status(s ? 200 : 400).end();
     }
 }, false, true, false, true);

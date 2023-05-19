@@ -208,7 +208,7 @@ export async function listMembers(id: number): Promise<Member[]> {
         let u: Member[] = [];
         for (let er of (rows as Enrollment[])) {
             let [x]: any[] = await db.execute(`SELECT * FROM user WHERE email=?`, [er.user]);
-            u.push(x.length === 0 ? { admin: false, email: er.user, manager: false, name: "N/A", picture: "" } : { ...x[0], manager: er.manager });
+            u.push(x.length === 0 ? { admin: false, email: er.user, manager: false, name: "", picture: "" } : { ...x[0], manager: er.manager });
         }
 
         db.end();
@@ -227,7 +227,30 @@ export async function enrollUser(id: number, email: string): Promise<boolean> {
         db.end();
         return true;
     } catch (error) {
+        console.log(error);
+
         db.end();
         return false;
     }
+}
+
+export async function enrollUsers(id: number, emails: string[]): Promise<number> {
+    let db = await connectDB();
+    let i = 0;
+
+    for (let email of emails) {
+        try {
+            console.log(id, email);
+
+            let r = await enrollUser(id, email);
+            console.log(r);
+
+            if (r) i++;
+        } catch (error) {
+            continue;
+        }
+    }
+
+    db.end();
+    return i;
 }

@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { Member } from "@/lib/schema";
 import Image from "next/image";
 import SiteContext from "@/lib/site-context";
-import { IconArchive, IconArrowBigUp, IconFile, IconPhoto, IconPlus, IconUpload, IconUserX, IconX } from "@tabler/icons-react";
+import { IconArchive, IconArrowBigUp, IconFile, IconPlus, IconUpload, IconUser, IconUserX, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
@@ -59,8 +59,13 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
         let file = files[0];
 
         Papa.parse(file, {
-            complete: (csv) => {
+            complete: async ({ data: emails }) => {
+                let e = emails as String[][];
+                let b = { emails: e.filter((v) => v[0].trim() !== "").map(v => v[0]) };
+                let s = await (await fetch("/api/school/member/multi", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).json();
 
+                modals.closeAll();
+                notifications.show({ title: `Invited ${s.success}/${s.requested}`, message: "Please refresh after about 10 seconds for the system to update." });
             }
         });
     }
@@ -124,11 +129,15 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
             <Accordion style={{ width: "100%", marginTop: 20 }}>
                 {m.map((v, i) => (
                     <Accordion.Item key={i} value={v.email}>
-                        <Accordion.Control><Text color={v.manager ? "#339AF0" : undefined}>{v.name} {v.email === school.owner ? "(Owner)" : v.manager ? "(Manager)" : undefined}</Text></Accordion.Control>
+                        <Accordion.Control><Text color={v.manager ? "#339AF0" : undefined}>{v.name === "" ? v.email : v.name} {v.email === school.owner ? "(Owner)" : v.manager ? "(Manager)" : undefined}</Text></Accordion.Control>
 
                         <Accordion.Panel>
                             <Group>
-                                <Image src={v.picture} width={100} height={100} alt={v.name} />
+                                {v.picture === "" ? (
+                                    <IconUser width={100} height={100} />
+                                ) : (
+                                    <Image src={v.picture} width={100} height={100} alt={v.name} />
+                                )}
 
                                 <Stack ml="lg">
                                     <Text>Email: {v.email}</Text>
