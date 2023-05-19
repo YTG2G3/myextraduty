@@ -205,10 +205,10 @@ export async function listMembers(id: number): Promise<Member[]> {
     try {
         let [rows]: any[] = await db.execute(`SELECT * FROM enrollment WHERE school=?`, [id]);
 
-        let u = [];
+        let u: Member[] = [];
         for (let er of (rows as Enrollment[])) {
             let [x]: any[] = await db.execute(`SELECT * FROM user WHERE email=?`, [er.user]);
-            u.push({ ...x[0], manager: er.manager });
+            u.push(x.length === 0 ? { admin: false, email: er.user, manager: false, name: "N/A", picture: "" } : { ...x[0], manager: er.manager });
         }
 
         db.end();
