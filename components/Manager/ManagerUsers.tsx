@@ -108,6 +108,10 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                 </Group>
             </Dropzone>
         )
+    });
+
+    const openRecords = (email: string) => modals.open({
+
     })
 
     return (
