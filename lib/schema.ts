@@ -38,3 +38,8 @@ export type Task = {
     ending_time: string,
     capacity: number
 }
+
+export type Assignment = {
+    user: string,
+    task: number
+}

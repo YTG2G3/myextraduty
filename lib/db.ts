@@ -1,5 +1,5 @@
 import { createConnection } from 'mysql2/promise';
-import { User, School, Enrollment, Task, Member } from './schema';
+import { User, School, Enrollment, Task, Member, Assignment } from './schema';
 
 const connectDB = async () => createConnection({
     host: process.env.MYSQL_HOST,
@@ -227,8 +227,6 @@ export async function enrollUser(id: number, email: string): Promise<boolean> {
         db.end();
         return true;
     } catch (error) {
-        console.log(error);
-
         db.end();
         return false;
     }
@@ -240,11 +238,7 @@ export async function enrollUsers(id: number, emails: string[]): Promise<number>
 
     for (let email of emails) {
         try {
-            console.log(id, email);
-
             let r = await enrollUser(id, email);
-            console.log(r);
-
             if (r) i++;
         } catch (error) {
             continue;
@@ -256,5 +250,23 @@ export async function enrollUsers(id: number, emails: string[]): Promise<number>
 }
 
 export async function getAssignedTasks(id: number, email: string): Promise<Task[]> {
+    let db = await connectDB();
+    try {
+        // TODO - optimize this part by saving school
+        let [rows]: any[] = await db.execute(`SELECT * FROM assignment WHERE user=?`, [email]);
 
+        let t: Task[] = [];
+        for (let a of (rows as Assignment[])) {
+            let [x]: any[] = await db.execute(`SELECT * FROM task WHERE id=? AND school=?`, [a.task, id]);
+            if (x.length !== 0) t.push(x[0]);
+        }
+
+        db.end();
+        return t;
+    } catch (error) {
+        console.log(error);
+
+        db.end();
+        return null;
+    }
 }

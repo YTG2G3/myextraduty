@@ -9,7 +9,7 @@ import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
 import Papa from 'papaparse';
-import RecordsModal from "./RecordsModal";
+import RecordsModal from "../RecordsModal";
 
 // TODO - manage users
 export default function ManagerUsers({ members }: { members: Member[] }) {
@@ -114,7 +114,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
     const openRecords = (email: string) => modals.open({
         title: `Records of ${email}`,
         centered: true,
-        children: <RecordsModal school={school.id} email={email} />
+        children: <RecordsModal sid={school.id} email={email} />
     });
 
     return (
@@ -136,7 +136,9 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
             <Accordion style={{ width: "100%", marginTop: 20 }}>
                 {m.map((v, i) => (
                     <Accordion.Item key={i} value={v.email}>
-                        <Accordion.Control><Text color={v.manager ? "#339AF0" : undefined}>{v.name === "" ? v.email : v.name} {v.email === school.owner ? "(Owner)" : v.manager ? "(Manager)" : undefined}</Text></Accordion.Control>
+                        <Accordion.Control>
+                            <Text color={v.manager ? "#339AF0" : undefined}>{v.name === "" ? v.email : v.name} {v.email === school.owner ? "(Owner)" : v.manager ? "(Manager)" : undefined}</Text>
+                        </Accordion.Control>
 
                         <Accordion.Panel>
                             <Group>
