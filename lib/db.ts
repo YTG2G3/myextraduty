@@ -287,6 +287,8 @@ export async function kickMember(id: number, email: string): Promise<boolean> {
 export async function promoteMember(id: number, email: string): Promise<boolean> {
     let db = await connectDB();
     try {
+        console.log(id, email);
+
         await db.execute(`UPDATE enrollment SET manager=1 WHERE school=? AND user=?`, [id, email]);
 
         db.end();

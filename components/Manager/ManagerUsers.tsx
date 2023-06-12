@@ -201,9 +201,11 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                                     <ActionIcon onClick={() => openRecords(v.email)}><IconArchive /></ActionIcon>
                                                 </Tooltip>
 
-                                                <Tooltip label="Promote">
-                                                    <ActionIcon onClick={() => promoteUser(v)}><IconArrowBigUp /></ActionIcon>
-                                                </Tooltip>
+                                                {!v.manager && v.name !== "" ? (
+                                                    <Tooltip label="Promote">
+                                                        <ActionIcon onClick={() => promoteUser(v)}><IconArrowBigUp /></ActionIcon>
+                                                    </Tooltip>
+                                                ) : undefined}
 
                                                 {v.name !== "" ? (
                                                     <Tooltip label="Transfer Ownership">
