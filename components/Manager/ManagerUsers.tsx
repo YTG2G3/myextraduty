@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { Member } from "@/lib/schema";
 import Image from "next/image";
 import SiteContext from "@/lib/site-context";
-import { IconArchive, IconArrowBigUp, IconFile, IconPlus, IconUpload, IconUser, IconUserX, IconX } from "@tabler/icons-react";
+import { IconArchive, IconArrowBigUp, IconArrowsTransferUp, IconFile, IconPlus, IconUpload, IconUser, IconUserX, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
@@ -117,6 +117,49 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
         children: <RecordsModal sid={school.id} email={email} />
     });
 
+    const removeUser = (m: Member) => modals.openConfirmModal({
+        title: `Are you sure about removing ${m.name === "" ? m.email : m.name}?`,
+        children: <Text size="sm">{m.name === "" ? m.email : m.name} will immediately lose access to {school.name}.</Text>,
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        confirmProps: { color: 'red' },
+        centered: true,
+        onConfirm: async () => {
+            let b = { email: m.email };
+            let x = (await fetch("/api/school/member/remove", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
+
+            if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
+            else notifications.show({ title: "Failed to remove member", message: "Please contact the developer to fix this error.", color: "red" });
+        }
+    });
+
+    const promoteUser = (m: Member) => modals.openConfirmModal({
+        title: `Are you sure about promoting ${m.name === "" ? m.email : m.name}?`,
+        children: <Text size="sm">Managers have partial access to {school.name}&#39;s moderation menu.</Text>,
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        centered: true,
+        onConfirm: async () => {
+            let b = { email: m.email };
+            let x = (await fetch("/api/school/member/promote", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
+
+            if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
+            else notifications.show({ title: "Failed to promote member", message: "Please contact the developer to fix this error.", color: "red" });
+        }
+    });
+
+    const transferOwnership = (m: Member) => modals.openConfirmModal({
+        title: `Are you sure about transferring ownership to ${m.name}?`,
+        children: <Text size="sm">You will immediately be demoted to manager role and {m.name} will become the new owner of {school.name}. This action is irreversible.</Text>,
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        centered: true,
+        onConfirm: async () => {
+            let b = { email: m.email };
+            let x = (await fetch("/api/school/transfer", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
+
+            if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
+            else notifications.show({ title: "Failed to transfer ownership", message: "Please contact the developer to fix this error.", color: "red" });
+        }
+    });
+
     return (
         <div className={styles.container}>
             <div className={styles.gro} >
@@ -159,11 +202,17 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                                 </Tooltip>
 
                                                 <Tooltip label="Promote">
-                                                    <ActionIcon><IconArrowBigUp /></ActionIcon>
+                                                    <ActionIcon onClick={() => promoteUser(v)}><IconArrowBigUp /></ActionIcon>
                                                 </Tooltip>
 
+                                                {v.name !== "" ? (
+                                                    <Tooltip label="Transfer Ownership">
+                                                        <ActionIcon onClick={() => transferOwnership(v)}><IconArrowsTransferUp /></ActionIcon>
+                                                    </Tooltip>
+                                                ) : undefined}
+
                                                 <Tooltip label="Remove">
-                                                    <ActionIcon><IconUserX color="red" /></ActionIcon>
+                                                    <ActionIcon onClick={() => removeUser(v)}><IconUserX color="red" /></ActionIcon>
                                                 </Tooltip>
                                             </>
                                         ) : !v.manager ? ( // Me manager, you user
@@ -173,7 +222,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                                 </Tooltip>
 
                                                 <Tooltip label="Remove">
-                                                    <ActionIcon><IconUserX color="red" /></ActionIcon>
+                                                    <ActionIcon onClick={() => removeUser(v)}><IconUserX color="red" /></ActionIcon>
                                                 </Tooltip>
                                             </>
                                         ) : ( // Me manager, you manager
