@@ -4,12 +4,13 @@ import { useContext, useState } from "react";
 import { Member } from "@/lib/schema";
 import Image from "next/image";
 import SiteContext from "@/lib/site-context";
-import { IconArchive, IconArrowBigUp, IconArrowsTransferUp, IconFile, IconPlus, IconUpload, IconUser, IconUserX, IconX } from "@tabler/icons-react";
+import { IconArchive, IconArrowBigUp, IconArrowsTransferUp, IconDownload, IconFile, IconPlus, IconUpload, IconUser, IconUserX, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
 import Papa from 'papaparse';
 import RecordsModal from "../RecordsModal";
+import { CSVDownload, CSVLink } from 'react-csv';
 
 // TODO - manage users
 export default function ManagerUsers({ members }: { members: Member[] }) {
@@ -171,7 +172,13 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                     </Tooltip>
 
                     <Tooltip label="Upload">
-                        <ActionIcon variant="filled" onClick={uploadInvitations}><IconUpload /></ActionIcon>
+                        <ActionIcon variant="filled" mr="xs" onClick={uploadInvitations}><IconUpload /></ActionIcon>
+                    </Tooltip>
+
+                    <Tooltip label="Download">
+                        <CSVLink data={members.map(v => [v.email])} filename={`${school.name} members (${new Date().getUTCFullYear()})`}>
+                            <ActionIcon variant="filled"><IconDownload /></ActionIcon>
+                        </CSVLink>
                     </Tooltip>
                 </div>
             </div>
