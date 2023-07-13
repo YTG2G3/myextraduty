@@ -1,0 +1,24 @@
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 10%;
+}
+
+.gro {
+    width: 100%;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr auto;
+}
+
+.wr {
+    display: flex;
+    margin: 15px;
+}
+
+.g {
+    width: 100%;
+}

@@ -26,12 +26,21 @@ export default function App() {
 
     const loadTasks = async (id: number) => {
         let t: Task[] = await (await fetch("/api/school/task", { method: "GET", headers: { school: String(id) } })).json();
+        // TODO - sort
+        // t.sort((a, b) => {
+        //     let sd = new Date(a.starting_date);
+        //     let ssd = new Date(b.starting_date);
+
+        //     let d = sd.getMilliseconds()- ssd.getMilliseconds();
+        //     if(d !== 0) return d;
+
+        //     let st = a.starting_time
+        // })
         setTasks(t);
     }
 
     const loadMembers = async (id: number) => {
         let m: Member[] = await (await fetch("/api/school/member", { method: "GET", headers: { school: String(id) } })).json();
-        // TODO - test if this sorts correctly
         m.sort((a, b) => a.admin ? -1 : b.admin ? 1 : a.name.localeCompare(b.name));
         setMembers(m);
     }

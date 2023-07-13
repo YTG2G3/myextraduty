@@ -10,9 +10,8 @@ import { notifications } from "@mantine/notifications";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
 import Papa from 'papaparse';
 import RecordsModal from "../RecordsModal";
-import { CSVDownload, CSVLink } from 'react-csv';
+import { CSVLink } from 'react-csv';
 
-// TODO - manage users
 export default function ManagerUsers({ members }: { members: Member[] }) {
     let [search, setSearch] = useState("");
     let { school, user } = useContext(SiteContext);
@@ -176,7 +175,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                     </Tooltip>
 
                     <Tooltip label="Download">
-                        <CSVLink data={members.map(v => [v.email])} filename={`${school.name} members (${new Date().getUTCFullYear()})`}>
+                        <CSVLink data={[["Email"], ...members.map(v => [v.email])]} filename={`${school.name} members (${new Date().getUTCFullYear()})`}>
                             <ActionIcon variant="filled"><IconDownload /></ActionIcon>
                         </CSVLink>
                     </Tooltip>
