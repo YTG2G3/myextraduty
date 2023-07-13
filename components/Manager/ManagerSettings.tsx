@@ -67,7 +67,7 @@ export default function ManagerSettings() {
             <TextInput name="address" label="Address" defaultValue={school.address} />
             <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue="blue" />
             <TextInput name="logo" label="Logo URL" defaultValue={school.logo} />
-            <DateTimePicker valueFormat='MMM DD YYYY hh:mm A' name="opening_at" label="Opening At" defaultValue={new Date(school.opening_at)} />
+            <DateTimePicker valueFormat='MMM DD YYYY hh:mm A' name="opening_at" label="Opening At" defaultValue={school.opening_at === "" ? new Date(school.opening_at) : null} />
             <NumberInput name="quota" label="Quota" type='number' min={0} defaultValue={school.quota} />
 
             <div className={styles.ho}>
