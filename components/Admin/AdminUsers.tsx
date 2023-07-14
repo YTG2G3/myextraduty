@@ -1,3 +1,4 @@
+import { receivedResponse } from '@/lib/received-response';
 import { User } from '@/lib/schema';
 import styles from '@/styles/AdminUsers.module.scss';
 import { Accordion, ActionIcon, Group, Stack, Text, TextInput, Tooltip } from '@mantine/core';
@@ -30,8 +31,7 @@ export default function AdminUsers({ users }: any) {
         onConfirm: async () => {
             let x = (await fetch("/api/user/promote", { method: "POST", body: u.email })).status;
 
-            if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-            else notifications.show({ title: "Failed to promote user", message: "Please contact the developer to fix this error.", color: "red" });
+            receivedResponse(x);
         }
     });
 
@@ -44,8 +44,7 @@ export default function AdminUsers({ users }: any) {
         onConfirm: async () => {
             let x = (await fetch("/api/user/reset", { method: "POST", body: u.email })).status;
 
-            if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-            else notifications.show({ title: "Failed to remove user", message: "Please contact the developer to fix this error.", color: "red" });
+            receivedResponse(x);
         }
     });
 

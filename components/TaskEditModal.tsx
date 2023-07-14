@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import styles from '@/styles/TaskEditModal.module.scss';
 import { IconPlus, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
-import { notifications } from "@mantine/notifications";
+import { receivedResponse } from "@/lib/received-response";
 
 export default function TaskEditModal({ task }: { task: Task }) {
     let [categories, setCategories] = useState<string[]>(undefined);
@@ -34,11 +34,7 @@ export default function TaskEditModal({ task }: { task: Task }) {
 
         let s = (await fetch("/api/school/task/assign", { method: "POST", body: JSON.stringify(b), headers: { school: String(task.school) } })).status;
 
-        if (s === 200) {
-            modals.closeAll();
-            notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-        }
-        else notifications.show({ title: "Failed to add task", message: "Please confirm that the form is filled out properly.", color: "red" });
+        receivedResponse(s);
     }
 
     const assignMember = () => modals.open({
@@ -65,12 +61,11 @@ export default function TaskEditModal({ task }: { task: Task }) {
             let b = { task: task.id, user: u.email };
             let x = (await fetch("/api/school/task/kick", { method: "POST", body: JSON.stringify(b), headers: { school: String(task.school) } })).status;
 
-            if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-            else notifications.show({ title: "Failed to remove member", message: "Please contact the developer to fix this error.", color: "red" });
+            receivedResponse(x);
         }
     });
 
-    const saveChanges = async (e) => {
+    const saveChanges = async (e: any) => {
         e.preventDefault();
 
         let b = {
@@ -87,11 +82,7 @@ export default function TaskEditModal({ task }: { task: Task }) {
 
         let s = (await fetch("/api/school/task/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(task.school) } })).status;
 
-        if (s === 200) {
-            modals.closeAll();
-            notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-        }
-        else notifications.show({ title: "Failed to edit task", message: "Please confirm that the form is filled out properly.", color: "red" });
+        receivedResponse(s);
     }
 
     return (

@@ -13,6 +13,7 @@ import { DatePickerInput, TimeInput } from '@mantine/dates';
 import dayjs from 'dayjs';
 import TaskEditModal from '../TaskEditModal';
 import DynamicIcon from '../DynamicIcon';
+import { receivedRatioResponse, receivedResponse } from '@/lib/received-response';
 
 export default function ManagerTasks({ tasks, categories }: { tasks: Task[], categories: string[] }) {
     let [search, setSearch] = useState("");
@@ -51,11 +52,7 @@ export default function ManagerTasks({ tasks, categories }: { tasks: Task[], cat
 
         let s = (await fetch("/api/school/task/create", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
-        if (s === 200) {
-            modals.closeAll();
-            notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-        }
-        else notifications.show({ title: "Failed to add task", message: "Please confirm that the form is filled out properly.", color: "red" });
+        receivedResponse(s);
     }
 
     const addTask = () => modals.open({
@@ -93,8 +90,7 @@ export default function ManagerTasks({ tasks, categories }: { tasks: Task[], cat
                 let b = { tasks: t.map(v => ({ category: v[0], name: v[1], description: v[2], starting_date: v[3], starting_time: v[4], ending_date: v[5], ending_time: v[6], capacity: v[7] })).shift() };
                 let s = await (await fetch("/api/school/task/multi", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).json();
 
-                modals.closeAll();
-                notifications.show({ title: `Added ${s.success}/${s.requested}`, message: "Please refresh after about 10 seconds for the system to update." });
+                receivedRatioResponse(s.success, s.requested);
             }
         });
     }

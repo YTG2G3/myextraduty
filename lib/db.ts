@@ -218,7 +218,7 @@ export async function listTasks(id: number): Promise<Task[]> {
     let db = await connectDB();
     try {
         let [rows]: any[] = await db.execute(`SELECT * FROM task WHERE school=?`, [id]);
-        let tx: Task[] = rows.map(v => ({
+        let tx: Task[] = rows.map((v: any) => ({
             id: v.id,
             school: v.school,
             category: v.category,
@@ -381,7 +381,7 @@ export async function listCategories(id: number): Promise<string[]> {
     let db = await connectDB();
     try {
         let [rows]: any[] = await db.execute(`SELECT category FROM task WHERE school=?`, [id]);
-        let ctg = Array.from(new Set(rows.map(v => v.category)));
+        let ctg = Array.from(new Set(rows.map((v: any) => v.category)));
 
         db.end();
         return ctg as string[];
@@ -395,7 +395,7 @@ export async function listAttendants(id: number): Promise<string[]> {
     let db = await connectDB();
     try {
         let [rows]: any[] = await db.execute(`SELECT user FROM assignment WHERE task=?`, [id]);
-        let r: string[] = rows.map(v => v.user);
+        let r: string[] = rows.map((v: any) => v.user);
 
         db.end();
         return r;

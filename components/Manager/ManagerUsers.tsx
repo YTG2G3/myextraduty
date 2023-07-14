@@ -11,6 +11,7 @@ import { Dropzone, FileWithPath } from "@mantine/dropzone";
 import Papa from 'papaparse';
 import RecordsModal from "../RecordsModal";
 import { CSVLink } from 'react-csv';
+import { receivedRatioResponse, receivedResponse } from "@/lib/received-response";
 
 export default function ManagerUsers({ members }: { members: Member[] }) {
     let [search, setSearch] = useState("");
@@ -35,11 +36,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
         let b = { email: e.target.email.value };
         let s = (await fetch("/api/school/member", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
-        if (s === 200) {
-            modals.closeAll();
-            notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-        }
-        else notifications.show({ title: "Failed to edit school", message: "Please confirm that the owner's MyExtraDuty account has been created.", color: "red" });
+        receivedResponse(s);
     }
 
     const inviteMember = () => modals.open({
@@ -65,8 +62,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                 let b = { emails: e.filter((v) => v[0].trim().match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)).map(v => v[0]) };
                 let s = await (await fetch("/api/school/member/multi", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).json();
 
-                modals.closeAll();
-                notifications.show({ title: `Invited ${s.success}/${s.requested}`, message: "Please refresh after about 10 seconds for the system to update." });
+                receivedRatioResponse(s.success, s.requested);
             }
         });
     }
@@ -127,8 +123,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
             let b = { email: m.email };
             let x = (await fetch("/api/school/member/remove", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
-            if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-            else notifications.show({ title: "Failed to remove member", message: "Please contact the developer to fix this error.", color: "red" });
+            receivedResponse(x);
         }
     });
 
@@ -141,8 +136,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
             let b = { email: m.email };
             let x = (await fetch("/api/school/member/promote", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
-            if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-            else notifications.show({ title: "Failed to promote member", message: "Please contact the developer to fix this error.", color: "red" });
+            receivedResponse(x);
         }
     });
 
@@ -155,8 +149,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
             let b = { email: m.email };
             let x = (await fetch("/api/school/transfer", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
-            if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-            else notifications.show({ title: "Failed to transfer ownership", message: "Please contact the developer to fix this error.", color: "red" });
+            receivedResponse(x);
         }
     });
 

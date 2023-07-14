@@ -5,6 +5,7 @@ import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
 import { useContext, useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
+import { receivedResponse } from '@/lib/received-response';
 
 export default function ManagerSettings() {
     let { school, user } = useContext(SiteContext);
@@ -23,15 +24,9 @@ export default function ManagerSettings() {
             max_assigned: e.target.quota.max_assigned
         }
 
-        try {
-            let s = (await fetch("/api/school/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
+        let s = (await fetch("/api/school/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
-            if (s === 200) notifications.show({ title: "Success!", message: "Please refresh for the system to update." });
-            else throw null;
-        } catch (error) {
-            notifications.show({ title: "Failed to edit school", message: "Please confirm so that all fields meet the requirements.", color: "red" });
-        }
-
+        receivedResponse(s);
         setLoading(false);
     }
 
@@ -42,11 +37,7 @@ export default function ManagerSettings() {
 
         let s = (await fetch("/api/school/transfer", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
-        if (s === 200) {
-            modals.closeAll();
-            notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-        }
-        else notifications.show({ title: "Failed to trasfer ownership", message: "Please confirm that the owner's MyExtraDuty account has been created.", color: "red" });
+        receivedResponse(s);
     }
 
     const transferOwner = () => modals.open({

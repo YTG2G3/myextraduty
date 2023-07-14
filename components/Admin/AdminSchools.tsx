@@ -6,6 +6,7 @@ import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { notifications } from '@mantine/notifications';
 import { modals } from '@mantine/modals';
 import { DateTimePicker } from "@mantine/dates";
+import { receivedResponse } from "@/lib/received-response";
 
 const viewPerPage = 9;
 
@@ -40,11 +41,7 @@ export default function AdminSchools({ schools }: any) {
 
         let s = (await fetch("/api/school/create", { method: "POST", body: JSON.stringify(b) })).status;
 
-        if (s === 200) {
-            modals.closeAll();
-            notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-        }
-        else notifications.show({ title: "Failed to add school", message: "Please confirm that the owner's MyExtraDuty account has been created.", color: "red" });
+        receivedResponse(s);
     }
 
     const createSchool = () => modals.open({
@@ -74,8 +71,7 @@ export default function AdminSchools({ schools }: any) {
         onConfirm: async () => {
             let x = (await fetch("/api/school/delete", { method: "POST", body: String(s.id) })).status;
 
-            if (x === 200) notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-            else notifications.show({ title: "Failed to delete school", message: "Please contact the developer to fix this error.", color: "red" });
+            receivedResponse(x);
         },
     });
 
@@ -93,15 +89,11 @@ export default function AdminSchools({ schools }: any) {
 
         let x = (await fetch("/api/school/transfer", { method: "POST", body: JSON.stringify(o), headers: { school: String(sc.id) } })).status;
 
-        if (x !== 200) notifications.show({ title: "Failed to transfer ownership", message: "Please confirm that the owner's MyExtraDuty account has been created.", color: "red" });
+        receivedResponse(x);
 
         let s = (await fetch("/api/school/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(sc.id) } })).status;
 
-        if (s === 200) {
-            modals.closeAll();
-            notifications.show({ title: "Success!", message: "Please refresh after about 10 seconds for the system to update." });
-        }
-        else notifications.show({ title: "Failed to edit school", message: "Please confirm that the owner's MyExtraDuty account has been created.", color: "red" });
+        receivedResponse(s);
     }
 
     const editSchool = (s: School) => modals.open({
