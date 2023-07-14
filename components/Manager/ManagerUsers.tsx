@@ -114,8 +114,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
     const openRecords = (email: string) => modals.open({
         title: `Records of ${email}`,
         centered: true,
-        size: "fit-content",
-        children: <RecordsModal sid={school.id} email={email} />
+        children: <RecordsModal school={school} email={email} />
     });
 
     const removeUser = (m: Member) => modals.openConfirmModal({

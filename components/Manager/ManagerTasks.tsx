@@ -2,7 +2,7 @@ import { Task } from '@/lib/schema';
 import SiteContext from '@/lib/site-context';
 import styles from '@/styles/ManagerTasks.module.scss';
 import { Accordion, ActionIcon, Autocomplete, Button, Group, NumberInput, Space, Text, TextInput, Textarea, Tooltip, rem, useMantineTheme } from '@mantine/core';
-import { IconCalendarTime, IconDownload, IconFile, IconHistory, IconPlus, IconProgress, IconUpload, IconX } from '@tabler/icons-react';
+import { IconDownload, IconFile, IconHistory, IconPlus, IconUpload, IconX } from '@tabler/icons-react';
 import { useContext, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import { modals } from "@mantine/modals";
@@ -11,12 +11,8 @@ import { Dropzone, FileWithPath } from '@mantine/dropzone';
 import Papa from 'papaparse';
 import { DatePickerInput, TimeInput } from '@mantine/dates';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
 import TaskEditModal from '../TaskEditModal';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
+import DynamicIcon from '../DynamicIcon';
 
 export default function ManagerTasks({ tasks, categories }: { tasks: Task[], categories: string[] }) {
     let [search, setSearch] = useState("");
@@ -157,16 +153,6 @@ export default function ManagerTasks({ tasks, categories }: { tasks: Task[], cat
         size: "fit-content",
         children: <TaskEditModal task={t} />
     })
-
-    function DynamicIcon({ v }: { v: Task }) {
-        let today = dayjs();
-        let start = dayjs(v.starting_date + " " + v.starting_time);
-        let end = dayjs(v.ending_date + " " + v.ending_time);
-
-        if (today < start) return <Tooltip label="Planned"><IconCalendarTime color="blue" /></Tooltip>;
-        if (start <= today && today <= end) return <Tooltip label="On Going"><IconProgress color="green" /></Tooltip>;
-        if (end < today) return <Tooltip label="Past"><IconHistory color="red" /></Tooltip>;
-    }
 
     return (
         <div className={styles.container}>

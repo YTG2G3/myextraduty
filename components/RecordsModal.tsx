@@ -1,37 +1,41 @@
-import { Task } from "@/lib/schema";
-import SiteContext from "@/lib/site-context";
+import { School, Task } from "@/lib/schema";
 import { Accordion, Center, Loader, Text } from "@mantine/core";
-import { useContext, useEffect, useState } from "react";
-import TaskEditModal from "./TaskEditModal";
+import { useEffect, useState } from "react";
+import TaskViewModal from "./TaskViewModal";
+import DynamicIcon from "./DynamicIcon";
 
-export default function RecordsModal({ sid, email }: { sid: number, email: string }) {
+
+export default function RecordsModal({ school, email }: { school: School, email: string }) {
     let [tasks, setTasks] = useState<Task[]>(undefined);
-    let { school } = useContext(SiteContext);
 
     const loadRecords = async () => {
-        let s = await (await fetch(`/api/school/member/assigned?${new URLSearchParams({ email })}`, { method: "GET", headers: { school: String(sid) } })).json();
+        let s = await (await fetch(`/api/school/member/assigned?${new URLSearchParams({ email })}`, { method: "GET", headers: { school: String(school.id) } })).json();
         setTasks(s);
     }
 
     useEffect(() => { loadRecords() }, []);
 
-    if (tasks === undefined) return <Center style={{ height: "300px", width: "500px" }}><Loader /></Center>
+    if (tasks === undefined) return <Center style={{ height: "300px" }}><Loader /></Center>
 
     if (tasks.length === 0) return <Text align="center" color="dimmed">No records found...</Text>
 
     return (
-        <Accordion>
-            {tasks.map((t, i) => (
-                <Accordion.Item key={i} value={String(t.id)}>
-                    <Accordion.Control>
-                        <Text>{t.name}</Text>
-                    </Accordion.Control>
+        <div>
+            <Text>Completion {tasks.length} / {school.quota} ({school.max_assigned})</Text>
 
-                    <Accordion.Panel>
-                        <TaskEditModal task={t} />
-                    </Accordion.Panel>
-                </Accordion.Item>
-            ))}
-        </Accordion>
+            <Accordion>
+                {tasks.map((t, i) => (
+                    <Accordion.Item key={i} value={String(t.id)}>
+                        <Accordion.Control icon={<DynamicIcon v={t} />}>
+                            <Text weight="bold">{t.name}</Text>
+                        </Accordion.Control>
+
+                        <Accordion.Panel>
+                            <TaskViewModal task={t} />
+                        </Accordion.Panel>
+                    </Accordion.Item>
+                ))}
+            </Accordion>
+        </div>
     );
 }

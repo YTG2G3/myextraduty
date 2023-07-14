@@ -107,10 +107,10 @@ export async function createSchool(name: string, owner: string, address: string,
     }
 }
 
-export async function updateSchool(id: number, address: string, primary_color: string, logo: string, opening_at: Date, quota: number): Promise<boolean> {
+export async function updateSchool(id: number, address: string, primary_color: string, logo: string, opening_at: Date, quota: number, max_assigned: number): Promise<boolean> {
     let db = await connectDB();
     try {
-        await db.execute(`UPDATE school SET address=?, primary_color=?, logo=?, opening_at=?, quota=? WHERE id=?`, [address, primary_color, logo, opening_at, quota, id]);
+        await db.execute(`UPDATE school SET address=?, primary_color=?, logo=?, opening_at=?, quota=?, max_assigned=? WHERE id=?`, [address, primary_color, logo, opening_at, quota, max_assigned, id]);
 
         db.end();
         return true;
@@ -269,7 +269,18 @@ export async function getAssignedTasks(id: number, email: string): Promise<Task[
         let t: Task[] = [];
         for (let a of (rows as Assignment[])) {
             let [x]: any[] = await db.execute(`SELECT * FROM task WHERE id=? AND school=?`, [a.task, id]);
-            if (x.length !== 0) t.push(x[0]);
+            if (x.length !== 0) t.push({
+                id: x[0].id,
+                school: x[0].school,
+                category: x[0].category,
+                name: x[0].name,
+                description: x[0].description,
+                starting_date: dayjs(x[0].starting_date).format("YYYY-MM-DD"),
+                starting_time: x[0].starting_time.substring(0, 5),
+                ending_date: dayjs(x[0].ending_date).format("YYYY-MM-DD"),
+                ending_time: x[0].ending_time.substring(0, 5),
+                capacity: Number(x[0].capacity)
+            });
         }
 
         db.end();
