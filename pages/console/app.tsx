@@ -22,6 +22,7 @@ export default function App() {
     let [manager, setManager] = useState(false);
     let [tasks, setTasks] = useState<Task[]>(undefined);
     let [members, setMembers] = useState<Member[]>(undefined);
+    let [categories, setCategories] = useState<string[]>(undefined);
     let router = useRouter();
 
     const loadTasks = async (id: number) => {
@@ -45,6 +46,11 @@ export default function App() {
         setMembers(m);
     }
 
+    const loadCategories = async (id: number) => {
+        let c: string[] = await (await fetch("/api/school/categories", { method: "GET", headers: { school: String(id) } })).json();
+        setCategories(c);
+    }
+
     useEffect(() => {
         if (enrollments && school) {
             let isManager = enrollments.find(v => v.school === school.id).manager;
@@ -52,6 +58,9 @@ export default function App() {
 
             // Load tasks
             loadTasks(school.id);
+
+            // Load categories
+            loadCategories(school.id);
 
             // Load members
             if (isManager) loadMembers(school.id);
@@ -73,7 +82,7 @@ export default function App() {
 
     let mgs = [
         { label: "Dashboard", icon: <IconLayoutDashboard />, page: <ManagerDashboard members={members} tasks={tasks} /> },
-        { label: "Tasks", icon: <IconCalendarEvent />, page: <ManagerTasks members={members} tasks={tasks} /> },
+        { label: "Tasks", icon: <IconCalendarEvent />, page: <ManagerTasks tasks={tasks} categories={categories} /> },
         { label: "Users", icon: <IconUsersGroup />, page: <ManagerUsers members={members} /> },
         { label: "Settings", icon: <IconSettings />, page: <ManagerSettings /> },
     ]
@@ -85,7 +94,7 @@ export default function App() {
     }
 
     // Loading?
-    if (!user || !school || !enrollments || !tasks || !members) return <LoadingPage />;
+    if (!user || !school || !enrollments || !tasks || !members || !categories) return <LoadingPage />;
 
     // Associated?
     if (!enrollments.find(v => v.school === school.id)) {

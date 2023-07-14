@@ -29,6 +29,7 @@ export type Enrollment = {
 
 export type Task = {
     id: number,
+    school: number,
     category: string,
     name: string,
     description: string,

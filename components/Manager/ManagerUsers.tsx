@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { Member } from "@/lib/schema";
 import Image from "next/image";
 import SiteContext from "@/lib/site-context";
-import { IconArchive, IconArrowBigUp, IconArrowsTransferUp, IconDownload, IconFile, IconPlus, IconUpload, IconUser, IconUserX, IconX } from "@tabler/icons-react";
+import { IconArchive, IconArrowBigUp, IconArrowsTransferUp, IconDownload, IconFile, IconHelpOctagon, IconPlus, IconUpload, IconUser, IconUserCog, IconUserX, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
@@ -114,6 +114,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
     const openRecords = (email: string) => modals.open({
         title: `Records of ${email}`,
         centered: true,
+        size: "fit-content",
         children: <RecordsModal sid={school.id} email={email} />
     });
 
@@ -185,8 +186,13 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
             <Accordion style={{ width: "100%", marginTop: 20 }}>
                 {m.map((v, i) => (
                     <Accordion.Item key={i} value={v.email}>
-                        <Accordion.Control>
-                            <Text color={v.manager ? "#339AF0" : undefined}>{v.name === "" ? v.email : v.name} {v.email === school.owner ? "(Owner)" : v.manager ? "(Manager)" : undefined}</Text>
+                        <Accordion.Control icon={v.name === "" ? (
+                            <Tooltip label="Account Missing">
+                                <IconHelpOctagon />
+                            </Tooltip>
+                        ) : v.manager ? <IconUserCog />
+                            : <IconUser />}>
+                            <Text weight="bold" color={v.manager ? "#339AF0" : undefined}>{v.name === "" ? v.email : v.name} {v.email === school.owner ? "(Owner)" : v.manager ? "(Manager)" : undefined}</Text>
                         </Accordion.Control>
 
                         <Accordion.Panel>

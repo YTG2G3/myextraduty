@@ -1,5 +1,6 @@
 import { createConnection } from 'mysql2/promise';
 import { User, School, Enrollment, Task, Member, Assignment } from './schema';
+import dayjs from 'dayjs';
 
 const connectDB = async () => createConnection({
     host: process.env.MYSQL_HOST,
@@ -191,9 +192,21 @@ export async function listTasks(id: number): Promise<Task[]> {
     let db = await connectDB();
     try {
         let [rows]: any[] = await db.execute(`SELECT * FROM task WHERE school=?`, [id]);
+        let tx: Task[] = rows.map(v => ({
+            id: v.id,
+            school: v.school,
+            category: v.category,
+            name: v.name,
+            description: v.description,
+            starting_date: dayjs(v.starting_date).format("YYYY-MM-DD"),
+            starting_time: v.starting_time.substring(0, 5),
+            ending_date: dayjs(v.ending_date).format("YYYY-MM-DD"),
+            ending_time: v.ending_time.substring(0, 5),
+            capacity: Number(v.capacity)
+        }));
 
         db.end();
-        return rows as Task[];
+        return tx;
     } catch (error) {
         db.end();
         return null;
@@ -233,7 +246,6 @@ export async function enrollUser(id: number, email: string): Promise<boolean> {
 }
 
 export async function enrollUsers(id: number, emails: string[]): Promise<number> {
-    let db = await connectDB();
     let i = 0;
 
     for (let email of emails) {
@@ -245,7 +257,6 @@ export async function enrollUsers(id: number, emails: string[]): Promise<number>
         }
     }
 
-    db.end();
     return i;
 }
 
@@ -290,6 +301,101 @@ export async function promoteMember(id: number, email: string): Promise<boolean>
         console.log(id, email);
 
         await db.execute(`UPDATE enrollment SET manager=1 WHERE school=? AND user=?`, [id, email]);
+
+        db.end();
+        return true;
+    } catch (error) {
+        db.end();
+        return false;
+    }
+}
+
+export async function createTask(id: number, category: string, name: string, description: string, starting_date: string, starting_time: string, ending_date: string, ending_time: string, capacity: number): Promise<boolean> {
+    let db = await connectDB();
+    try {
+        await db.execute(`INSERT INTO task(school, category, name, description, starting_date, starting_time, ending_date, ending_time, capacity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [id, category, name, description, starting_date, starting_time, ending_date, ending_time, capacity]);
+
+        db.end();
+        return true;
+    } catch (error) {
+        db.end();
+        return false;
+    }
+}
+
+export async function createTasks(id: number, tasks: Task[]): Promise<number> {
+    let i = 0;
+
+    for (let task of tasks) {
+        try {
+            let r = await createTask(id, task.category, task.name, task.description, task.starting_date, task.starting_time, task.ending_date, task.ending_time, task.capacity);
+            if (r) i++;
+        } catch (error) {
+            continue;
+        }
+    }
+
+    return i;
+}
+
+export async function listCategories(id: number): Promise<string[]> {
+    let db = await connectDB();
+    try {
+        let [rows]: any[] = await db.execute(`SELECT category FROM task WHERE school=?`, [id]);
+        let ctg = Array.from(new Set(rows.map(v => v.category)));
+
+        db.end();
+        return ctg as string[];
+    } catch (error) {
+        db.end();
+        return null;
+    }
+}
+
+export async function listAttendants(id: number): Promise<string[]> {
+    let db = await connectDB();
+    try {
+        let [rows]: any[] = await db.execute(`SELECT user FROM assignment WHERE task=?`, [id]);
+        let r: string[] = rows.map(v => v.user);
+
+        db.end();
+        return r;
+    } catch (error) {
+        db.end();
+        return null;
+    }
+}
+
+export async function assignMember(id: number, email: string): Promise<boolean> {
+    let db = await connectDB();
+    try {
+        await db.execute(`INSERT INTO assignment(task, user) VALUES (?, ?)`, [id, email]);
+
+        db.end();
+        return true;
+    } catch (error) {
+        db.end();
+        return false;
+    }
+}
+
+export async function removeMemberFromTask(id: number, email: string): Promise<boolean> {
+    let db = await connectDB();
+    try {
+        await db.execute(`DELETE FROM assignment WHERE task=? AND user=?`, [id, email]);
+
+        db.end();
+        return true;
+    } catch (error) {
+        db.end();
+        return false;
+    }
+}
+
+export async function updateTask(id: number, category: string, name: string, description: string, starting_date: string, starting_time: string, ending_date: string, ending_time: string, capacity: number): Promise<boolean> {
+    let db = await connectDB();
+    try {
+        await db.execute(`UPDATE task SET category=?, name=?, description=?, starting_date=?, starting_time=?, ending_date=?, ending_time=?, capacity=? WHERE id=?`, [category, name, description, starting_date, starting_time, ending_date, ending_time, capacity, id]);
 
         db.end();
         return true;
