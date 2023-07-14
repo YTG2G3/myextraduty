@@ -188,6 +188,32 @@ export async function transferSchoolOwnership(id: number, email: string): Promis
     }
 }
 
+export async function getTask(id: number): Promise<Task> {
+    let db = await connectDB();
+    try {
+        let [rows]: any[] = await db.execute(`SELECT * FROM task WHERE id=?`, [id]);
+
+        let t: Task = {
+            id: rows[0].id,
+            school: Number(rows[0].school),
+            category: rows[0].category,
+            name: rows[0].name,
+            description: rows[0].description,
+            starting_date: dayjs(rows[0].starting_date).format("YYYY-MM-DD"),
+            starting_time: rows[0].starting_time.substring(0, 5),
+            ending_date: dayjs(rows[0].ending_date).format("YYYY-MM-DD"),
+            ending_time: rows[0].ending_time.substring(0, 5),
+            capacity: Number(rows[0].capacity)
+        };
+
+        db.end();
+        return t;
+    } catch (error) {
+        db.end();
+        return null;
+    }
+}
+
 export async function listTasks(id: number): Promise<Task[]> {
     let db = await connectDB();
     try {
