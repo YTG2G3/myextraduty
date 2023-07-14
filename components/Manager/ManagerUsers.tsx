@@ -206,7 +206,7 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                     <Text>Email: {v.email}</Text>
 
                                     <Group className={styles.g}>
-                                        {v.email !== user.email ? user.email === school.owner ? ( // Me owner
+                                        {v.name === "" ? undefined : v.email !== user.email ? user.email === school.owner ? ( // Me owner
                                             <>
                                                 <Tooltip label="Record">
                                                     <ActionIcon onClick={() => openRecords(v.email)}><IconArchive /></ActionIcon>

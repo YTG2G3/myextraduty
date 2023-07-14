@@ -329,6 +329,8 @@ export async function createTask(id: number, category: string, name: string, des
         db.end();
         return true;
     } catch (error) {
+        console.log(error);
+
         db.end();
         return false;
     }

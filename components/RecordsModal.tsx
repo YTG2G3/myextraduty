@@ -2,11 +2,13 @@ import { School, Task } from "@/lib/schema";
 import { Accordion, Center, Loader, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import TaskViewModal from "./TaskViewModal";
-import DynamicIcon from "./DynamicIcon";
+import DynamicIcon, { compareTime } from "./DynamicIcon";
 
 
 export default function RecordsModal({ school, email }: { school: School, email: string }) {
     let [tasks, setTasks] = useState<Task[]>(undefined);
+
+    let _completed = tasks.filter(t => compareTime(t) === "completed");
 
     const loadRecords = async () => {
         let s = await (await fetch(`/api/school/member/assigned?${new URLSearchParams({ email })}`, { method: "GET", headers: { school: String(school.id) } })).json();
@@ -21,7 +23,8 @@ export default function RecordsModal({ school, email }: { school: School, email:
 
     return (
         <div>
-            <Text>Completion {tasks.length} / {school.quota} ({school.max_assigned})</Text>
+            <Text>Registered: {tasks.length} / {school.quota} ({school.max_assigned})</Text>
+            <Text color="dimmed" mb="lg">Completed: {_completed.length} / {school.quota} ({school.max_assigned})</Text>
 
             <Accordion>
                 {tasks.map((t, i) => (

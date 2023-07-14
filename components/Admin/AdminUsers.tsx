@@ -59,7 +59,7 @@ export default function AdminUsers({ users }: any) {
             <Accordion style={{ width: "100%", marginTop: 20 }}>
                 {us.map((v, i) => (
                     <Accordion.Item key={i} value={v.email}>
-                        <Accordion.Control><Text color={v.admin ? "#339AF0" : undefined}>{v.name} {v.admin ? "(Admin)" : undefined}</Text></Accordion.Control>
+                        <Accordion.Control><Text weight="bold" color={v.admin ? "#339AF0" : undefined}>{v.name} {v.admin ? "(Admin)" : undefined}</Text></Accordion.Control>
 
                         <Accordion.Panel>
                             <Group>
