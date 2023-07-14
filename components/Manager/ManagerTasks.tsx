@@ -26,7 +26,9 @@ export default function ManagerTasks({ tasks, categories }: { tasks: Task[], cat
 
     const searchForTask = (v: Task) => (
         (v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
-            v.category.toLowerCase().indexOf(search.toLowerCase()) >= 0) &&
+            v.category.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
+            v.starting_date.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
+            v.ending_date.toLowerCase().indexOf(search.toLowerCase()) >= 0) &&
         !(dayjs(v.ending_date + " " + v.ending_time) < dayjs() && !past)
     );
 
