@@ -115,7 +115,7 @@ export default function TaskEditModal({ task }: { task: Task }) {
                 </form>
 
                 <div className={styles.rbox}>
-                    <Text align="center">Attendants</Text>
+                    <Text align="center">Attendants ({attendants.length}/{task.capacity})</Text>
 
                     <Accordion>
                         {attendants.map((u, i) => (
@@ -137,11 +137,13 @@ export default function TaskEditModal({ task }: { task: Task }) {
                         <Text align="center" mt="sm" color="dimmed">No one signed up for this event yet...</Text>
                     ) : undefined}
 
-                    <div className={styles.float}>
-                        <Tooltip label="Assign">
-                            <ActionIcon variant="filled" onClick={assignMember}><IconPlus /></ActionIcon>
-                        </Tooltip>
-                    </div>
+                    {attendants.length < task.capacity ? (
+                        <div className={styles.float}>
+                            <Tooltip label="Assign">
+                                <ActionIcon variant="filled" onClick={assignMember}><IconPlus /></ActionIcon>
+                            </Tooltip>
+                        </div>
+                    ) : undefined}
                 </div>
             </div>
         </div>
