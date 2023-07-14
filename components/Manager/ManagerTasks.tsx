@@ -2,7 +2,7 @@ import { Task } from '@/lib/schema';
 import SiteContext from '@/lib/site-context';
 import styles from '@/styles/ManagerTasks.module.scss';
 import { Accordion, ActionIcon, Autocomplete, Button, Group, NumberInput, Space, Text, TextInput, Textarea, Tooltip, rem, useMantineTheme } from '@mantine/core';
-import { IconDownload, IconFile, IconPlus, IconUpload, IconX } from '@tabler/icons-react';
+import { IconCalendarTime, IconDownload, IconFile, IconHistory, IconPlus, IconProgress, IconUpload, IconX } from '@tabler/icons-react';
 import { useContext, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import { modals } from "@mantine/modals";
@@ -11,16 +11,23 @@ import { Dropzone, FileWithPath } from '@mantine/dropzone';
 import Papa from 'papaparse';
 import { DatePickerInput, TimeInput } from '@mantine/dates';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import TaskEditModal from '../TaskEditModal';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export default function ManagerTasks({ tasks, categories }: { tasks: Task[], categories: string[] }) {
     let [search, setSearch] = useState("");
+    let [past, setPast] = useState(true);
     let { school } = useContext(SiteContext);
     const theme = useMantineTheme();
 
     const searchForTask = (v: Task) => (
-        v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
-        v.category.toLowerCase().indexOf(search.toLowerCase()) >= 0
+        (v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
+            v.category.toLowerCase().indexOf(search.toLowerCase()) >= 0) &&
+        !(dayjs(v.ending_date + " " + v.ending_time) < dayjs() && !past)
     );
 
     let t: Task[] = tasks.filter(searchForTask);
@@ -149,6 +156,16 @@ export default function ManagerTasks({ tasks, categories }: { tasks: Task[], cat
         children: <TaskEditModal task={t} />
     })
 
+    function DynamicIcon({ v }: { v: Task }) {
+        let today = dayjs();
+        let start = dayjs(v.starting_date + " " + v.starting_time);
+        let end = dayjs(v.ending_date + " " + v.ending_time);
+
+        if (today < start) return <Tooltip label="Planned"><IconCalendarTime color="blue" /></Tooltip>;
+        if (start <= today && today <= end) return <Tooltip label="On Going"><IconProgress color="green" /></Tooltip>;
+        if (end < today) return <Tooltip label="Past"><IconHistory color="red" /></Tooltip>;
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.gro} >
@@ -165,8 +182,12 @@ export default function ManagerTasks({ tasks, categories }: { tasks: Task[], cat
 
                     <Tooltip label="Download">
                         <CSVLink data={[["Category", "Name", "Description", "Starting Date", "Starting Time", "Ending Date", "Ending Time", "Capacity"], ...tasks.map(v => [v.category, v.name, v.description, v.starting_date, v.ending_date, v.starting_time, v.ending_time, v.capacity])]} filename={`${school.name} tasks (${new Date().getUTCFullYear()})`}>
-                            <ActionIcon variant="filled"><IconDownload /></ActionIcon>
+                            <ActionIcon variant="filled" mr="xs"><IconDownload /></ActionIcon>
                         </CSVLink>
+                    </Tooltip>
+
+                    <Tooltip label="Toggle Past">
+                        <ActionIcon variant={past ? "filled" : "outline"} onClick={() => setPast(!past)}><IconHistory /></ActionIcon>
                     </Tooltip>
                 </div>
             </div>
@@ -174,7 +195,7 @@ export default function ManagerTasks({ tasks, categories }: { tasks: Task[], cat
             <Accordion style={{ width: "100%", marginTop: 20 }}>
                 {t.map((v, i) => (
                     <Accordion.Item key={i} value={String(v.id)}>
-                        <Accordion.Control>
+                        <Accordion.Control icon={<DynamicIcon v={v} />}>
                             <Group align='baseline'>
                                 <Text weight="bold">{v.name}</Text>
                                 <Text color="dimmed" size="sm">{v.category} | {v.starting_date}</Text>
