@@ -1,4 +1,4 @@
-import { Task } from '@/lib/schema';
+import { Assignment, Task } from '@/lib/schema';
 import SiteContext from '@/lib/site-context';
 import styles from '@/styles/ManagerTasks.module.scss';
 import { Accordion, ActionIcon, Autocomplete, Button, Group, NumberInput, Space, Text, TextInput, Textarea, Tooltip, rem, useMantineTheme } from '@mantine/core';
@@ -14,10 +14,10 @@ import TaskEditModal from '../TaskEditModal';
 import DynamicIcon from '../DynamicIcon';
 import { receivedRatioResponse, receivedResponse } from '@/lib/received-response';
 
-export default function ManagerTasks({ tasks, categories }: { tasks: Task[], categories: string[] }) {
+export default function ManagerTasks({ tasks, categories, assignments }: { tasks: Task[], categories: string[], assignments: Assignment[] }) {
     let [search, setSearch] = useState("");
     let [past, setPast] = useState(true);
-    let { school } = useContext(SiteContext);
+    let { school, user } = useContext(SiteContext);
     const theme = useMantineTheme();
 
     const searchForTask = (v: Task) => (
@@ -147,7 +147,18 @@ export default function ManagerTasks({ tasks, categories }: { tasks: Task[], cat
         centered: true,
         size: "fit-content",
         children: <TaskEditModal task={t} />
-    })
+    });
+
+    const registerTask = async (t: Task) => {
+        let b = {
+            task: t.id,
+            user: user.email
+        };
+
+        let s = (await fetch("/api/school/task/assign", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
+
+        receivedResponse(s);
+    }
 
     return (
         <div className={styles.container}>
@@ -192,7 +203,12 @@ export default function ManagerTasks({ tasks, categories }: { tasks: Task[], cat
                                 <div className={styles.px}>
                                     <Text>Date(s): {dayjs(v.starting_date).format("MMMM D, YYYY")} {v.starting_date !== v.ending_date ? `~ ${dayjs(v.ending_date).format("MMMM D, YYYY")}` : ""}</Text>
                                     <Text>Time: {v.starting_time} - {v.ending_time}</Text>
-                                    <Button mt="lg" onClick={() => openTaskModal(v)}>Manage</Button>
+                                    <Text>Attendants: {assignments.filter(x => x.task === v.id).length}/{v.capacity}</Text>
+
+                                    <Group mt="lg">
+                                        <Button disabled={assignments.filter(x => x.task === v.id).length >= v.capacity} onClick={() => registerTask(v)}>Register</Button>
+                                        <Button onClick={() => openTaskModal(v)}>Manage</Button>
+                                    </Group>
                                 </div>
                             </div>
                         </Accordion.Panel>

@@ -404,10 +404,10 @@ export async function listAssignments(id: number): Promise<Assignment[]> {
     }
 }
 
-export async function assignMember(id: number, email: string): Promise<boolean> {
+export async function assignMember(id: number, email: string, school: number): Promise<boolean> {
     let db = await connectDB();
     try {
-        await db.execute(`INSERT INTO assignment(task, user) VALUES (?, ?)`, [id, email]);
+        await db.execute(`INSERT INTO assignment(task, user, school) VALUES (?, ?, ?)`, [id, email, school]);
 
         db.end();
         return true;
@@ -440,5 +440,19 @@ export async function updateTask(id: number, category: string, name: string, des
     } catch (error) {
         db.end();
         return false;
+    }
+}
+
+export async function listAttendants(id: number): Promise<string[]> {
+    let db = await connectDB();
+    try {
+        let [rows]: any[] = await db.execute(`SELECT user FROM assignment WHERE task=?`, [id]);
+        let r: string[] = rows.map((v: any) => v.user);
+
+        db.end();
+        return r;
+    } catch (error) {
+        db.end();
+        return null;
     }
 }
