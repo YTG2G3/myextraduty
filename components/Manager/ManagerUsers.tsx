@@ -179,11 +179,12 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                     <Accordion.Item key={i} value={v.email}>
                         <Accordion.Control icon={v.name === "" ? (
                             <Tooltip label="Account Missing">
-                                <IconHelpOctagon />
+                                <IconHelpOctagon color="gray" />
                             </Tooltip>
-                        ) : v.manager ? <IconUserCog />
-                            : <IconUser />}>
-                            <Text weight="bold" color={v.manager ? "#339AF0" : undefined}>{v.name === "" ? v.email : v.name} {v.email === school.owner ? "(Owner)" : v.manager ? "(Manager)" : undefined}</Text>
+                        ) : v.manager ? (
+                            <IconUserCog color="blue" />
+                        ) : <IconUser />}>
+                            <Text weight="bold">{v.name === "" ? v.email : v.name} {v.email === school.owner ? "(Owner)" : v.manager ? "(Manager)" : undefined}</Text>
                         </Accordion.Control>
 
                         <Accordion.Panel>
@@ -223,11 +224,9 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                                 </Tooltip>
                                             </>
                                         ) : !v.manager ? ( // Me manager, you user
-                                            <>
-                                                <Tooltip label="Remove">
-                                                    <ActionIcon onClick={() => removeUser(v)}><IconUserX color="red" /></ActionIcon>
-                                                </Tooltip>
-                                            </>
+                                            <Tooltip label="Remove">
+                                                <ActionIcon onClick={() => removeUser(v)}><IconUserX color="red" /></ActionIcon>
+                                            </Tooltip>
                                         ) : ( // Me manager, you manager
                                             undefined
                                         ) : ( // You me
