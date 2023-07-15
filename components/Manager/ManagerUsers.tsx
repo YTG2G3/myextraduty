@@ -199,12 +199,14 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                     <Text>Email: {v.email}</Text>
 
                                     <Group className={styles.g}>
-                                        {v.name === "" ? undefined : v.email !== user.email ? user.email === school.owner ? ( // Me owner
-                                            <>
-                                                <Tooltip label="Record">
-                                                    <ActionIcon onClick={() => openRecords(v.email)}><IconArchive /></ActionIcon>
-                                                </Tooltip>
+                                        {v.name !== "" ? ( // You have account
+                                            <Tooltip label="Record">
+                                                <ActionIcon onClick={() => openRecords(v.email)}><IconArchive /></ActionIcon>
+                                            </Tooltip>
+                                        ) : undefined}
 
+                                        {v.email !== user.email ? user.email === school.owner ? ( // Me owner
+                                            <>
                                                 {!v.manager && v.name !== "" ? (
                                                     <Tooltip label="Promote">
                                                         <ActionIcon onClick={() => promoteUser(v)}><IconArrowBigUp /></ActionIcon>
@@ -223,26 +225,14 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                             </>
                                         ) : !v.manager ? ( // Me manager, you user
                                             <>
-                                                <Tooltip label="Record">
-                                                    <ActionIcon onClick={() => openRecords(v.email)}><IconArchive /></ActionIcon>
-                                                </Tooltip>
-
                                                 <Tooltip label="Remove">
                                                     <ActionIcon onClick={() => removeUser(v)}><IconUserX color="red" /></ActionIcon>
                                                 </Tooltip>
                                             </>
                                         ) : ( // Me manager, you manager
-                                            <>
-                                                <Tooltip label="Record">
-                                                    <ActionIcon onClick={() => openRecords(v.email)}><IconArchive /></ActionIcon>
-                                                </Tooltip>
-                                            </>
+                                            undefined
                                         ) : ( // You me
-                                            <>
-                                                <Tooltip label="Record">
-                                                    <ActionIcon onClick={() => openRecords(v.email)}><IconArchive /></ActionIcon>
-                                                </Tooltip>
-                                            </>
+                                            undefined
                                         )}
                                     </Group>
                                 </Stack>
