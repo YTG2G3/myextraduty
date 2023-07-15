@@ -13,7 +13,8 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import AppTasks from "@/components/App/AppTasks";
 import ManagerTasks from "@/components/Manager/ManagerTasks";
-import { Member, Task } from "@/lib/schema";
+import { Assignment, Member, Task } from "@/lib/schema";
+import dayjs from "dayjs";
 
 export default function App() {
     let { user, school, enrollments } = useContext(SiteContext);
@@ -23,48 +24,40 @@ export default function App() {
     let [tasks, setTasks] = useState<Task[]>(undefined);
     let [members, setMembers] = useState<Member[]>(undefined);
     let [categories, setCategories] = useState<string[]>(undefined);
+    let [assignments, setAssignments] = useState<Assignment[]>(undefined);
     let router = useRouter();
 
-    const loadTasks = async (id: number) => {
+    const loadData = async (id: number) => {
+        // Tasks
         let t: Task[] = await (await fetch("/api/school/task", { method: "GET", headers: { school: String(id) } })).json();
-        // TODO - sort
-        // t.sort((a, b) => {
-        //     let sd = new Date(a.starting_date);
-        //     let ssd = new Date(b.starting_date);
+        t.sort((a, b) => {
+            let sd = dayjs(a.starting_date + " " + a.starting_time);
+            let ssd = dayjs(b.starting_date + " " + b.starting_time);
 
-        //     let d = sd.getMilliseconds()- ssd.getMilliseconds();
-        //     if(d !== 0) return d;
-
-        //     let st = a.starting_time
-        // })
+            return sd.isAfter(ssd) ? 1 : -1;
+        }); // TODO - test if this sorts
         setTasks(t);
-    }
 
-    const loadMembers = async (id: number) => {
+        // Members
         let m: Member[] = await (await fetch("/api/school/member", { method: "GET", headers: { school: String(id) } })).json();
         m.sort((a, b) => a.admin ? -1 : b.admin ? 1 : a.name.localeCompare(b.name));
         setMembers(m);
-    }
 
-    const loadCategories = async (id: number) => {
+        // Categories
         let c: string[] = await (await fetch("/api/school/categories", { method: "GET", headers: { school: String(id) } })).json();
         setCategories(c);
+
+        // Assignments
+        let a: Assignment[] = await (await fetch("/api/school/assignments", { method: "GET", headers: { school: String(id) } })).json();
+        setAssignments(a);
     }
 
     useEffect(() => {
         if (enrollments && school) {
             let isManager = enrollments.find(v => v.school === school.id).manager;
+
             setManager(isManager);
-
-            // Load tasks
-            loadTasks(school.id);
-
-            // Load categories
-            loadCategories(school.id);
-
-            // Load members
-            if (isManager) loadMembers(school.id);
-            else setMembers([]); // no auth
+            loadData(school.id);
         }
     }, [enrollments, school]);
 
