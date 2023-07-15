@@ -43,5 +43,11 @@ export type Task = {
 export type Assignment = {
     school: number,
     user: string,
-    task: number
+    task: number,
+    assigned_at: string
+}
+
+export type Attendant = {
+    user: User,
+    assigned_at: string
 }

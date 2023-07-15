@@ -1,4 +1,4 @@
-import { Task, User } from "@/lib/schema";
+import { Attendant, Task, User } from "@/lib/schema";
 import { Accordion, ActionIcon, Autocomplete, Button, Center, Group, Loader, NumberInput, Text, TextInput, Textarea, Tooltip } from "@mantine/core";
 import { DatePickerInput, TimeInput } from "@mantine/dates";
 import { useEffect, useState } from "react";
@@ -7,10 +7,14 @@ import styles from '@/styles/TaskEditModal.module.scss';
 import { IconPlus, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { receivedResponse } from "@/lib/received-response";
+import utc from 'dayjs/plugin/utc';
+import tz from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(tz);
 
 export default function TaskEditModal({ task }: { task: Task }) {
     let [categories, setCategories] = useState<string[]>(undefined);
-    let [attendants, setAttendants] = useState<User[]>(undefined);
+    let [attendants, setAttendants] = useState<Attendant[]>(undefined);
 
     const loadData = async () => {
         let c = await (await fetch("/api/school/categories", { method: "GET", headers: { school: String(task.school) } })).json();
@@ -85,6 +89,20 @@ export default function TaskEditModal({ task }: { task: Task }) {
         receivedResponse(s);
     }
 
+    const deleteTask = () => modals.openConfirmModal({
+        title: `Are you sure about deleting ${task.name}?`,
+        children: <Text size="sm">This action is irreversible.</Text>,
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        confirmProps: { color: 'red' },
+        centered: true,
+        onConfirm: async () => {
+            let b = { task: task.id }
+            let x = (await fetch("/api/school/task/delete", { method: "POST", body: JSON.stringify(b) })).status;
+
+            receivedResponse(x);
+        },
+    });
+
     return (
         <div>
             <div className={styles.container}>
@@ -102,7 +120,10 @@ export default function TaskEditModal({ task }: { task: Task }) {
 
                     <NumberInput name="capacity" withAsterisk label="Capacity" min={1} defaultValue={task.capacity} />
 
-                    <Button mt="lg" type="submit" fullWidth>Save</Button>
+                    <Group position="right">
+                        <Button mt="lg" color="red" onClick={deleteTask}>Delete</Button>
+                        <Button mt="lg" type="submit">Save</Button>
+                    </Group>
                 </form>
 
                 <div className={styles.rbox}>
@@ -110,14 +131,15 @@ export default function TaskEditModal({ task }: { task: Task }) {
 
                     <Accordion>
                         {attendants.map((u, i) => (
-                            <Accordion.Item key={i} value={u.email}>
+                            <Accordion.Item key={i} value={u.user.email}>
                                 <Accordion.Control>
-                                    <Text weight="bold">{u.name}</Text>
+                                    <Text weight="bold">{u.user.name}</Text>
+                                    <Text color="dimmed" size="xs">{dayjs(u.assigned_at).format("MMMM D, YYYY HH:MM:ss A")}</Text>
                                 </Accordion.Control>
 
                                 <Accordion.Panel>
                                     <Group position="center">
-                                        <Button onClick={() => removeMember(u)} color="red" radius="lg" size="xs" leftIcon={<IconX />}>Remove</Button>
+                                        <Button onClick={() => removeMember(u.user)} color="red" radius="lg" size="xs" leftIcon={<IconX />}>Remove</Button>
                                     </Group>
                                 </Accordion.Panel>
                             </Accordion.Item>

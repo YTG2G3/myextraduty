@@ -150,12 +150,16 @@ export default function ManagerTasks({ tasks, categories, assignments }: { tasks
     });
 
     const registerTask = async (t: Task) => {
-        let b = {
-            task: t.id,
-            user: user.email
-        };
+        let b = { task: t.id };
 
-        let s = (await fetch("/api/school/task/assign", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
+        let s = (await fetch("/api/school/task/register", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
+
+        receivedResponse(s);
+    }
+
+    const dropTask = async (t: Task) => {
+        let b = { task: t.id };
+        let s = (await fetch("/api/school/task/drop", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
         receivedResponse(s);
     }
@@ -205,8 +209,13 @@ export default function ManagerTasks({ tasks, categories, assignments }: { tasks
                                     <Text>Time: {v.starting_time} - {v.ending_time}</Text>
                                     <Text>Attendants: {assignments.filter(x => x.task === v.id).length}/{v.capacity}</Text>
 
-                                    <Group mt="lg">
-                                        <Button disabled={assignments.filter(x => x.task === v.id).length >= v.capacity} onClick={() => registerTask(v)}>Register</Button>
+                                    <Group mt="md">
+                                        {assignments.find(x => x.user === user.email && x.task === v.id) ? (
+                                            <Button onClick={() => dropTask(v)} color="red">Drop</Button>
+                                        ) : (
+                                            <Button disabled={assignments.filter(x => x.task === v.id).length >= v.capacity} onClick={() => registerTask(v)}>Register</Button>
+                                        )}
+
                                         <Button onClick={() => openTaskModal(v)}>Manage</Button>
                                     </Group>
                                 </div>

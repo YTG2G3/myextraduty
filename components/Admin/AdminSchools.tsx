@@ -122,7 +122,7 @@ export default function AdminSchools({ schools }: any) {
                 <TextInput name="address" withAsterisk label="Address" defaultValue={s.address} />
                 <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue={s.primary_color} />
                 <TextInput name="logo" withAsterisk label="School Logo URL" defaultValue={s.logo} />
-                <DateTimePicker valueFormat='MMM DD YYYY hh:mm A' name="opening_at" label="Opening At" defaultValue={s.opening_at !== "null" ? new Date(s.opening_at) : null} />
+                <DateTimePicker valueFormat='MMMM D, YYYY HH:MM A' name="opening_at" label="Opening At" defaultValue={s.opening_at !== "null" ? new Date(s.opening_at) : null} />
                 <NumberInput name="quota" label="Quota" min={0} defaultValue={s.quota} />
                 <NumberInput name="max_assigned" label="Max Assigned" min={0} defaultValue={s.max_assigned} />
 

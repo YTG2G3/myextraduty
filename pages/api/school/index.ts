@@ -5,6 +5,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 export default AuthRoute({
     GET: async (req: NextApiRequest, res: NextApiResponse) => {
         let s = await getSchool(Number(req.headers.school));
+
         res.json(s);
     }
 }, false, true);

@@ -1,13 +1,12 @@
 import AuthRoute from "@/lib/auth-route";
-import { updateSchool } from "@/lib/db";
+import { deleteTask } from "@/lib/db";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default AuthRoute({
     POST: async (req: NextApiRequest, res: NextApiResponse) => {
-        let { school } = req.headers;
-        let { address, primary_color, logo, opening_at, quota, max_assigned } = JSON.parse(req.body);
+        let { task } = JSON.parse(req.body);
 
-        let r = await updateSchool(Number(school), address, primary_color, logo, opening_at, quota, max_assigned);
+        let r = await deleteTask(task);
 
         res.status(r ? 200 : 400).end();
     }

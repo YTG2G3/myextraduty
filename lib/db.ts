@@ -1,18 +1,19 @@
 import { createConnection } from 'mysql2/promise';
-import { User, School, Enrollment, Task, Member, Assignment } from './schema';
+import { User, School, Enrollment, Task, Member, Assignment, Attendant } from './schema';
 import dayjs from 'dayjs';
 
 const connectDB = async () => createConnection({
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE
+    database: process.env.MYSQL_DATABASE,
+    timezone: "+00:00"
 });
 
 export async function getUser(email: string): Promise<User> {
     let db = await connectDB();
     try {
-        let [rows]: any = await db.execute(`SELECT * FROM user WHERE email=?`, [email]);
+        let [rows]: any[] = await db.execute(`SELECT * FROM user WHERE email=?`, [email]);
         if (rows.length === 0) return null;
 
         db.end();
@@ -52,13 +53,16 @@ export async function updateUserInfo(email: string, name: string, picture: strin
 export async function getSchool(sid: number): Promise<School> {
     let db = await connectDB();
     try {
-        let [rows]: any = await db.execute(`SELECT * FROM school WHERE id=?`, [sid]);
+        let [rows]: any[] = await db.execute(`SELECT * FROM school WHERE id=?`, [sid]);
         if (rows.length === 0) return null;
-        rows[0] = { ...rows[0], opening_at: String(rows[0].opening_at) };
+
+        let s: School = { ...rows[0], opening_at: String(rows[0].opening_at) };
 
         db.end();
-        return rows[0];
+        return s;
     } catch (error) {
+        console.log(error);
+
         db.end();
         return null;
     }
@@ -67,7 +71,7 @@ export async function getSchool(sid: number): Promise<School> {
 export async function getEnrollments(email: string): Promise<Enrollment[]> {
     let db = await connectDB();
     try {
-        let [rows] = await db.execute(`SELECT * FROM enrollment WHERE user=?`, [email]);
+        let [rows]: any[] = await db.execute(`SELECT * FROM enrollment WHERE user=?`, [email]);
 
         db.end();
         return rows as Enrollment[];
@@ -94,7 +98,7 @@ export async function listSchools(): Promise<School[]> {
 export async function createSchool(name: string, owner: string, address: string, primary_color: string, logo: string): Promise<boolean> {
     let db = await connectDB();
     try {
-        let [rows]: any = await db.execute(`INSERT INTO school(name, owner, address, primary_color, logo) VALUES (?, ?, ?, ?, ?) RETURNING id`, [name, owner, address, primary_color, logo]);
+        let [rows]: any[] = await db.execute(`INSERT INTO school(name, owner, address, primary_color, logo) VALUES (?, ?, ?, ?, ?) RETURNING id`, [name, owner, address, primary_color, logo]);
         let sid = rows[0].id;
 
         await db.execute(`INSERT INTO enrollment VALUES (?, ?, 1)`, [sid, owner]);
@@ -107,7 +111,9 @@ export async function createSchool(name: string, owner: string, address: string,
     }
 }
 
-export async function updateSchool(id: number, address: string, primary_color: string, logo: string, opening_at: Date, quota: number, max_assigned: number): Promise<boolean> {
+export async function updateSchool(id: number, address: string, primary_color: string, logo: string, opening_at: string, quota: number, max_assigned: number): Promise<boolean> {
+    console.log(opening_at);
+
     let db = await connectDB();
     try {
         await db.execute(`UPDATE school SET address=?, primary_color=?, logo=?, opening_at=?, quota=?, max_assigned=? WHERE id=?`, [address, primary_color, logo, opening_at, quota, max_assigned, id]);
@@ -115,8 +121,6 @@ export async function updateSchool(id: number, address: string, primary_color: s
         db.end();
         return true;
     } catch (error) {
-        console.log(error);
-
         db.end();
         return false;
     }
@@ -312,8 +316,6 @@ export async function getAssignedTasks(id: number, email: string): Promise<Task[
         db.end();
         return t;
     } catch (error) {
-        console.log(error);
-
         db.end();
         return null;
     }
@@ -335,8 +337,6 @@ export async function kickMember(id: number, email: string): Promise<boolean> {
 export async function promoteMember(id: number, email: string): Promise<boolean> {
     let db = await connectDB();
     try {
-        console.log(id, email);
-
         await db.execute(`UPDATE enrollment SET manager=1 WHERE school=? AND user=?`, [id, email]);
 
         db.end();
@@ -355,8 +355,6 @@ export async function createTask(id: number, category: string, name: string, des
         db.end();
         return true;
     } catch (error) {
-        console.log(error);
-
         db.end();
         return false;
     }
@@ -394,7 +392,7 @@ export async function listCategories(id: number): Promise<string[]> {
 export async function listAssignments(id: number): Promise<Assignment[]> {
     let db = await connectDB();
     try {
-        let [rows]: any[] = await db.execute(`SELECT user FROM assignment WHERE school=?`, [id]);
+        let [rows]: any[] = await db.execute(`SELECT * FROM assignment WHERE school=?`, [id]);
 
         db.end();
         return rows as Assignment[];
@@ -443,16 +441,34 @@ export async function updateTask(id: number, category: string, name: string, des
     }
 }
 
-export async function listAttendants(id: number): Promise<string[]> {
+export async function listAttendants(id: number): Promise<Attendant[]> {
     let db = await connectDB();
     try {
-        let [rows]: any[] = await db.execute(`SELECT user FROM assignment WHERE task=?`, [id]);
-        let r: string[] = rows.map((v: any) => v.user);
+        let [rows]: any[] = await db.execute(`SELECT * FROM assignment WHERE task=?`, [id]);
+        let r: Attendant[] = [];
+
+        for (let x of rows) {
+            let u = await getUser(x.user);
+            r.push({ user: u, assigned_at: x.assigned_at });
+        }
 
         db.end();
         return r;
     } catch (error) {
         db.end();
         return null;
+    }
+}
+
+export async function deleteTask(id: number): Promise<boolean> {
+    let db = await connectDB();
+    try {
+        await db.execute(`DELETE FROM task WHERE id=?`, [id]);
+
+        db.end();
+        return true;
+    } catch (error) {
+        db.end();
+        return false;
     }
 }
