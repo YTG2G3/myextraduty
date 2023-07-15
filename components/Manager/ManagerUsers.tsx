@@ -167,11 +167,11 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                         <ActionIcon variant="filled" mr="xs" onClick={uploadInvitations}><IconUpload /></ActionIcon>
                     </Tooltip>
 
-                    <Tooltip label="Download">
-                        <CSVLink data={[["Email"], ...members.map(v => [v.email])]} filename={`${school.name} members (${new Date().getUTCFullYear()})`}>
+                    <CSVLink data={[["Email"], ...members.map(v => [v.email])]} filename={`${school.name} members (${new Date().getUTCFullYear()})`}>
+                        <Tooltip label="Download">
                             <ActionIcon variant="filled"><IconDownload /></ActionIcon>
-                        </CSVLink>
-                    </Tooltip>
+                        </Tooltip>
+                    </CSVLink>
                 </div>
             </div>
 

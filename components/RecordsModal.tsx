@@ -8,8 +8,6 @@ import DynamicIcon, { compareTime } from "./DynamicIcon";
 export default function RecordsModal({ school, email }: { school: School, email: string }) {
     let [tasks, setTasks] = useState<Task[]>(undefined);
 
-    let _completed = tasks.filter(t => compareTime(t) === "completed");
-
     const loadRecords = async () => {
         let s = await (await fetch(`/api/school/member/assigned?${new URLSearchParams({ email })}`, { method: "GET", headers: { school: String(school.id) } })).json();
         setTasks(s);
@@ -20,6 +18,8 @@ export default function RecordsModal({ school, email }: { school: School, email:
     if (tasks === undefined) return <Center style={{ height: "300px" }}><Loader /></Center>
 
     if (tasks.length === 0) return <Text align="center" color="dimmed">No records found...</Text>
+
+    let _completed = tasks.filter(t => compareTime(t) === "completed");
 
     return (
         <div>

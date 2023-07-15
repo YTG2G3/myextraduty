@@ -164,11 +164,11 @@ export default function ManagerTasks({ tasks, categories }: { tasks: Task[], cat
                         <ActionIcon variant="filled" mr="xs" onClick={uploadTasks}><IconUpload /></ActionIcon>
                     </Tooltip>
 
-                    <Tooltip label="Download">
-                        <CSVLink data={[["Category", "Name", "Description", "Starting Date", "Starting Time", "Ending Date", "Ending Time", "Capacity"], ...tasks.map(v => [v.category, v.name, v.description, v.starting_date, v.ending_date, v.starting_time, v.ending_time, v.capacity])]} filename={`${school.name} tasks (${new Date().getUTCFullYear()})`}>
+                    <CSVLink data={[["Category", "Name", "Description", "Starting Date", "Starting Time", "Ending Date", "Ending Time", "Capacity"], ...tasks.map(v => [v.category, v.name, v.description, v.starting_date, v.ending_date, v.starting_time, v.ending_time, v.capacity])]} filename={`${school.name} tasks (${new Date().getUTCFullYear()})`}>
+                        <Tooltip label="Download">
                             <ActionIcon variant="filled" mr="xs"><IconDownload /></ActionIcon>
-                        </CSVLink>
-                    </Tooltip>
+                        </Tooltip>
+                    </CSVLink>
 
                     <Tooltip label="Toggle Past">
                         <ActionIcon variant={past ? "filled" : "outline"} onClick={() => setPast(!past)}><IconHistory /></ActionIcon>
