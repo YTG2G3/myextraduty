@@ -1,18 +1,17 @@
-import { Accordion, ActionIcon, Button, Group, Stack, Text, TextInput, Tooltip, rem, useMantineTheme } from "@mantine/core";
+import { Accordion, ActionIcon, Avatar, Button, Group, Stack, Text, TextInput, Tooltip, rem, useMantineTheme } from "@mantine/core";
 import styles from '@/styles/ManagerUsers.module.scss';
 import { useContext, useState } from "react";
-import { Member } from "@/lib/schema";
-import Image from "next/image";
+import { Assignment, Member, User } from "@/lib/schema";
 import SiteContext from "@/lib/site-context";
-import { IconArchive, IconArrowBigUp, IconArrowsTransferUp, IconDownload, IconFile, IconHelpOctagon, IconPlus, IconUpload, IconUser, IconUserCog, IconUserX, IconX } from "@tabler/icons-react";
+import { IconArchive, IconArrowBigUp, IconArrowsTransferUp, IconDownload, IconFile, IconHelpOctagon, IconPlus, IconShieldStar, IconUpload, IconUser, IconUserCog, IconUserQuestion, IconUserX, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
 import Papa from 'papaparse';
-import RecordsModal from "../RecordsModal";
 import { CSVLink } from 'react-csv';
 import { receivedRatioResponse, receivedResponse } from "@/lib/received-response";
+import RecordsModal from "../RecordsModal";
 
-export default function ManagerUsers({ members }: { members: Member[] }) {
+export default function ManagerUsers({ members, assignments }: { members: Member[], assignments: Assignment[] }) {
     let [search, setSearch] = useState("");
     let { school, user } = useContext(SiteContext);
     const theme = useMantineTheme();
@@ -106,12 +105,6 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
         )
     });
 
-    const openRecords = (email: string) => modals.open({
-        title: `Records of ${email}`,
-        centered: true,
-        children: <RecordsModal school={school} email={email} />
-    });
-
     const removeUser = (m: Member) => modals.openConfirmModal({
         title: `Are you sure about removing ${m.name === "" ? m.email : m.name}?`,
         children: <Text size="sm">{m.name === "" ? m.email : m.name} will immediately lose access to {school.name}.</Text>,
@@ -152,6 +145,12 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
         }
     });
 
+    const openTaskModal = (u: User) => modals.open({
+        title: `Records of ${u.name}`,
+        centered: true,
+        children: <RecordsModal school={school} email={u.email} />
+    })
+
     return (
         <div className={styles.container}>
             <div className={styles.gro} >
@@ -181,30 +180,43 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                             <Tooltip label="Account Missing">
                                 <IconHelpOctagon color="gray" />
                             </Tooltip>
+                        ) : v.email === school.owner ? (
+                            <Tooltip label="Owner">
+                                <IconShieldStar color="green" />
+                            </Tooltip>
                         ) : v.manager ? (
-                            <IconUserCog color="blue" />
+                            <Tooltip label="Manager">
+                                <IconUserCog color="blue" />
+                            </Tooltip>
                         ) : <IconUser />}>
-                            <Text weight="bold">{v.name === "" ? v.email : v.name} {v.email === school.owner ? "(Owner)" : v.manager ? "(Manager)" : undefined}</Text>
+                            <Group align='baseline'>
+                                <Text weight="bold">{v.name === "" ? "Unknown User" : v.name}</Text>
+                                <Text color="dimmed" size="sm">{v.email}</Text>
+                            </Group>
                         </Accordion.Control>
 
                         <Accordion.Panel>
                             <Group>
-                                {v.picture === "" ? (
-                                    <IconUser width={100} height={100} />
-                                ) : (
-                                    <Image src={v.picture} width={100} height={100} alt={v.name} />
-                                )}
+                                <div className={styles.in}>
+                                    {v.picture === "" ? (
+                                        <Avatar mr="20px" variant="filled" size={80}><IconUserQuestion size={40} /></Avatar>
+                                    ) : (
+                                        <Avatar mr="20px" src={v.picture} size={80} alt={v.name} />
+                                    )}
 
-                                <Stack ml="lg">
-                                    <Text>Email: {v.email}</Text>
+                                    {v.name !== "" ? (
+                                        <div className={styles.ou}>
+                                            {assignments.filter(x => x.user === v.email).length >= school.quota ? (
+                                                <Text>This user has met quota!</Text>
+                                            ) : (
+                                                <Text>{school.quota - assignments.filter(x => x.user === v.email).length} more task(s) to take before meeting quota.</Text>
+                                            )}
+
+                                            <Button variant="light" onClick={() => openTaskModal(v)}>Details</Button>
+                                        </div>
+                                    ) : undefined}
 
                                     <Group className={styles.g}>
-                                        {v.name !== "" ? ( // You have account
-                                            <Tooltip label="Record">
-                                                <ActionIcon onClick={() => openRecords(v.email)}><IconArchive /></ActionIcon>
-                                            </Tooltip>
-                                        ) : undefined}
-
                                         {v.email !== user.email ? user.email === school.owner ? ( // Me owner
                                             <>
                                                 {!v.manager && v.name !== "" ? (
@@ -228,12 +240,12 @@ export default function ManagerUsers({ members }: { members: Member[] }) {
                                                 <ActionIcon onClick={() => removeUser(v)}><IconUserX color="red" /></ActionIcon>
                                             </Tooltip>
                                         ) : ( // Me manager, you manager
-                                            undefined
+                                            <Text color="dimmed" size="sm">No available options...</Text>
                                         ) : ( // You me
-                                            undefined
+                                            <Text color="dimmed" size="sm">No available options...</Text>
                                         )}
                                     </Group>
-                                </Stack>
+                                </div>
                             </Group>
                         </Accordion.Panel>
                     </Accordion.Item>

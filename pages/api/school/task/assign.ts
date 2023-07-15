@@ -1,5 +1,5 @@
 import AuthRoute from "@/lib/auth-route";
-import { assignMember, getTask, listAttendants } from "@/lib/db";
+import { assignMember, getAssignedTasks, getSchool, getTask, listAttendants } from "@/lib/db";
 import dayjs from "dayjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -19,6 +19,12 @@ export default AuthRoute({
 
         // Make sure it's not overlapping
         if (a.find(v => v.user.email === user)) return res.status(400);
+
+        let e = await getAssignedTasks(Number(req.headers.school), user);
+        let s = await getSchool(Number(req.headers.school));
+
+        // Make sure we're not going over limit
+        if (e.length >= s.max_assigned) return res.status(400);
 
         let r = await assignMember(task, user, Number(req.headers.school));
 

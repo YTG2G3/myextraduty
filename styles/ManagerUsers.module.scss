@@ -19,6 +19,16 @@
     margin: 15px;
 }
 
-.g {
-    width: 100%;
+.in {
+    display: flex;
+}
+
+.ou {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding-right: 40px;
+    border-right: 1px solid gray;
+    margin-right: 40px;
 }
