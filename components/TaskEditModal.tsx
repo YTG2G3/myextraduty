@@ -7,10 +7,6 @@ import styles from '@/styles/TaskEditModal.module.scss';
 import { IconPlus, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { receivedResponse } from "@/lib/received-response";
-import utc from 'dayjs/plugin/utc';
-import tz from 'dayjs/plugin/timezone';
-dayjs.extend(utc);
-dayjs.extend(tz);
 
 export default function TaskEditModal({ task }: { task: Task }) {
     let [categories, setCategories] = useState<string[]>(undefined);

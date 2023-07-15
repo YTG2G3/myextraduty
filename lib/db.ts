@@ -56,7 +56,7 @@ export async function getSchool(sid: number): Promise<School> {
         let [rows]: any[] = await db.execute(`SELECT * FROM school WHERE id=?`, [sid]);
         if (rows.length === 0) return null;
 
-        let s: School = { ...rows[0], opening_at: String(rows[0].opening_at) };
+        let s: School = { ...rows[0], opening_at: rows[0].opening_at === "null" ? null : rows[0].opening_at };
 
         db.end();
         return s;

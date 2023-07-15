@@ -5,6 +5,7 @@ import { modals } from '@mantine/modals';
 import { useContext, useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
 import { receivedResponse } from '@/lib/received-response';
+import dayjs from 'dayjs';
 
 export default function ManagerSettings() {
     let { school, user } = useContext(SiteContext);
@@ -58,7 +59,7 @@ export default function ManagerSettings() {
             <TextInput name="address" label="Address" defaultValue={school.address} />
             <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue={school.primary_color} />
             <TextInput name="logo" label="Logo URL" defaultValue={school.logo} />
-            <DateTimePicker valueFormat='MMM DD YYYY hh:mm A' name="opening_at" label="Opening At" defaultValue={school.opening_at === "" ? new Date(school.opening_at) : null} />
+            <DateTimePicker valueFormat='MMM DD YYYY hh:mm A' name="opening_at" label="Opening At" defaultValue={school.opening_at ? new Date(school.opening_at) : null} />
             <NumberInput name="quota" label="Quota" min={0} defaultValue={school.quota} />
             <NumberInput name="max_assigned" label="Max Assigned" min={1} defaultValue={school.max_assigned} />
 

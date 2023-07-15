@@ -1,11 +1,18 @@
 import AuthRoute from "@/lib/auth-route";
-import { assignMember, listUserAssignments, getSchool, getTask, listAttendants } from "@/lib/db";
+import { assignMember, listUserAssignments, getSchool, getTask, listAttendants, getEnrollments } from "@/lib/db";
 import dayjs from "dayjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default AuthRoute({
     POST: async (req: NextApiRequest, res: NextApiResponse) => {
         let { task, user } = JSON.parse(req.body);
+        let s = await getSchool(Number(req.headers.school));
+
+        // Must have manager/admin rights before d-day
+        if (dayjs(s.opening_at).isBefore(dayjs())) {
+            let er = await getEnrollments(user);
+            if (!er.find(v => v.school === s.id).manager) return res.status(401).end();
+        }
 
         let a = await listAttendants(task);
         let t = await getTask(task);
@@ -20,13 +27,12 @@ export default AuthRoute({
         // Make sure it's not overlapping
         if (a.find(v => v.user.email === user)) return res.status(400).end();
 
-        let e = await listUserAssignments(Number(req.headers.school), user);
-        let s = await getSchool(Number(req.headers.school));
+        let e = await listUserAssignments(s.id, user);
 
         // Make sure we're not going over limit
         if (e.length >= s.max_assigned) return res.status(400).end();
 
-        let r = await assignMember(task, user, Number(req.headers.school));
+        let r = await assignMember(task, user, s.id);
 
         res.status(r ? 200 : 400).end();
     }
