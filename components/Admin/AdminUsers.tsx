@@ -3,7 +3,6 @@ import { User } from '@/lib/schema';
 import styles from '@/styles/AdminUsers.module.scss';
 import { Accordion, ActionIcon, Group, Stack, Text, TextInput, Tooltip } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { notifications } from '@mantine/notifications';
 import { IconUserShield, IconUserX } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useState } from "react";

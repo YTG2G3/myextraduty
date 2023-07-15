@@ -6,7 +6,6 @@ import Image from "next/image";
 import SiteContext from "@/lib/site-context";
 import { IconArchive, IconArrowBigUp, IconArrowsTransferUp, IconDownload, IconFile, IconHelpOctagon, IconPlus, IconUpload, IconUser, IconUserCog, IconUserX, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
-import { notifications } from "@mantine/notifications";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
 import Papa from 'papaparse';
 import RecordsModal from "../RecordsModal";

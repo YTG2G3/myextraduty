@@ -3,7 +3,6 @@ import styles from '@/styles/AdminSchools.module.scss';
 import { useState } from "react";
 import { School } from "@/lib/schema";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
-import { notifications } from '@mantine/notifications';
 import { modals } from '@mantine/modals';
 import { DateTimePicker } from "@mantine/dates";
 import { receivedResponse } from "@/lib/received-response";

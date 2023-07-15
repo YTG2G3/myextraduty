@@ -2,7 +2,6 @@ import SiteContext from '@/lib/site-context';
 import styles from '@/styles/ManagerSettings.module.scss';
 import { Button, Group, MANTINE_COLORS, NumberInput, Select, TextInput } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { notifications } from '@mantine/notifications';
 import { useContext, useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
 import { receivedResponse } from '@/lib/received-response';

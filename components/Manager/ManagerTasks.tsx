@@ -6,7 +6,6 @@ import { IconDownload, IconFile, IconHistory, IconPlus, IconUpload, IconX } from
 import { useContext, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import { modals } from "@mantine/modals";
-import { notifications } from '@mantine/notifications';
 import { Dropzone, FileWithPath } from '@mantine/dropzone';
 import Papa from 'papaparse';
 import { DatePickerInput, TimeInput } from '@mantine/dates';
