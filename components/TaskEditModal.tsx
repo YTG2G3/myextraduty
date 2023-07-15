@@ -113,9 +113,9 @@ export default function TaskEditModal({ task }: { task: Task }) {
                     <Textarea name="description" withAsterisk label="Description" defaultValue={task.description} />
 
                     <DatePickerInput name="starting_date" withAsterisk label="Starting Date" defaultValue={dayjs(task.starting_date).toDate()} />
-                    <TimeInput name="starting_time" withAsterisk label="Starting Time" defaultValue={task.starting_time} />
-
                     <DatePickerInput name="ending_date" withAsterisk label="Ending Date" defaultValue={dayjs(task.ending_date).toDate()} />
+
+                    <TimeInput name="starting_time" withAsterisk label="Starting Time" defaultValue={task.starting_time} />
                     <TimeInput name="ending_time" withAsterisk label="Ending Time" defaultValue={task.ending_time} />
 
                     <NumberInput name="capacity" withAsterisk label="Capacity" min={1} defaultValue={task.capacity} />

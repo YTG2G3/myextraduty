@@ -65,9 +65,9 @@ export default function ManagerTasks({ tasks, categories, assignments }: { tasks
                 <Textarea name="description" withAsterisk label="Description" />
 
                 <DatePickerInput name="starting_date" withAsterisk label="Starting Date" />
-                <TimeInput name="starting_time" withAsterisk label="Starting Time" />
-
                 <DatePickerInput name="ending_date" withAsterisk label="Ending Date" />
+
+                <TimeInput name="starting_time" withAsterisk label="Starting Time" />
                 <TimeInput name="ending_time" withAsterisk label="Ending Time" />
 
                 <NumberInput name="capacity" withAsterisk label="Capacity" min={1} defaultValue={1} />
@@ -184,7 +184,7 @@ export default function ManagerTasks({ tasks, categories, assignments }: { tasks
                         </Tooltip>
                     </CSVLink>
 
-                    <Tooltip label="Toggle Past">
+                    <Tooltip label="Toggle Completed">
                         <ActionIcon variant={past ? "filled" : "outline"} onClick={() => setPast(!past)}><IconHistory /></ActionIcon>
                     </Tooltip>
                 </div>

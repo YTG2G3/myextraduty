@@ -17,14 +17,16 @@ export default function RecordsModal({ school, email }: { school: School, email:
 
     if (tasks === undefined) return <Center style={{ height: "300px" }}><Loader /></Center>
 
-    if (tasks.length === 0) return <Text align="center" color="dimmed">No records found...</Text>
-
     let _completed = tasks.filter(t => compareTime(t) === "completed");
 
     return (
         <div>
             <Text>Registered: {tasks.length} / {school.quota} ({school.max_assigned})</Text>
             <Text color="dimmed" mb="lg">Completed: {_completed.length} / {school.quota} ({school.max_assigned})</Text>
+
+            {tasks.length === 0 ? (
+                <Text align="center" color="dimmed">No records found...</Text>
+            ) : undefined}
 
             <Accordion>
                 {tasks.map((t, i) => (

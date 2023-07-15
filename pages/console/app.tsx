@@ -87,7 +87,7 @@ export default function App() {
     }
 
     // Loading?
-    if (!user || !school || !enrollments || !tasks || !members || !categories) return <LoadingPage />;
+    if (!user || !school || !enrollments || !tasks || !members || !categories || !assignments) return <LoadingPage />;
 
     // Associated?
     if (!enrollments.find(v => v.school === school.id)) {
