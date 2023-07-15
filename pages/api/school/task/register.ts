@@ -1,5 +1,5 @@
 import AuthRoute from "@/lib/auth-route";
-import { assignMember, getAssignedTasks, getSchool, getTask, listAttendants } from "@/lib/db";
+import { assignMember, listUserAssignments, getSchool, getTask, listAttendants } from "@/lib/db";
 import { User } from "@/lib/schema";
 import dayjs from "dayjs";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -13,19 +13,19 @@ export default AuthRoute({
 
         // Can't sign up for completed events
         // TODO - potential timezone error on production server; consider
-        if (dayjs().isAfter(dayjs(t.ending_date + " " + t.ending_time))) return res.status(400);
+        if (dayjs().isAfter(dayjs(t.ending_date + " " + t.ending_time))) return res.status(400).end();
 
         // Make sure it's not full
-        if (a.length >= t.capacity) return res.status(400);
+        if (a.length >= t.capacity) return res.status(400).end();
 
         // Make sure it's not overlapping
-        if (a.find(v => v.user.email === user.email)) return res.status(400);
+        if (a.find(v => v.user.email === user.email)) return res.status(400).end();
 
-        let e = await getAssignedTasks(Number(req.headers.school), user.email);
+        let e = await listUserAssignments(Number(req.headers.school), user.email);
         let s = await getSchool(Number(req.headers.school));
 
         // Make sure we're not going over limit
-        if (e.length >= s.max_assigned) return res.status(400);
+        if (e.length >= s.max_assigned) return res.status(400).end();
 
         let r = await assignMember(task, user.email, Number(req.headers.school));
 

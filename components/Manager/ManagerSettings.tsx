@@ -20,7 +20,7 @@ export default function ManagerSettings() {
             logo: e.target.logo.value,
             opening_at: e.target.opening_at.value === "" ? null : e.target.opening_at.value,
             quota: e.target.quota.value,
-            max_assigned: e.target.quota.max_assigned
+            max_assigned: e.target.max_assigned.value
         }
 
         let s = (await fetch("/api/school/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
@@ -56,7 +56,7 @@ export default function ManagerSettings() {
     return (
         <form className={styles.container} onSubmit={saveChanges}>
             <TextInput name="address" label="Address" defaultValue={school.address} />
-            <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue="blue" />
+            <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue={school.primary_color} />
             <TextInput name="logo" label="Logo URL" defaultValue={school.logo} />
             <DateTimePicker valueFormat='MMM DD YYYY hh:mm A' name="opening_at" label="Opening At" defaultValue={school.opening_at === "" ? new Date(school.opening_at) : null} />
             <NumberInput name="quota" label="Quota" min={0} defaultValue={school.quota} />

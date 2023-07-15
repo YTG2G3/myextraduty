@@ -3,6 +3,7 @@ import styles from '@/styles/Header.module.scss';
 import { IconLogout, IconSchool } from '@tabler/icons-react';
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 export default function AppHeader() {
     let router = useRouter();
@@ -10,8 +11,9 @@ export default function AppHeader() {
     return (
         <Header height={60} p="xs">
             <Container className={styles.inner} fluid>
-                <Group>
-                    <Text>MyExtraDuty</Text>
+                <Group align="center">
+                    <Image src="/images/logo_bg.png" width={40} height={40} alt="MyExtraDuty" />
+                    <Text color="dimmed">Console</Text>
                 </Group>
 
                 <Group>
