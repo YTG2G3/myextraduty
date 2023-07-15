@@ -41,6 +41,7 @@ export type Task = {
 }
 
 export type Assignment = {
+    school: number,
     user: string,
     task: number
 }

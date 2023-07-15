@@ -2,7 +2,7 @@ import { ActionIcon, Button, Group, MANTINE_COLORS, Pagination, Select, TextInpu
 import styles from '@/styles/AdminSchools.module.scss';
 import { useState } from "react";
 import { School } from "@/lib/schema";
-import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconArrowsTransferUp, IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { modals } from '@mantine/modals';
 import { DateTimePicker } from "@mantine/dates";
 import { receivedResponse } from "@/lib/received-response";
@@ -74,21 +74,40 @@ export default function AdminSchools({ schools }: any) {
         },
     });
 
+    const changeOwnerReq = async (e: any, sc: School) => {
+        e.preventDefault();
+
+        let b = { email: e.target.owner.value };
+        let x = (await fetch("/api/school/transfer", { method: "POST", body: JSON.stringify(b), headers: { school: String(sc.id) } })).status;
+
+        receivedResponse(x);
+    }
+
+    const changeOwner = (s: School) => modals.open({
+        title: `Changing owner of ${s.name}?`,
+        centered: true,
+        children: (
+            <form onSubmit={(e) => changeOwnerReq(e, s)}>
+                <TextInput name="owner" withAsterisk label="Owner" defaultValue={s.owner} />
+
+                <Group position="right" mt="md">
+                    <Button type="submit">Save</Button>
+                </Group>
+            </form>
+        )
+    });
+
     const editSchoolReq = async (e: any, sc: School) => {
         e.preventDefault();
 
-        let o = { email: e.target.owner.value };
         let b = {
             address: e.target.address.value,
             primary_color: e.target.primary_color.value,
             logo: e.target.logo.value,
             opening_at: e.target.opening_at.value === "" ? null : e.target.opening_at.value,
-            quota: e.target.quota.value
+            quota: e.target.quota.value,
+            max_assigned: e.target.max_assigned.value
         };
-
-        let x = (await fetch("/api/school/transfer", { method: "POST", body: JSON.stringify(o), headers: { school: String(sc.id) } })).status;
-
-        receivedResponse(x);
 
         let s = (await fetch("/api/school/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(sc.id) } })).status;
 
@@ -100,12 +119,12 @@ export default function AdminSchools({ schools }: any) {
         centered: true,
         children: (
             <form onSubmit={(e) => editSchoolReq(e, s)} style={{ padding: 30 }}>
-                <TextInput name="owner" withAsterisk label="Owner Email" defaultValue={s.owner} />
                 <TextInput name="address" withAsterisk label="Address" defaultValue={s.address} />
                 <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue={s.primary_color} />
                 <TextInput name="logo" withAsterisk label="School Logo URL" defaultValue={s.logo} />
                 <DateTimePicker valueFormat='MMM DD YYYY hh:mm A' name="opening_at" label="Opening At" defaultValue={s.opening_at !== "null" ? new Date(s.opening_at) : null} />
-                <NumberInput name="quota" label="Quota" type='number' min={0} defaultValue={s.quota} />
+                <NumberInput name="quota" label="Quota" min={0} defaultValue={s.quota} />
+                <NumberInput name="max_assigned" label="Max Assigned" min={0} defaultValue={s.max_assigned} />
 
                 <Group position="right" mt="md">
                     <Button type="submit">Save</Button>
@@ -150,6 +169,10 @@ export default function AdminSchools({ schools }: any) {
                             <Space h="md" />
 
                             <Group position="right">
+                                <Tooltip label="Change Owner">
+                                    <ActionIcon onClick={() => changeOwner(v)}><IconArrowsTransferUp /></ActionIcon>
+                                </Tooltip>
+
                                 <Tooltip label="Edit">
                                     <ActionIcon onClick={() => editSchool(v)}><IconEdit /></ActionIcon>
                                 </Tooltip>

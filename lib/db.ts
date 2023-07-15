@@ -391,14 +391,13 @@ export async function listCategories(id: number): Promise<string[]> {
     }
 }
 
-export async function listAttendants(id: number): Promise<string[]> {
+export async function listAssignments(id: number): Promise<Assignment[]> {
     let db = await connectDB();
     try {
-        let [rows]: any[] = await db.execute(`SELECT user FROM assignment WHERE task=?`, [id]);
-        let r: string[] = rows.map((v: any) => v.user);
+        let [rows]: any[] = await db.execute(`SELECT user FROM assignment WHERE school=?`, [id]);
 
         db.end();
-        return r;
+        return rows as Assignment[];
     } catch (error) {
         db.end();
         return null;

@@ -32,5 +32,5 @@ export function successNoti() {
 }
 
 export function failNoti() {
-    notifications.show({ title: "Failed to remove member", message: "Please contact the developer to fix this error.", color: "red" });
+    notifications.show({ title: "Unexpected Error", message: "Please contact the developer to fix this error.", color: "red" });
 }
