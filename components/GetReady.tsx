@@ -19,7 +19,7 @@ export default function GetReady() {
             let days = Math.floor(d / (1000 * 60 * 60 * 24));
 
             setDay(days);
-            setTime(hours + ":" + minutes + ":" + seconds);
+            setTime(`${hours}h ${minutes}m ${seconds}s`);
         }, 100);
     }, []);
 

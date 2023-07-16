@@ -7,7 +7,6 @@ import GetReady from "../GetReady";
 export default function ManagerDashboard(props: any) {
     let { school } = useContext(SiteContext);
 
-    // TODO - fix null maybe?
     if (!school.opening_at) return (
         <div>To start the countdown, please set the opening date in settings.</div>
     );
