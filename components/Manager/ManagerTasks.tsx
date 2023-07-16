@@ -178,9 +178,9 @@ export default function ManagerTasks({ tasks, categories, assignments }: { tasks
                         <ActionIcon variant="filled" mr="xs" onClick={uploadTasks}><IconUpload /></ActionIcon>
                     </Tooltip>
 
-                    <CSVLink data={[["Category", "Name", "Description", "Starting Date", "Starting Time", "Ending Date", "Ending Time", "Capacity"], ...tasks.map(v => [v.category, v.name, v.description, v.starting_date, v.ending_date, v.starting_time, v.ending_time, v.capacity])]} filename={`${school.name} tasks (${new Date().getUTCFullYear()})`}>
+                    <CSVLink style={{ marginRight: 10 }} data={[["Category", "Name", "Description", "Starting Date", "Starting Time", "Ending Date", "Ending Time", "Capacity"], ...tasks.map(v => [v.category, v.name, v.description, v.starting_date, v.ending_date, v.starting_time, v.ending_time, v.capacity])]} filename={`${school.name} tasks (${new Date().getUTCFullYear()})`}>
                         <Tooltip label="Download">
-                            <ActionIcon variant="filled" mr="xs"><IconDownload /></ActionIcon>
+                            <ActionIcon variant="filled"><IconDownload /></ActionIcon>
                         </Tooltip>
                     </CSVLink>
 

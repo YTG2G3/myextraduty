@@ -3,7 +3,7 @@ import styles from '@/styles/ManagerUsers.module.scss';
 import { useContext, useState } from "react";
 import { Assignment, Member, User } from "@/lib/schema";
 import SiteContext from "@/lib/site-context";
-import { IconArchive, IconArrowBigUp, IconArrowsTransferUp, IconDownload, IconFile, IconHelpOctagon, IconPlus, IconShieldStar, IconUpload, IconUser, IconUserCog, IconUserQuestion, IconUserX, IconX } from "@tabler/icons-react";
+import { IconArchive, IconArrowBigUp, IconArrowsTransferUp, IconDownload, IconFile, IconHelpOctagon, IconPlus, IconShieldStar, IconTrophy, IconUpload, IconUser, IconUserCog, IconUserQuestion, IconUserX, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
 import Papa from 'papaparse';
@@ -13,12 +13,14 @@ import RecordsModal from "../RecordsModal";
 
 export default function ManagerUsers({ members, assignments }: { members: Member[], assignments: Assignment[] }) {
     let [search, setSearch] = useState("");
+    let [tg, setTg] = useState(true);
     let { school, user } = useContext(SiteContext);
     const theme = useMantineTheme();
 
     const searchForMember = (v: Member) => (
-        v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
-        v.email.toLowerCase().indexOf(search.toLowerCase()) >= 0
+        (v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
+            v.email.toLowerCase().indexOf(search.toLowerCase()) >= 0) &&
+        !(assignments.filter(x => x.user === v.email).length < school.quota && !tg) // TODO - check if this works
     );
 
     let m: Member[] = members.filter(searchForMember);
@@ -165,11 +167,15 @@ export default function ManagerUsers({ members, assignments }: { members: Member
                         <ActionIcon variant="filled" mr="xs" onClick={uploadInvitations}><IconUpload /></ActionIcon>
                     </Tooltip>
 
-                    <CSVLink data={[["Email"], ...members.map(v => [v.email])]} filename={`${school.name} members (${new Date().getUTCFullYear()})`}>
+                    <CSVLink style={{ marginRight: 10 }} data={[["Email"], ...members.map(v => [v.email])]} filename={`${school.name} members (${new Date().getUTCFullYear()})`}>
                         <Tooltip label="Download">
                             <ActionIcon variant="filled"><IconDownload /></ActionIcon>
                         </Tooltip>
                     </CSVLink>
+
+                    <Tooltip label="Toggle Quota Met">
+                        <ActionIcon variant={tg ? "filled" : "outline"} onClick={() => setTg(!tg)}><IconTrophy /></ActionIcon>
+                    </Tooltip>
                 </div>
             </div>
 
