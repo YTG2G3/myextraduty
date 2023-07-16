@@ -189,10 +189,16 @@ export default function ManagerUsers({ members, assignments }: { members: Member
                                 <IconUserCog color="blue" />
                             </Tooltip>
                         ) : <IconUser />}>
-                            <Group align='baseline'>
-                                <Text weight="bold">{v.name === "" ? "Unknown User" : v.name}</Text>
-                                <Text color="dimmed" size="sm">{v.email}</Text>
-                            </Group>
+                            <Tooltip position="top-start" label={assignments.filter(x => x.user === v.email).length >= school.quota ? (
+                                <Text>Met quota!</Text>
+                            ) : (
+                                <Text>{school.quota - assignments.filter(x => x.user === v.email).length} more to go!</Text>
+                            )}>
+                                <Group align='baseline'>
+                                    <Text weight="bold">{v.name === "" ? "Unknown User" : v.name}</Text>
+                                    <Text color="dimmed" size="sm">{v.email}</Text>
+                                </Group>
+                            </Tooltip>
                         </Accordion.Control>
 
                         <Accordion.Panel>
