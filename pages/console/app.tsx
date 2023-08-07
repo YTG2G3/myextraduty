@@ -74,7 +74,7 @@ export default function App() {
     ];
 
     let mgs = [
-        { label: "Dashboard", icon: <IconLayoutDashboard />, page: <ManagerDashboard members={members} tasks={tasks} /> },
+        { label: "Dashboard", icon: <IconLayoutDashboard />, page: <ManagerDashboard members={members} tasks={tasks} assignments={assignments} /> },
         { label: "Tasks", icon: <IconCalendarEvent />, page: <ManagerTasks tasks={tasks} categories={categories} assignments={assignments} /> },
         { label: "Users", icon: <IconUsersGroup />, page: <ManagerUsers members={members} assignments={assignments} /> },
         { label: "Settings", icon: <IconSettings />, page: <ManagerSettings /> },

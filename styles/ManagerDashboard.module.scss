@@ -1,0 +1,29 @@
+.container {
+    height: 100%;
+    display: grid;
+    overflow: auto;
+    grid-template:
+        "a b" 50%
+        "c c" 50% / 1fr 1fr;
+
+    &>div {
+        border: 1px solid gray;
+        margin: 20px;
+        border-radius: 40px;
+        padding: 40px;
+    }
+}
+
+.a {
+    grid-area: a;
+    font-size: 40px;
+    overflow: auto;
+}
+
+.b {
+    grid-area: b;
+}
+
+.c {
+    grid-area: c;
+}
