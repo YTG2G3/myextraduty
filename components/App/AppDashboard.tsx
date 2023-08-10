@@ -37,7 +37,7 @@ export default function AppDashboard({ tasks, assignments }: { tasks: Task[], as
             <div className={styles.b}>
                 {upcomingEvents.length === 0 ? (
                     <div className={styles.cen}>
-                        <Text weight="bold">There aren&apos;t any upcoming events!</Text>
+                        <Text weight="bold" size="40px">There aren&apos;t any upcoming events!</Text>
                     </div>
                 ) : (
                     <Accordion style={{ width: "100%" }}>

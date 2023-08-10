@@ -86,7 +86,7 @@ export default function App() {
 
     let pgs = [
         { label: "Dashboard", icon: <IconLayoutDashboard />, page: <AppDashboard tasks={tasks} assignments={assignments} /> },
-        { label: "Tasks", icon: <IconCalendarEvent />, page: <AppTasks tasks={tasks} /> },
+        { label: "Tasks", icon: <IconCalendarEvent />, page: <AppTasks tasks={tasks} assignments={assignments} /> },
     ];
 
     let mgs = [
