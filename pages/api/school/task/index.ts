@@ -9,7 +9,7 @@ export default AuthRoute({
         let s = await getSchool(Number(req.headers.school));
 
         // Must have manager/admin rights before d-day
-        if (dayjs(s.opening_at).isBefore(dayjs())) {
+        if (dayjs().isBefore(dayjs(s.opening_at))) {
             let er = await getEnrollments(user.email);
             if (!er.find(v => v.school === s.id).manager) return res.status(401).end();
         }

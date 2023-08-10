@@ -7,6 +7,6 @@ export default AuthRoute({
         let s = await listCategories(Number(req.headers.school));
         res.json(s);
     }
-}, false, true, false, true);
+}, false, true);
 
 export const config = { api: { externalResolver: true, } }

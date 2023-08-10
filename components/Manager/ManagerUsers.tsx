@@ -20,7 +20,7 @@ export default function ManagerUsers({ members, assignments }: { members: Member
     const searchForMember = (v: Member) => (
         (v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
             v.email.toLowerCase().indexOf(search.toLowerCase()) >= 0) &&
-        !(assignments.filter(x => x.user === v.email).length < school.quota && !tg) // TODO - check if this works
+        !(assignments.filter(x => x.user === v.email).length >= school.quota && !tg)
     );
 
     let m: Member[] = members.filter(searchForMember);

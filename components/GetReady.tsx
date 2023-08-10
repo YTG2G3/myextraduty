@@ -10,7 +10,7 @@ export default function GetReady() {
     let [time, setTime] = useState("");
 
     useEffect(() => {
-        setInterval(() => {
+        if (school.opening_at) setInterval(() => {
             let d = dayjs(school.opening_at).diff(dayjs());
 
             let seconds = Math.floor((d / 1000) % 60);
@@ -22,6 +22,12 @@ export default function GetReady() {
             setTime(`${hours}h ${minutes}m ${seconds}s`);
         }, 100);
     }, []);
+
+    if (!school.opening_at) return (
+        <div className={styles.container}>
+            <Text size="10vw">--:--:--</Text>
+        </div>
+    );
 
     return (
         <div className={styles.container}>

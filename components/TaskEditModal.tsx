@@ -1,4 +1,4 @@
-import { Attendant, Task, User } from "@/lib/schema";
+import { Attendant, Member, Task, User } from "@/lib/schema";
 import { Accordion, ActionIcon, Autocomplete, Button, Center, Group, Loader, NumberInput, Text, TextInput, Textarea, Tooltip } from "@mantine/core";
 import { DatePickerInput, TimeInput } from "@mantine/dates";
 import { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { IconPlus, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { receivedResponse } from "@/lib/received-response";
 
-export default function TaskEditModal({ task }: { task: Task }) {
+export default function TaskEditModal({ task, members }: { task: Task, members: Member[] }) {
     let [categories, setCategories] = useState<string[]>(undefined);
     let [attendants, setAttendants] = useState<Attendant[]>(undefined);
 
@@ -42,7 +42,7 @@ export default function TaskEditModal({ task }: { task: Task }) {
         centered: true,
         children: (
             <form onSubmit={assignMemberReq}>
-                <TextInput name="email" withAsterisk label="Email" />
+                <Autocomplete name="email" withAsterisk label="Email" data={members.map(v => v.email)} dropdownPosition='bottom' />
 
                 <Group position="right" mt="md">
                     <Button type="submit">Assign</Button>

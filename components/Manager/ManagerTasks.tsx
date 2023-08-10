@@ -1,4 +1,4 @@
-import { Assignment, Task } from '@/lib/schema';
+import { Assignment, Member, Task } from '@/lib/schema';
 import SiteContext from '@/lib/site-context';
 import styles from '@/styles/ManagerTasks.module.scss';
 import { Accordion, ActionIcon, Autocomplete, Button, Group, NumberInput, Space, Text, TextInput, Textarea, Tooltip, rem, useMantineTheme } from '@mantine/core';
@@ -14,7 +14,7 @@ import TaskEditModal from '../TaskEditModal';
 import DynamicIcon from '../DynamicIcon';
 import { receivedRatioResponse, receivedResponse } from '@/lib/received-response';
 
-export default function ManagerTasks({ tasks, categories, assignments }: { tasks: Task[], categories: string[], assignments: Assignment[] }) {
+export default function ManagerTasks({ tasks, categories, assignments, members }: { tasks: Task[], categories: string[], assignments: Assignment[], members: Member[] }) {
     let [search, setSearch] = useState("");
     let [past, setPast] = useState(true);
     let { school, user } = useContext(SiteContext);
@@ -146,7 +146,7 @@ export default function ManagerTasks({ tasks, categories, assignments }: { tasks
         title: `Editing ${t.name}`,
         centered: true,
         size: "fit-content",
-        children: <TaskEditModal task={t} />
+        children: <TaskEditModal task={t} members={members} />
     });
 
     const registerTask = async (t: Task) => {

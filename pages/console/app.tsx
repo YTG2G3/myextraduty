@@ -29,27 +29,43 @@ export default function App() {
 
     const loadData = async (id: number) => {
         // Tasks
-        let t: Task[] = await (await fetch("/api/school/task", { method: "GET", headers: { school: String(id) } })).json();
-        t.sort((a, b) => {
-            let sd = dayjs(a.starting_date + " " + a.starting_time);
-            let ssd = dayjs(b.starting_date + " " + b.starting_time);
+        try {
+            let t: Task[] = await (await fetch("/api/school/task", { method: "GET", headers: { school: String(id) } })).json();
+            t.sort((a, b) => {
+                let sd = dayjs(a.starting_date + " " + a.starting_time);
+                let ssd = dayjs(b.starting_date + " " + b.starting_time);
 
-            return sd.isAfter(ssd) ? 1 : -1;
-        }); // TODO - test if this sorts
-        setTasks(t);
+                return sd.isAfter(ssd) ? 1 : -1;
+            }); // TODO - test if this sorts
+            setTasks(t);
+        } catch (error) {
+            setTasks([]);
+        }
 
         // Members
-        let m: Member[] = await (await fetch("/api/school/member", { method: "GET", headers: { school: String(id) } })).json();
-        m.sort((a, b) => a.admin ? -1 : b.admin ? 1 : a.name.localeCompare(b.name));
-        setMembers(m);
+        try {
+            let m: Member[] = await (await fetch("/api/school/member", { method: "GET", headers: { school: String(id) } })).json();
+            m.sort((a, b) => a.admin ? -1 : b.admin ? 1 : a.name.localeCompare(b.name));
+            setMembers(m);
+        } catch (error) {
+            setMembers([]);
+        }
 
         // Categories
-        let c: string[] = await (await fetch("/api/school/categories", { method: "GET", headers: { school: String(id) } })).json();
-        setCategories(c);
+        try {
+            let c: string[] = await (await fetch("/api/school/categories", { method: "GET", headers: { school: String(id) } })).json();
+            setCategories(c);
+        } catch (error) {
+            setCategories([]);
+        }
 
         // Assignments
-        let a: Assignment[] = await (await fetch("/api/school/assignments", { method: "GET", headers: { school: String(id) } })).json();
-        setAssignments(a);
+        try {
+            let a: Assignment[] = await (await fetch("/api/school/assignments", { method: "GET", headers: { school: String(id) } })).json();
+            setAssignments(a);
+        } catch (error) {
+            setAssignments([]);
+        }
     }
 
     useEffect(() => {
@@ -69,13 +85,13 @@ export default function App() {
     }, []);
 
     let pgs = [
-        { label: "Dashboard", icon: <IconLayoutDashboard />, page: <AppDashboard tasks={tasks} /> },
+        { label: "Dashboard", icon: <IconLayoutDashboard />, page: <AppDashboard tasks={tasks} assignments={assignments} /> },
         { label: "Tasks", icon: <IconCalendarEvent />, page: <AppTasks tasks={tasks} /> },
     ];
 
     let mgs = [
         { label: "Dashboard", icon: <IconLayoutDashboard />, page: <ManagerDashboard members={members} tasks={tasks} assignments={assignments} /> },
-        { label: "Tasks", icon: <IconCalendarEvent />, page: <ManagerTasks tasks={tasks} categories={categories} assignments={assignments} /> },
+        { label: "Tasks", icon: <IconCalendarEvent />, page: <ManagerTasks tasks={tasks} categories={categories} assignments={assignments} members={members} /> },
         { label: "Users", icon: <IconUsersGroup />, page: <ManagerUsers members={members} assignments={assignments} /> },
         { label: "Settings", icon: <IconSettings />, page: <ManagerSettings /> },
     ]
