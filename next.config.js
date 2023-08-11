@@ -9,7 +9,8 @@ const nextConfig = {
                 pathname: "/a/**"
             }
         ]
-    }
+    },
+    output: "export"
 }
 
 module.exports = nextConfig
