@@ -59,7 +59,11 @@ export default function ManagerUsers({ members, assignments }: { members: Member
         Papa.parse(file, {
             complete: async ({ data: emails }) => {
                 let e = emails as String[][];
-                let b = { emails: e.map(v => v[0]).shift() };
+                e.shift();
+                console.log(e.map(v => v[0]));
+
+
+                let b = { emails: e.map(v => v[0]) };
                 let s = await (await fetch("/api/school/member/multi", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).json();
 
                 receivedRatioResponse(s.success, s.requested);

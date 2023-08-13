@@ -85,8 +85,10 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
         Papa.parse(file, {
             complete: async ({ data: tasks }) => {
                 let t = tasks as String[][];
+                t.shift();
+
                 // TODO - validating dates so that starting < ending
-                let b = { tasks: t.map(v => ({ category: v[0], name: v[1], description: v[2], starting_date: v[3], starting_time: v[4], ending_date: v[5], ending_time: v[6], capacity: v[7] })).shift() };
+                let b = { tasks: t.map(v => ({ category: v[0], name: v[1], description: v[2], starting_date: v[3], starting_time: v[4], ending_date: v[5], ending_time: v[6], capacity: v[7] })) };
                 let s = await (await fetch("/api/school/task/multi", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).json();
 
                 receivedRatioResponse(s.success, s.requested);
