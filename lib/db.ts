@@ -263,6 +263,8 @@ export async function listMembers(id: number): Promise<Member[]> {
 export async function enrollUser(id: number, email: string): Promise<boolean> {
     let db = await connectDB();
     try {
+        if (!email.trim().match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) throw null;
+
         await db.execute(`INSERT INTO enrollment (school, user) VALUES (?, ?)`, [id, email]);
 
         db.end();
