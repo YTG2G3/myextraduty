@@ -87,7 +87,7 @@ export default function App() {
     }, []);
 
     let pgs = [
-        { label: "Dashboard", icon: <IconLayoutDashboard />, page: <AppDashboard tasks={tasks} assignments={assignments} /> },
+        { label: "Dashboard", icon: <IconLayoutDashboard />, page: <AppDashboard tasks={tasks} assignments={assignments} setPageIndex={setPageIndex} /> },
         { label: "Tasks", icon: <IconCalendarEvent />, page: <AppTasks tasks={tasks} assignments={assignments} /> },
     ];
 

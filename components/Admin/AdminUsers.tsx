@@ -41,7 +41,7 @@ export default function AdminUsers({ users }: any) {
         confirmProps: { color: 'red' },
         centered: true,
         onConfirm: async () => {
-            let x = (await fetch("/api/user/reset", { method: "POST", body: u.email })).status;
+            let x = (await fetch("/api/user/remove", { method: "POST", body: u.email })).status;
 
             receivedResponse(x);
         }
@@ -49,7 +49,6 @@ export default function AdminUsers({ users }: any) {
 
     // TODO - pagination and effcient searching without loading the whole table
     // TODO - manage users' enrollments
-    // TODO - test the functions
     return (
         <div className={styles.container}>
             <TextInput style={{ width: "100%" }} placeholder="Search" value={search} onChange={onSearch} />
@@ -73,7 +72,7 @@ export default function AdminUsers({ users }: any) {
                                             </Tooltip>
 
                                             <Tooltip label="Remove">
-                                                <ActionIcon onClick={() => removeUser}><IconUserX color='red' /></ActionIcon>
+                                                <ActionIcon onClick={() => removeUser(v)}><IconUserX color='red' /></ActionIcon>
                                             </Tooltip>
                                         </Group>
                                     ) : undefined}

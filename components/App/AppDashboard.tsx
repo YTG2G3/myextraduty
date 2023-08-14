@@ -1,5 +1,5 @@
 import SiteContext from "@/lib/site-context";
-import { Accordion, Group, Stack, Text } from "@mantine/core";
+import { Accordion, Button, Group, Stack, Text } from "@mantine/core";
 import { useContext, useEffect, useState } from "react";
 import GetReady from "../GetReady";
 import dayjs from "dayjs";
@@ -7,7 +7,7 @@ import styles from '@/styles/AppDashboard.module.scss';
 import { Assignment, Task } from "@/lib/schema";
 import DynamicIcon from "../DynamicIcon";
 
-export default function AppDashboard({ tasks, assignments }: { tasks: Task[], assignments: Assignment[] }) {
+export default function AppDashboard({ tasks, assignments, setPageIndex }: { tasks: Task[], assignments: Assignment[], setPageIndex: Function }) {
     let { school, user } = useContext(SiteContext);
     let [now, setNow] = useState(dayjs());
 
@@ -45,7 +45,10 @@ export default function AppDashboard({ tasks, assignments }: { tasks: Task[], as
             <div className={styles.b}>
                 {upcomingEvents.length === 0 ? (
                     <div className={styles.cen}>
-                        <Text weight="bold" size="40px">There aren&apos;t any upcoming events!</Text>
+                        <Stack>
+                            <Text weight="bold" size="40px">There aren&apos;t any upcoming events!</Text>
+                            <Button p="lg" m="lg" size="20px" onClick={() => setPageIndex(1)}>Go sign up for more events!</Button>
+                        </Stack>
                     </div>
                 ) : (
                     <Accordion style={{ width: "100%" }}>

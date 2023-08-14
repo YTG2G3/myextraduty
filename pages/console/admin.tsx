@@ -25,7 +25,7 @@ export default function Admin() {
         setSchools(sc);
 
         let us: User[] = await (await fetch("/api/user/list", { method: "GET" })).json();
-        us.sort((a, b) => a.admin ? -1 : b.admin ? 1 : a.name.localeCompare(b.name));
+        us.sort((a, b) => a.admin === b.admin ? a.name.localeCompare(b.name) : a.admin ? -1 : 1);
         setUsers(us);
     }
 

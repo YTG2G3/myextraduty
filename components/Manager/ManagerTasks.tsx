@@ -87,8 +87,6 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
                 let t = tasks as String[][];
                 t.shift();
 
-                // TODO - validating dates so that starting < ending
-                // TODO - repetitive events are considered as one (incrementing capcity)
                 let b = { tasks: t.map(v => ({ category: v[0], name: v[1], description: v[2], starting_date: v[3], ending_date: v[4], starting_time: v[5], ending_time: v[6], capacity: v[7] })) };
                 let s = await (await fetch("/api/school/task/multi", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).json();
 

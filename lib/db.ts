@@ -317,6 +317,9 @@ export async function promoteMember(id: number, email: string): Promise<boolean>
 export async function createTask(id: number, category: string, name: string, description: string, starting_date: string, ending_date: string, starting_time: string, ending_time: string, capacity: number): Promise<boolean> {
     let db = await connectDB();
     try {
+        if (dayjs(starting_date).isAfter(dayjs(ending_date))) throw null;
+        if (dayjs(starting_date + " " + starting_time).isAfter(dayjs(starting_date + " " + ending_time))) throw null;
+
         await db.execute(`INSERT INTO task(school, category, name, description, starting_date, ending_date, starting_time, ending_time, capacity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [id, category, name, description, starting_date, ending_date, starting_time, ending_time, capacity]);
 
         db.end();

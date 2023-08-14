@@ -9,7 +9,7 @@ import DynamicIcon from "../DynamicIcon";
 import { Assignment, Task } from "@/lib/schema";
 import { receivedResponse } from "@/lib/received-response";
 
-// TODO - calendar view, list view, signup etc
+// TODO - calendar view
 export default function AppTasks({ tasks, assignments }: { tasks: Task[], assignments: Assignment[] }) {
     let { school, user } = useContext(SiteContext);
     let [search, setSearch] = useState("");
