@@ -181,7 +181,7 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
     return (
         <div className={styles.container}>
             <div className={styles.gro} >
-                <TextInput style={{ width: "100%" }} placeholder="Search" value={search} onChange={onSearch} />
+                <Autocomplete style={{ width: "100%" }} placeholder="Search" value={search} onChange={onSearch} data={categories} />
 
                 <div className={styles.wr}>
                     <Tooltip label="Add">
