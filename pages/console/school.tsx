@@ -57,11 +57,11 @@ export default function SchoolSelection() {
                             </Card.Section>
 
                             <Group position="apart" mt="md" mb="xs" className={styles.wr}>
-                                <Tooltip label={v.name}>
+                                <Tooltip label={v.name} position="top-start">
                                     <Text className={styles.t1} color={v.primary_color}>{v.name}</Text>
                                 </Tooltip>
 
-                                <Tooltip label={v.address}>
+                                <Tooltip label={v.address} position="top-end">
                                     <Text className={styles.t2} color={v.primary_color}>{v.address}</Text>
                                 </Tooltip>
                             </Group>
