@@ -13,7 +13,7 @@ export default function AppDashboard({ tasks, assignments }: { tasks: Task[], as
     if (!school.opening_at || dayjs(school.opening_at).isAfter(dayjs())) return <GetReady />;
 
     let reg = assignments.filter(v => v.user === user.email);
-    let upcomingEvents = tasks.filter(v => dayjs(v.ending_date + " " + v.ending_time).isAfter(dayjs()) ||
+    let upcomingEvents = tasks.filter(v => dayjs(v.ending_date + " " + v.ending_time).isAfter(dayjs()) &&
         assignments.find(vv => v.id === vv.task && vv.user === user.email));
 
     return (
