@@ -61,8 +61,6 @@ export async function getSchool(sid: number): Promise<School> {
         db.end();
         return s;
     } catch (error) {
-        console.log(error);
-
         db.end();
         return null;
     }
@@ -316,10 +314,10 @@ export async function promoteMember(id: number, email: string): Promise<boolean>
     }
 }
 
-export async function createTask(id: number, category: string, name: string, description: string, starting_date: string, starting_time: string, ending_date: string, ending_time: string, capacity: number): Promise<boolean> {
+export async function createTask(id: number, category: string, name: string, description: string, starting_date: string, ending_date: string, starting_time: string, ending_time: string, capacity: number): Promise<boolean> {
     let db = await connectDB();
     try {
-        await db.execute(`INSERT INTO task(school, category, name, description, starting_date, starting_time, ending_date, ending_time, capacity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [id, category, name, description, starting_date, starting_time, ending_date, ending_time, capacity]);
+        await db.execute(`INSERT INTO task(school, category, name, description, starting_date, ending_date, starting_time, ending_time, capacity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [id, category, name, description, starting_date, ending_date, starting_time, ending_time, capacity]);
 
         db.end();
         return true;
@@ -334,7 +332,7 @@ export async function createTasks(id: number, tasks: Task[]): Promise<number> {
 
     for (let task of tasks) {
         try {
-            let r = await createTask(id, task.category, task.name, task.description, task.starting_date, task.starting_time, task.ending_date, task.ending_time, task.capacity);
+            let r = await createTask(id, task.category, task.name, task.description, task.starting_date, task.ending_date, task.starting_time, task.ending_time, task.capacity);
             if (r) i++;
         } catch (error) {
             continue;
@@ -452,5 +450,31 @@ export async function listUserAssignments(school: number, user: string): Promise
     } catch (error) {
         db.end();
         return null;
+    }
+}
+
+export async function clearTasks(school: number): Promise<boolean> {
+    let db = await connectDB();
+    try {
+        await db.execute(`DELETE FROM task WHERE school=?`, [school]);
+
+        db.end();
+        return true;
+    } catch (error) {
+        db.end();
+        return false;
+    }
+}
+
+export async function clearMembers(school: number, owner: string): Promise<boolean> {
+    let db = await connectDB();
+    try {
+        await db.execute(`DELETE FROM enrollment WHERE school=? AND NOT user=?`, [school, owner]);
+
+        db.end();
+        return true;
+    } catch (error) {
+        db.end();
+        return false;
     }
 }

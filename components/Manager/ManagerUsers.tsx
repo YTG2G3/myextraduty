@@ -3,7 +3,7 @@ import styles from '@/styles/ManagerUsers.module.scss';
 import { useContext, useState } from "react";
 import { Assignment, Member, User } from "@/lib/schema";
 import SiteContext from "@/lib/site-context";
-import { IconArrowBigUp, IconArrowsTransferUp, IconDownload, IconFile, IconHelpOctagon, IconPlus, IconShieldStar, IconTrophy, IconUpload, IconUser, IconUserCog, IconUserQuestion, IconUserX, IconX } from "@tabler/icons-react";
+import { IconArrowBigUp, IconArrowsTransferUp, IconDownload, IconFile, IconHelpOctagon, IconPlus, IconShieldStar, IconTrash, IconTrophy, IconUpload, IconUser, IconUserCog, IconUserQuestion, IconUserX, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
 import Papa from 'papaparse';
@@ -27,7 +27,7 @@ export default function ManagerUsers({ members, assignments }: { members: Member
 
     const onSearch = (e: any) => {
         let str = e.currentTarget.value;
-        setSearch(str);
+        setSearch(str.trim());
     }
 
     const inviteMemberReq = async (e: any) => {
@@ -60,8 +60,6 @@ export default function ManagerUsers({ members, assignments }: { members: Member
             complete: async ({ data: emails }) => {
                 let e = emails as String[][];
                 e.shift();
-                console.log(e.map(v => v[0]));
-
 
                 let b = { emails: e.map(v => v[0]) };
                 let s = await (await fetch("/api/school/member/multi", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).json();
@@ -155,7 +153,19 @@ export default function ManagerUsers({ members, assignments }: { members: Member
         title: `Records of ${u.name}`,
         centered: true,
         children: <RecordsModal school={school} email={u.email} />
-    })
+    });
+
+    const clearMembers = () => modals.openConfirmModal({
+        title: "Are you sure about clearing members?",
+        children: <Text size="sm">This action is irreversible.</Text>,
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        centered: true,
+        color: "red",
+        onConfirm: async () => {
+            let x = (await fetch("/api/school/member/clear", { method: "POST", headers: { school: String(school.id) } })).status;
+            receivedResponse(x);
+        }
+    });
 
     return (
         <div className={styles.container}>
@@ -180,6 +190,10 @@ export default function ManagerUsers({ members, assignments }: { members: Member
                     <Tooltip label="Toggle Quota Met">
                         <ActionIcon variant={tg ? "filled" : "outline"} onClick={() => setTg(!tg)}><IconTrophy /></ActionIcon>
                     </Tooltip>
+
+                    {user.email === school.owner ? <Tooltip label="Clear All">
+                        <ActionIcon ml="xs" color="red" variant="filled" onClick={clearMembers}><IconTrash /></ActionIcon>
+                    </Tooltip> : undefined}
                 </div>
             </div>
 

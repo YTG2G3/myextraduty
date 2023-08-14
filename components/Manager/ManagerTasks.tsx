@@ -2,7 +2,7 @@ import { Assignment, Member, Task } from '@/lib/schema';
 import SiteContext from '@/lib/site-context';
 import styles from '@/styles/ManagerTasks.module.scss';
 import { Accordion, ActionIcon, Autocomplete, Button, Group, NumberInput, Space, Text, TextInput, Textarea, Tooltip, rem, useMantineTheme } from '@mantine/core';
-import { IconDownload, IconFile, IconHistory, IconPlus, IconUpload, IconX } from '@tabler/icons-react';
+import { IconDownload, IconFile, IconHistory, IconPlus, IconTrash, IconUpload, IconX } from '@tabler/icons-react';
 import { useContext, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import { modals } from "@mantine/modals";
@@ -28,11 +28,11 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
         !(dayjs(v.ending_date + " " + v.ending_time) < dayjs() && !past)
     );
 
-    let t: Task[] = tasks.filter(searchForTask);
+    let t: Task[] = tasks.filter(searchForTask).splice(0, 100);
 
     const onSearch = (e: any) => {
         let str = e.currentTarget.value;
-        setSearch(str);
+        setSearch(str.trim());
     }
 
     const addTaskReq = async (e: any) => {
@@ -88,7 +88,7 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
                 t.shift();
 
                 // TODO - validating dates so that starting < ending
-                let b = { tasks: t.map(v => ({ category: v[0], name: v[1], description: v[2], starting_date: v[3], starting_time: v[4], ending_date: v[5], ending_time: v[6], capacity: v[7] })) };
+                let b = { tasks: t.map(v => ({ category: v[0], name: v[1], description: v[2], starting_date: v[3], ending_date: v[4], starting_time: v[5], ending_time: v[6], capacity: v[7] })) };
                 let s = await (await fetch("/api/school/task/multi", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).json();
 
                 receivedRatioResponse(s.success, s.requested);
@@ -101,7 +101,7 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
         centered: true,
         children: (
             <div>
-                <Text color='red'>* Columns must be in order of <b>Category, Name, Description, Starting Date, Starting Time, Ending Date, Ending Time, Capacity</b></Text>
+                <Text color='red'>* Columns must be in order of <b>Category, Name, Description, Starting Date, Ending Date, Starting Time, Ending Time, Capacity</b></Text>
                 <Text color='red'>* Dates must be in YYYY-MM-DD format</Text>
                 <Text color='red'>* Time must be in HH:MM format</Text>
 
@@ -153,7 +153,6 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
 
     const registerTask = async (t: Task) => {
         let b = { task: t.id };
-
         let s = (await fetch("/api/school/task/register", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
         receivedResponse(s);
@@ -165,6 +164,18 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
 
         receivedResponse(s);
     }
+
+    const clearTasks = () => modals.openConfirmModal({
+        title: "Are you sure about clearing tasks?",
+        children: <Text size="sm">This action is irreversible.</Text>,
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        centered: true,
+        color: "red",
+        onConfirm: async () => {
+            let x = (await fetch("/api/school/task/clear", { method: "POST", headers: { school: String(school.id) } })).status;
+            receivedResponse(x);
+        }
+    });
 
     return (
         <div className={styles.container}>
@@ -187,7 +198,11 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
                     </CSVLink>
 
                     <Tooltip label="Toggle Completed">
-                        <ActionIcon variant={past ? "filled" : "outline"} onClick={() => setPast(!past)}><IconHistory /></ActionIcon>
+                        <ActionIcon mr="xs" variant={past ? "filled" : "outline"} onClick={() => setPast(!past)}><IconHistory /></ActionIcon>
+                    </Tooltip>
+
+                    <Tooltip label="Clear All">
+                        <ActionIcon variant="filled" color="red" onClick={clearTasks}><IconTrash /></ActionIcon>
                     </Tooltip>
                 </div>
             </div>
