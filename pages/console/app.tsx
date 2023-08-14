@@ -36,7 +36,7 @@ export default function App() {
                 let ssd = dayjs(b.starting_date + " " + b.starting_time);
 
                 return sd.isAfter(ssd) ? 1 : -1;
-            }); // TODO - test if this sorts
+            });
             setTasks(t);
         } catch (error) {
             setTasks([]);
@@ -79,8 +79,10 @@ export default function App() {
 
     // School selected?
     useEffect(() => {
-        if (!localStorage.getItem("school")) {
-            router.replace("/console/school");
+        if (!localStorage.getItem("school")) router.replace("/console/school");
+        else if (localStorage.getItem("refresh")) {
+            localStorage.removeItem("refresh");
+            router.reload();
         }
     }, []);
 

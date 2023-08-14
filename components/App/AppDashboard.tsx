@@ -1,6 +1,6 @@
 import SiteContext from "@/lib/site-context";
 import { Accordion, Group, Stack, Text } from "@mantine/core";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import GetReady from "../GetReady";
 import dayjs from "dayjs";
 import styles from '@/styles/AppDashboard.module.scss';
@@ -9,6 +9,14 @@ import DynamicIcon from "../DynamicIcon";
 
 export default function AppDashboard({ tasks, assignments }: { tasks: Task[], assignments: Assignment[] }) {
     let { school, user } = useContext(SiteContext);
+    let [now, setNow] = useState(dayjs());
+
+    useEffect(() => {
+        let s = setInterval(() => {
+            setNow(dayjs());
+            if (dayjs(school.opening_at).isBefore(dayjs())) clearInterval(s);
+        }, 500);
+    }, []);
 
     if (!school.opening_at || dayjs(school.opening_at).isAfter(dayjs())) return <GetReady />;
 

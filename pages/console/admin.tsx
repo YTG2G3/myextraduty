@@ -12,7 +12,7 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 
 export default function Admin() {
-    let { user } = useContext(SiteContext);
+    let { user, school } = useContext(SiteContext);
     let { status } = useSession();
     let router = useRouter();
     let [pageIndex, setPageIndex] = useState(0);
@@ -25,12 +25,14 @@ export default function Admin() {
         setSchools(sc);
 
         let us: User[] = await (await fetch("/api/user/list", { method: "GET" })).json();
-        // TODO - test if this sorts correctly
         us.sort((a, b) => a.admin ? -1 : b.admin ? 1 : a.name.localeCompare(b.name));
         setUsers(us);
     }
 
-    useEffect(() => { loadData() }, []);
+    useEffect(() => {
+        if (school) router.reload();
+        else loadData();
+    }, []);
 
     // Loading?
     if (!user || !schools || !users) return <LoadingPage />;

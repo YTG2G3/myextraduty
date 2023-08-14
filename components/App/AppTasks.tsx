@@ -1,6 +1,6 @@
 import SiteContext from "@/lib/site-context";
 import dayjs from "dayjs";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import GetReady from "../GetReady";
 import styles from '@/styles/ManagerTasks.module.scss';
 import { Accordion, ActionIcon, Button, Group, Text, TextInput, Tooltip } from "@mantine/core";
@@ -14,8 +14,16 @@ export default function AppTasks({ tasks, assignments }: { tasks: Task[], assign
     let { school, user } = useContext(SiteContext);
     let [search, setSearch] = useState("");
     let [tg, setTg] = useState(true);
+    let [now, setNow] = useState(dayjs());
 
-    if (!school.opening_at || dayjs(school.opening_at).isAfter(dayjs())) return <GetReady />;
+    useEffect(() => {
+        let s = setInterval(() => {
+            setNow(dayjs());
+            if (dayjs(school.opening_at).isBefore(dayjs())) clearInterval(s);
+        }, 500);
+    }, []);
+
+    if (!school.opening_at || dayjs(school.opening_at).isAfter(now)) return <GetReady />;
 
     const searchForTask = (v: Task) => (
         (v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
@@ -25,7 +33,7 @@ export default function AppTasks({ tasks, assignments }: { tasks: Task[], assign
         !(assignments.filter(vv => vv.task === v.id).length >= v.capacity && !tg)
     );
 
-    let t: Task[] = tasks.filter(searchForTask);
+    let t: Task[] = tasks.filter(t => dayjs(t.ending_date + " " + t.ending_time).isAfter(dayjs())).filter(searchForTask);
 
     const onSearch = (e: any) => {
         let str = e.currentTarget.value;

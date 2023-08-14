@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 
 export default function Console() {
-    // TODO - bug fix: infinite loading on initial load
     let { school } = useContext(SiteContext);
     let router = useRouter();
 

@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import SiteContext from "@/lib/site-context";
 
 export default function SchoolSelection() {
-    let { user, enrollments } = useContext(SiteContext);
+    let { user, enrollments, school } = useContext(SiteContext);
     let [schools, setSchools] = useState<School[]>(undefined);
     let router = useRouter();
     let { status } = useSession();
@@ -20,7 +20,6 @@ export default function SchoolSelection() {
         return <></>;
     }
 
-    // TODO - Quicker load with sync instead of async
     const loadData = async () => {
         // Reset localstorage
         localStorage.removeItem("school");
@@ -39,6 +38,7 @@ export default function SchoolSelection() {
     const selectSchool = (index: number) => {
         let s = schools[index];
         localStorage.setItem("school", JSON.stringify(s.id));
+        if (s.id !== school?.id) localStorage.setItem("refresh", "true");
         router.push("/console/app");
     }
 
