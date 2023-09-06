@@ -325,6 +325,8 @@ export async function createTask(id: number, category: string, name: string, des
         db.end();
         return true;
     } catch (error) {
+        console.log(error);
+
         db.end();
         return false;
     }
@@ -335,6 +337,8 @@ export async function createTasks(id: number, tasks: Task[]): Promise<number> {
 
     for (let task of tasks) {
         try {
+            console.log(task);
+
             let r = await createTask(id, task.category, task.name, task.description, task.starting_date, task.ending_date, task.starting_time, task.ending_time, task.capacity);
             if (r) i++;
         } catch (error) {
