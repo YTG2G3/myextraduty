@@ -46,7 +46,7 @@ export default function AppDashboard({ tasks, assignments, setPageIndex }: { tas
                 {upcomingEvents.length === 0 ? (
                     <div className={styles.cen}>
                         <Stack>
-                            <Text weight="bold" size="40px">There aren&apos;t any upcoming events!</Text>
+                            <Text weight="bold" size="40px">No any upcoming events!</Text>
                             <Button p="lg" m="lg" size="20px" onClick={() => setPageIndex(1)}>Go sign up for more events!</Button>
                         </Stack>
                     </div>

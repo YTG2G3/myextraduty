@@ -87,7 +87,7 @@ export default function ManagerDashboard({ members, tasks, assignments }: { memb
             <div className={styles.c}>
                 {upcomingEvents.length === 0 ? (
                     <div className={styles.cen}>
-                        <Text weight="bold" size="40px">There aren&apos;t any upcoming events!</Text>
+                        <Text weight="bold" size="40px">No upcoming events!</Text>
                     </div>
                 ) : (
                     <Accordion style={{ width: "100%" }}>
