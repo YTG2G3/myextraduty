@@ -3,7 +3,7 @@ import AdminNavbar from "@/components/Admin/AdminNavbar";
 import AdminSchools from "@/components/Admin/AdminSchools";
 import AdminUsers from "@/components/Admin/AdminUsers";
 import LoadingPage from "@/components/LoadingPage";
-import { School, User } from "@/lib/schema";
+import { Enrollment, School, User } from "@/lib/schema";
 import SiteContext from "@/lib/site-context";
 import { AppShell } from "@mantine/core";
 import { IconChalkboard, IconUsersGroup } from "@tabler/icons-react";
@@ -12,7 +12,7 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 
 export default function Admin() {
-    let { user, school } = useContext(SiteContext);
+    let { user, school, enrollments } = useContext(SiteContext);
     let { status } = useSession();
     let router = useRouter();
     let [pageIndex, setPageIndex] = useState(0);
@@ -20,13 +20,23 @@ export default function Admin() {
     let [users, setUsers] = useState<User[]>(undefined);
 
     const loadData = async () => {
-        let sc: School[] = await (await fetch("/api/school/list", { method: "GET" })).json();
-        sc.sort((a, b) => a.name.localeCompare(b.name));
-        setSchools(sc);
+        // Schools
+        try {
+            let sc: School[] = await (await fetch("/api/school/list", { method: "GET" })).json();
+            sc.sort((a, b) => a.name.localeCompare(b.name));
+            setSchools(sc);
+        } catch (error) {
+            setSchools([]);
+        }
 
-        let us: User[] = await (await fetch("/api/user/list", { method: "GET" })).json();
-        us.sort((a, b) => a.admin === b.admin ? a.name.localeCompare(b.name) : a.admin ? -1 : 1);
-        setUsers(us);
+        // Users
+        try {
+            let us: User[] = await (await fetch("/api/user/list", { method: "GET" })).json();
+            us.sort((a, b) => a.admin === b.admin ? a.name.localeCompare(b.name) : a.admin ? -1 : 1);
+            setUsers(us);
+        } catch (error) {
+            setUsers([]);
+        }
     }
 
     useEffect(() => {
@@ -35,11 +45,11 @@ export default function Admin() {
     }, []);
 
     // Loading?
-    if (!user || !schools || !users) return <LoadingPage />;
+    if (!user || !schools || !users || !enrollments) return <LoadingPage />;
 
     let pgs = [
         { label: "Schools", icon: <IconChalkboard />, page: <AdminSchools schools={schools} /> },
-        { label: "Users", icon: <IconUsersGroup />, page: <AdminUsers users={users} /> }
+        { label: "Users", icon: <IconUsersGroup />, page: <AdminUsers users={users} schools={schools} /> }
     ];
 
     // Protected route

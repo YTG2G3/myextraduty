@@ -1,6 +1,6 @@
 import '@/styles/globals.scss';
 import type { AppProps } from 'next/app';
-import { MantineProvider } from '@mantine/core';
+import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import theme from '@/lib/theme';
 import Head from 'next/head';
 import { SessionProvider, useSession } from 'next-auth/react';
@@ -11,6 +11,7 @@ import { RouterTransition } from '@/components/RouterTransition';
 import { Notifications } from '@mantine/notifications';
 import { ModalsProvider } from '@mantine/modals';
 import { DatesProvider } from '@mantine/dates';
+import { useLocalStorage } from '@mantine/hooks';
 
 function Layout({ children, ...props }: any) {
     let { status } = useSession();
@@ -51,27 +52,38 @@ function Layout({ children, ...props }: any) {
         }
     }
 
+    const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+        key: 'mantine-color-scheme',
+        defaultValue: 'light',
+        getInitialValueInEffect: true,
+    });
+
+    const toggleColorScheme = (value?: ColorScheme) => setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+
+    // TODO - fix dark mode not being applied
     return (
         <SiteContext.Provider value={{ user, school, enrollments }} >
             <Head>
                 <title>{user ? `Welcome, ${user.name}` : "MyExtraDuty"}</title>
             </Head>
 
-            <MantineProvider
-                withGlobalStyles
-                withNormalizeCSS
-                theme={theme(school?.primary_color ?? "blue")}
-                {...props}
-            >
-                <RouterTransition />
-                <Notifications />
+            <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+                <MantineProvider
+                    withGlobalStyles
+                    withNormalizeCSS
+                    theme={theme(school?.primary_color ?? "blue")}
+                    {...props}
+                >
+                    <RouterTransition />
+                    <Notifications />
 
-                <ModalsProvider>
-                    <DatesProvider settings={{ firstDayOfWeek: 0 }}>
-                        {children}
-                    </DatesProvider>
-                </ModalsProvider>
-            </MantineProvider>
+                    <ModalsProvider>
+                        <DatesProvider settings={{ firstDayOfWeek: 0 }}>
+                            {children}
+                        </DatesProvider>
+                    </ModalsProvider>
+                </MantineProvider>
+            </ColorSchemeProvider>
         </SiteContext.Provider>
     );
 }

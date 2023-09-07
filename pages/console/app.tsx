@@ -45,7 +45,7 @@ export default function App() {
         // Members
         try {
             let m: Member[] = await (await fetch("/api/school/member", { method: "GET", headers: { school: String(id) } })).json();
-            m.sort((a, b) => a.admin ? -1 : b.admin ? 1 : a.name.localeCompare(b.name));
+            m.sort((a, b) => a.manager ? -1 : b.manager ? 1 : a.name.localeCompare(b.name));
             setMembers(m);
         } catch (error) {
             setMembers([]);
@@ -88,14 +88,14 @@ export default function App() {
 
     let pgs = [
         { label: "Dashboard", icon: <IconLayoutDashboard />, page: <AppDashboard tasks={tasks} assignments={assignments} setPageIndex={setPageIndex} /> },
-        { label: "Tasks", icon: <IconCalendarEvent />, page: <AppTasks tasks={tasks} assignments={assignments} /> },
+        { label: "Tasks", icon: <IconCalendarEvent />, page: <AppTasks tasks={tasks} categories={categories} assignments={assignments} /> },
     ];
 
     let mgs = [
         { label: "Dashboard", icon: <IconLayoutDashboard />, page: <ManagerDashboard members={members} tasks={tasks} assignments={assignments} /> },
         { label: "Tasks", icon: <IconCalendarEvent />, page: <ManagerTasks tasks={tasks} categories={categories} assignments={assignments} members={members} /> },
         { label: "Users", icon: <IconUsersGroup />, page: <ManagerUsers members={members} assignments={assignments} /> },
-        { label: "Settings", icon: <IconSettings />, page: <ManagerSettings /> },
+        { label: "Settings", icon: <IconSettings />, page: <ManagerSettings members={members} /> },
     ]
 
     // Protected route

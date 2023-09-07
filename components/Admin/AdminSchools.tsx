@@ -1,15 +1,17 @@
 import { ActionIcon, Button, Group, MANTINE_COLORS, Pagination, Select, TextInput, Image, Card, Text, Space, Tooltip, NumberInput } from "@mantine/core";
 import styles from '@/styles/AdminSchools.module.scss';
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { School } from "@/lib/schema";
-import { IconArrowsTransferUp, IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconArrowsTransferUp, IconCirclePlus, IconDoorExit, IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { modals } from '@mantine/modals';
 import { DateTimePicker } from "@mantine/dates";
 import { receivedResponse } from "@/lib/received-response";
+import SiteContext from "@/lib/site-context";
 
 const viewPerPage = 9;
 
 export default function AdminSchools({ schools }: any) {
+    let { user, enrollments } = useContext(SiteContext);
     let [search, setSearch] = useState("");
 
     const searchForSchool = (v: School) => (
@@ -133,9 +135,31 @@ export default function AdminSchools({ schools }: any) {
         )
     });
 
-    // TODO - fixed searchbar
-    // TODO - admin enter school to manage
-    // TODO - scroll only the li
+    const enrollSchool = (s: School) => modals.openConfirmModal({
+        title: `Are you sure about enrolling in ${s.name}?`,
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        centered: true,
+        onConfirm: async () => {
+            let b = { email: user.email };
+            let x = (await fetch("/api/school/member", { method: "POST", body: JSON.stringify(b), headers: { school: String(s.id) } })).status;
+
+            receivedResponse(x);
+        }
+    });
+
+    const leaveSchool = (s: School) => modals.openConfirmModal({
+        title: `Are you sure about leaving ${s.name}?`,
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        centered: true,
+        confirmProps: { color: 'red' },
+        onConfirm: async () => {
+            let b = { email: user.email };
+            let x = (await fetch("/api/school/member", { method: "POST", body: JSON.stringify(b), headers: { school: String(s.id) } })).status;
+
+            receivedResponse(x);
+        }
+    });
+
     return (
         <div className={styles.container}>
             <div className={styles.gro} >
@@ -169,6 +193,16 @@ export default function AdminSchools({ schools }: any) {
                             <Space h="md" />
 
                             <Group position="right">
+                                {enrollments.find(er => er.school === v.id) ? (
+                                    <Tooltip label="Leave">
+                                        <ActionIcon onClick={() => leaveSchool(v)}><IconDoorExit color="red" /></ActionIcon>
+                                    </Tooltip>
+                                ) : (
+                                    <Tooltip label="Enroll">
+                                        <ActionIcon onClick={() => enrollSchool(v)}><IconCirclePlus /></ActionIcon>
+                                    </Tooltip>
+                                )}
+
                                 <Tooltip label="Change Owner">
                                     <ActionIcon onClick={() => changeOwner(v)}><IconArrowsTransferUp /></ActionIcon>
                                 </Tooltip>

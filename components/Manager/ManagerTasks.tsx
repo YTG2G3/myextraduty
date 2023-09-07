@@ -12,7 +12,8 @@ import { DatePickerInput, TimeInput } from '@mantine/dates';
 import dayjs from 'dayjs';
 import TaskEditModal from '../TaskEditModal';
 import DynamicIcon from '../DynamicIcon';
-import { receivedRatioResponse, receivedResponse } from '@/lib/received-response';
+import { receivedResponse } from '@/lib/received-response';
+import { notifications } from '@mantine/notifications';
 
 export default function ManagerTasks({ tasks, categories, assignments, members }: { tasks: Task[], categories: string[], assignments: Assignment[], members: Member[] }) {
     let [search, setSearch] = useState("");
@@ -30,9 +31,8 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
 
     let t: Task[] = tasks.filter(searchForTask);
 
-    const onSearch = (e: any) => {
-        let str = e.currentTarget.value;
-        setSearch(str.trim());
+    const onSearch = (s: string) => {
+        setSearch(s.trim());
     }
 
     const addTaskReq = async (e: any) => {
@@ -87,10 +87,55 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
                 let t = tasks as String[][];
                 t.shift();
 
-                let b = { tasks: t.map(v => ({ category: v[0], name: v[1], description: v[2], starting_date: v[3], ending_date: v[4], starting_time: v[5], ending_time: v[6], capacity: v[7] })) };
-                let s = await (await fetch("/api/school/task/multi", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).json();
+                notifications.show({
+                    id: "uploading-tasks",
+                    title: "Uploading tasks...",
+                    loading: true,
+                    autoClose: false,
+                    withCloseButton: false,
+                    message: `Pending: ${t.length} | Success: 0 | Failed: 0`
+                });
 
-                receivedRatioResponse(s.success, s.requested);
+                let s = 0, f = 0;
+                for (let i in t) {
+                    try {
+                        let v = {
+                            category: t[i][0],
+                            name: t[i][1],
+                            description: t[i][2],
+                            starting_date: t[i][3],
+                            ending_date: t[i][4],
+                            starting_time: t[i][5],
+                            ending_time: t[i][6],
+                            capacity: t[i][7]
+                        };
+
+                        let x = (await fetch("/api/school/task/create", { method: "POST", body: JSON.stringify(v), headers: { school: String(school.id) } })).status;
+
+                        if (x === 200) s++;
+                        else throw null;
+                    } catch (error) {
+                        f++;
+                    }
+
+                    notifications.update({
+                        id: "uploading-tasks",
+                        title: "Uploading tasks...",
+                        loading: true,
+                        autoClose: false,
+                        withCloseButton: false,
+                        message: `Pending: ${t.length - s - f} | Success: ${s} | Failed: ${f}`
+                    });
+                }
+
+                notifications.update({
+                    id: "uploading-tasks",
+                    title: "Upload complete",
+                    loading: false,
+                    autoClose: 4000,
+                    withCloseButton: true,
+                    message: `Success: ${s} | Failed: ${f}`
+                });
             }
         });
     }
@@ -176,6 +221,7 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
         }
     });
 
+    // TODO - grid view for convenience
     return (
         <div className={styles.container}>
             <div className={styles.gro} >

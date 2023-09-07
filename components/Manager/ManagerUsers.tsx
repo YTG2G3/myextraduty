@@ -8,8 +8,9 @@ import { modals } from "@mantine/modals";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
 import Papa from 'papaparse';
 import { CSVLink } from 'react-csv';
-import { receivedRatioResponse, receivedResponse } from "@/lib/received-response";
+import { receivedResponse } from "@/lib/received-response";
 import RecordsModal from "../RecordsModal";
+import { notifications } from "@mantine/notifications";
 
 export default function ManagerUsers({ members, assignments }: { members: Member[], assignments: Assignment[] }) {
     let [search, setSearch] = useState("");
@@ -61,10 +62,45 @@ export default function ManagerUsers({ members, assignments }: { members: Member
                 let e = emails as String[][];
                 e.shift();
 
-                let b = { emails: e.map(v => v[0]) };
-                let s = await (await fetch("/api/school/member/multi", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).json();
+                notifications.show({
+                    id: "uploading-inv",
+                    title: "Uploading invitations...",
+                    loading: true,
+                    autoClose: false,
+                    withCloseButton: false,
+                    message: `Pending: ${e.length} | Success: 0 | Failed: 0`
+                });
 
-                receivedRatioResponse(s.success, s.requested);
+                let s = 0, f = 0;
+                for (let i in e) {
+                    try {
+                        let v = { email: e[i][0] };
+                        let x = (await fetch("/api/school/member", { method: "POST", body: JSON.stringify(v), headers: { school: String(school.id) } })).status;
+
+                        if (x === 200) s++;
+                        else throw null;
+                    } catch (error) {
+                        f++;
+                    }
+
+                    notifications.update({
+                        id: "uploading-inv",
+                        title: "Uploading invitations...",
+                        loading: true,
+                        autoClose: false,
+                        withCloseButton: false,
+                        message: `Pending: ${e.length - s - f} | Success: ${s} | Failed: ${f}`
+                    });
+                }
+
+                notifications.update({
+                    id: "uploading-inv",
+                    title: "Upload complete",
+                    loading: false,
+                    autoClose: 4000,
+                    withCloseButton: true,
+                    message: `Success: ${s} | Failed: ${f}`
+                });
             }
         });
     }

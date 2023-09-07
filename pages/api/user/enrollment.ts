@@ -5,8 +5,19 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 export default AuthRoute({
     GET: async (req: NextApiRequest, res: NextApiResponse, user: User) => {
-        let er = await getEnrollments(user.email);
-        res.json(er);
+        let { email } = req.query;
+
+        if (!email) {
+            let er = await getEnrollments(user.email as string);
+            return res.json(er);
+        }
+
+        if (user.admin || user.email == email) {
+            let er = await getEnrollments(email as string);
+            return res.json(er);
+        }
+
+        res.status(401).end();
     }
 });
 

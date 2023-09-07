@@ -7,18 +7,6 @@ export function receivedResponse(status: number) {
     else failNoti();
 }
 
-export function receivedRatioResponse(s: number, t: number) {
-    notifications.show({
-        title: `Success: ${s}/${t}`, message: (
-            <div>
-                <Text mb="sm">Please refresh the screen to apply changes.</Text>
-                <Button onClick={() => location.reload()}>Refresh</Button>
-            </div>
-        )
-    });
-    modals.closeAll();
-}
-
 export function successNoti() {
     notifications.show({
         title: "Success!", message: (

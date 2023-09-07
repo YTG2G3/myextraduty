@@ -1,13 +1,13 @@
 import SiteContext from '@/lib/site-context';
 import styles from '@/styles/ManagerSettings.module.scss';
-import { Button, Group, MANTINE_COLORS, NumberInput, Select, TextInput } from '@mantine/core';
+import { Autocomplete, Button, Group, MANTINE_COLORS, NumberInput, Select, TextInput } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { useContext, useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
 import { receivedResponse } from '@/lib/received-response';
-import dayjs from 'dayjs';
+import { Member } from '@/lib/schema';
 
-export default function ManagerSettings() {
+export default function ManagerSettings({ members }: { members: Member[] }) {
     let { school, user } = useContext(SiteContext);
     let [loading, setLoading] = useState(false);
 
@@ -45,7 +45,7 @@ export default function ManagerSettings() {
         centered: true,
         children: (
             <form onSubmit={(e) => transferReq(e)}>
-                <TextInput name="owner" withAsterisk label="New Owner Email" />
+                <Autocomplete name="owner" data={members.filter(m => m.email !== user.email).map(m => m.email)} withAsterisk label="New Owner Email" />
 
                 <Group position="right" mt="md">
                     <Button type="submit" color='red'>Transfer</Button>

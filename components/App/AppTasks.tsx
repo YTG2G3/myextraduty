@@ -3,14 +3,14 @@ import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import GetReady from "../GetReady";
 import styles from '@/styles/ManagerTasks.module.scss';
-import { Accordion, ActionIcon, Button, Group, Text, TextInput, Tooltip } from "@mantine/core";
+import { Accordion, ActionIcon, Autocomplete, Button, Group, Text, Tooltip } from "@mantine/core";
 import { IconUserCancel } from "@tabler/icons-react";
 import DynamicIcon from "../DynamicIcon";
 import { Assignment, Task } from "@/lib/schema";
 import { receivedResponse } from "@/lib/received-response";
 
 // TODO - calendar view
-export default function AppTasks({ tasks, assignments }: { tasks: Task[], assignments: Assignment[] }) {
+export default function AppTasks({ tasks, categories, assignments }: { tasks: Task[], categories: string[], assignments: Assignment[] }) {
     let { school, user } = useContext(SiteContext);
     let [search, setSearch] = useState("");
     let [tg, setTg] = useState(true);
@@ -35,9 +35,8 @@ export default function AppTasks({ tasks, assignments }: { tasks: Task[], assign
 
     let t: Task[] = tasks.filter(t => dayjs(t.ending_date + " " + t.ending_time).isAfter(dayjs())).filter(searchForTask);
 
-    const onSearch = (e: any) => {
-        let str = e.currentTarget.value;
-        setSearch(str);
+    const onSearch = (s: string) => {
+        setSearch(s.trim());
     }
 
     const registerTask = async (t: Task) => {
@@ -58,7 +57,7 @@ export default function AppTasks({ tasks, assignments }: { tasks: Task[], assign
     return (
         <div className={styles.container}>
             <div className={styles.gro} >
-                <TextInput style={{ width: "100%" }} placeholder="Search" value={search} onChange={onSearch} />
+                <Autocomplete style={{ width: "100%" }} placeholder="Search" value={search} onChange={onSearch} data={categories} />
 
                 <div className={styles.wr}>
                     <Tooltip label="Toggle Filled">

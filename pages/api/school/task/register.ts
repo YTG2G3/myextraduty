@@ -13,7 +13,6 @@ export default AuthRoute({
         let t = await getTask(task);
 
         // Can't sign up for completed events
-        // TODO - potential timezone error on production server; consider
         if (dayjs().isAfter(dayjs(t.ending_date + " " + t.ending_time))) return res.status(400).end();
 
         // Make sure it's not full

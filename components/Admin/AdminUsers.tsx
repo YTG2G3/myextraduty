@@ -1,13 +1,16 @@
 import { receivedResponse } from '@/lib/received-response';
-import { User } from '@/lib/schema';
+import { School, User } from '@/lib/schema';
 import styles from '@/styles/AdminUsers.module.scss';
 import { Accordion, ActionIcon, Group, Stack, Text, TextInput, Tooltip } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { IconUserShield, IconUserX } from '@tabler/icons-react';
+import { IconBooks, IconUser, IconUserCog, IconUserShield, IconUserX } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useState } from "react";
+import EnrollmentsModal from '../EnrollmentsModal';
 
-export default function AdminUsers({ users }: any) {
+const viewPerPage = 50;
+
+export default function AdminUsers({ users, schools }: { users: User[], schools: School[] }) {
     let [search, setSearch] = useState("");
 
     const searchForUser = (v: User) => (
@@ -15,7 +18,7 @@ export default function AdminUsers({ users }: any) {
         v.email.toLowerCase().indexOf(search.toLowerCase()) >= 0
     );
 
-    let us: User[] = users.filter(searchForUser);
+    let us: User[] = users.filter(searchForUser).splice(0, viewPerPage);
 
     const onSearch = (e: any) => {
         let str = e.currentTarget.value;
@@ -47,16 +50,31 @@ export default function AdminUsers({ users }: any) {
         }
     });
 
-    // TODO - pagination and effcient searching without loading the whole table
-    // TODO - manage users' enrollments
+    const enrollmentsUser = async (u: User) => modals.open({
+        title: `Enrollments for ${u.name}`,
+        children: <EnrollmentsModal user={u} sc={schools} />,
+        centered: true
+    })
+
     return (
         <div className={styles.container}>
             <TextInput style={{ width: "100%" }} placeholder="Search" value={search} onChange={onSearch} />
+            <Text size="sm" color="dimmed">Displaying max {viewPerPage} users</Text>
 
             <Accordion style={{ width: "100%", marginTop: 20 }}>
                 {us.map((v, i) => (
                     <Accordion.Item key={i} value={v.email}>
-                        <Accordion.Control><Text weight="bold" color={v.admin ? "#339AF0" : undefined}>{v.name} {v.admin ? "(Admin)" : undefined}</Text></Accordion.Control>
+                        <Accordion.Control icon={
+                            v.admin ? (
+                                <Tooltip label="Manager">
+                                    <IconUserCog color="blue" />
+                                </Tooltip>
+                            ) : (
+                                <IconUser />
+                            )
+                        }>
+                            <Text weight="bold" color={v.admin ? "#339AF0" : undefined}>{v.name} {v.admin ? "(Admin)" : undefined}</Text>
+                        </Accordion.Control>
 
                         <Accordion.Panel>
                             <Group>
@@ -67,8 +85,12 @@ export default function AdminUsers({ users }: any) {
 
                                     {!v.admin ? (
                                         <Group style={{ width: "100%", justifyContent: "center" }}>
-                                            <Tooltip label="Assign Admin Role">
-                                                <ActionIcon onClick={() => promoteUser(v)}><IconUserShield color="#339AF0" /></ActionIcon>
+                                            <Tooltip label="Enrollments">
+                                                <ActionIcon onClick={() => enrollmentsUser(v)}><IconBooks /></ActionIcon>
+                                            </Tooltip>
+
+                                            <Tooltip label="Promote">
+                                                <ActionIcon onClick={() => promoteUser(v)}><IconUserShield color="blue" /></ActionIcon>
                                             </Tooltip>
 
                                             <Tooltip label="Remove">

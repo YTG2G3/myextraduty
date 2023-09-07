@@ -11,6 +11,7 @@ const connectDB = async () => createConnection({
 });
 
 export async function getUser(email: string): Promise<User> {
+    email = email.toLowerCase();
     let db = await connectDB();
     try {
         let [rows]: any[] = await db.execute(`SELECT * FROM user WHERE email=?`, [email]);
@@ -25,6 +26,7 @@ export async function getUser(email: string): Promise<User> {
 }
 
 export async function createUser(email: string, name: string, picture: string, admin = false): Promise<boolean> {
+    email = email.toLowerCase();
     let db = await connectDB();
     try {
         await db.execute(`INSERT INTO user VALUES (?,?,?,?)`, [email, name, picture, admin]);
@@ -38,6 +40,7 @@ export async function createUser(email: string, name: string, picture: string, a
 }
 
 export async function updateUserInfo(email: string, name: string, picture: string): Promise<boolean> {
+    email = email.toLowerCase();
     let db = await connectDB();
     try {
         await db.execute(`UPDATE user SET name=?, picture=? WHERE email=?`, [name, picture, email]);
@@ -67,6 +70,7 @@ export async function getSchool(sid: number): Promise<School> {
 }
 
 export async function getEnrollments(email: string): Promise<Enrollment[]> {
+    email = email.toLowerCase();
     let db = await connectDB();
     try {
         let [rows]: any[] = await db.execute(`SELECT * FROM enrollment WHERE user=?`, [email]);
@@ -149,6 +153,7 @@ export async function listUsers(): Promise<User[]> {
 }
 
 export async function promoteUser(email: string): Promise<boolean> {
+    email = email.toLowerCase();
     let db = await connectDB();
     try {
         await db.execute(`UPDATE user SET admin=1 WHERE email=?`, [email]);
@@ -162,6 +167,7 @@ export async function promoteUser(email: string): Promise<boolean> {
 }
 
 export async function removeUser(email: string): Promise<boolean> {
+    email = email.toLowerCase();
     let db = await connectDB();
     try {
         // Only removes non-admins
@@ -176,6 +182,7 @@ export async function removeUser(email: string): Promise<boolean> {
 }
 
 export async function transferSchoolOwnership(id: number, email: string): Promise<boolean> {
+    email = email.toLowerCase();
     let db = await connectDB();
     try {
         await db.execute(`UPDATE school SET owner=? WHERE id=?`, [email, id]);
@@ -192,16 +199,15 @@ export async function getTask(id: number): Promise<Task> {
     let db = await connectDB();
     try {
         let [rows]: any[] = await db.execute(`SELECT * FROM task WHERE id=?`, [id]);
-
         let t: Task = {
             id: rows[0].id,
             school: Number(rows[0].school),
             category: rows[0].category,
             name: rows[0].name,
             description: rows[0].description,
-            starting_date: dayjs(rows[0].starting_date).format("YYYY-MM-DD"),
+            starting_date: rows[0].starting_date.toISOString().substring(0, 10), // TODO - convert this col into string
+            ending_date: rows[0].ending_date.toISOString().substring(0, 10),
             starting_time: rows[0].starting_time.substring(0, 5),
-            ending_date: dayjs(rows[0].ending_date).format("YYYY-MM-DD"),
             ending_time: rows[0].ending_time.substring(0, 5),
             capacity: Number(rows[0].capacity)
         };
@@ -224,9 +230,9 @@ export async function listTasks(id: number): Promise<Task[]> {
             category: v.category,
             name: v.name,
             description: v.description,
-            starting_date: dayjs(v.starting_date).format("YYYY-MM-DD"),
+            starting_date: v.starting_date.toISOString().substring(0, 10), // TODO - convert this col into string
+            ending_date: v.ending_date.toISOString().substring(0, 10),
             starting_time: v.starting_time.substring(0, 5),
-            ending_date: dayjs(v.ending_date).format("YYYY-MM-DD"),
             ending_time: v.ending_time.substring(0, 5),
             capacity: Number(v.capacity)
         }));
@@ -259,6 +265,7 @@ export async function listMembers(id: number): Promise<Member[]> {
 }
 
 export async function enrollUser(id: number, email: string): Promise<boolean> {
+    email = email.toLowerCase();
     let db = await connectDB();
     try {
         if (!email.trim().match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) throw null;
@@ -273,22 +280,8 @@ export async function enrollUser(id: number, email: string): Promise<boolean> {
     }
 }
 
-export async function enrollUsers(id: number, emails: string[]): Promise<number> {
-    let i = 0;
-
-    for (let email of emails) {
-        try {
-            let r = await enrollUser(id, email);
-            if (r) i++;
-        } catch (error) {
-            continue;
-        }
-    }
-
-    return i;
-}
-
 export async function kickMember(id: number, email: string): Promise<boolean> {
+    email = email.toLowerCase();
     let db = await connectDB();
     try {
         await db.execute(`DELETE FROM enrollment WHERE school=? AND user=?`, [id, email]);
@@ -302,6 +295,7 @@ export async function kickMember(id: number, email: string): Promise<boolean> {
 }
 
 export async function promoteMember(id: number, email: string): Promise<boolean> {
+    email = email.toLowerCase();
     let db = await connectDB();
     try {
         await db.execute(`UPDATE enrollment SET manager=1 WHERE school=? AND user=?`, [id, email]);
@@ -325,28 +319,9 @@ export async function createTask(id: number, category: string, name: string, des
         db.end();
         return true;
     } catch (error) {
-        console.log(error);
-
         db.end();
         return false;
     }
-}
-
-export async function createTasks(id: number, tasks: Task[]): Promise<number> {
-    let i = 0;
-
-    for (let task of tasks) {
-        try {
-            console.log(task);
-
-            let r = await createTask(id, task.category, task.name, task.description, task.starting_date, task.ending_date, task.starting_time, task.ending_time, task.capacity);
-            if (r) i++;
-        } catch (error) {
-            continue;
-        }
-    }
-
-    return i;
 }
 
 export async function listCategories(id: number): Promise<string[]> {
@@ -377,6 +352,7 @@ export async function listAssignments(id: number): Promise<Assignment[]> {
 }
 
 export async function assignMember(id: number, email: string, school: number): Promise<boolean> {
+    email = email.toLowerCase();
     let db = await connectDB();
     try {
         await db.execute(`INSERT INTO assignment(task, user, school) VALUES (?, ?, ?)`, [id, email, school]);
@@ -390,6 +366,7 @@ export async function assignMember(id: number, email: string, school: number): P
 }
 
 export async function removeMemberFromTask(id: number, email: string): Promise<boolean> {
+    email = email.toLowerCase();
     let db = await connectDB();
     try {
         await db.execute(`DELETE FROM assignment WHERE task=? AND user=?`, [id, email]);
@@ -402,10 +379,10 @@ export async function removeMemberFromTask(id: number, email: string): Promise<b
     }
 }
 
-export async function updateTask(id: number, category: string, name: string, description: string, starting_date: string, starting_time: string, ending_date: string, ending_time: string, capacity: number): Promise<boolean> {
+export async function updateTask(id: number, category: string, name: string, description: string, starting_date: string, ending_date: string, starting_time: string, ending_time: string, capacity: number): Promise<boolean> {
     let db = await connectDB();
     try {
-        await db.execute(`UPDATE task SET category=?, name=?, description=?, starting_date=?, starting_time=?, ending_date=?, ending_time=?, capacity=? WHERE id=?`, [category, name, description, starting_date, starting_time, ending_date, ending_time, capacity, id]);
+        await db.execute(`UPDATE task SET category=?, name=?, description=?, starting_date=?, ending_date=?, starting_time=?, ending_time=?, capacity=? WHERE id=?`, [category, name, description, starting_date, ending_date, starting_time, ending_time, capacity, id]);
 
         db.end();
         return true;
@@ -448,6 +425,7 @@ export async function deleteTask(id: number): Promise<boolean> {
 }
 
 export async function listUserAssignments(school: number, user: string): Promise<Assignment[]> {
+    user = user.toLowerCase();
     let db = await connectDB();
     try {
         let [rows]: any[] = await db.execute(`SELECT * FROM assignment WHERE school=? AND user=?`, [school, user]);
@@ -474,6 +452,7 @@ export async function clearTasks(school: number): Promise<boolean> {
 }
 
 export async function clearMembers(school: number, owner: string): Promise<boolean> {
+    owner = owner.toLowerCase();
     let db = await connectDB();
     try {
         await db.execute(`DELETE FROM enrollment WHERE school=? AND NOT user=?`, [school, owner]);
