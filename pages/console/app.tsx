@@ -16,6 +16,7 @@ import ManagerTasks from "@/components/Manager/ManagerTasks";
 import { Assignment, Member, Task } from "@/lib/schema";
 import dayjs from "dayjs";
 
+// TODO - fix glitches on logout, console
 export default function App() {
     let { user, school, enrollments } = useContext(SiteContext);
     let { status } = useSession();
