@@ -23,7 +23,8 @@ export default function AppTasks({ tasks, categories, assignments }: { tasks: Ta
         }, 500);
     }, []);
 
-    if (!school.opening_at || dayjs(school.opening_at).isAfter(now)) return <GetReady />;
+    // DEPRECATED - can't view tasks before opening time
+    // if (!school.opening_at || dayjs(school.opening_at).isAfter(now)) return <GetReady />;
 
     const searchForTask = (v: Task) => (
         (v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
@@ -85,13 +86,15 @@ export default function AppTasks({ tasks, categories, assignments }: { tasks: Ta
                                     <Text>Time: {v.starting_time} - {v.ending_time}</Text>
                                     <Text>Attendants: {assignments.filter(x => x.task === v.id).length}/{v.capacity}</Text>
 
-                                    <Group mt="md">
-                                        {assignments.find(x => x.user === user.email && x.task === v.id) ? (
-                                            <Button onClick={() => dropTask(v)} color="red">Drop</Button>
-                                        ) : (
-                                            <Button disabled={assignments.filter(x => x.task === v.id).length >= v.capacity || assignments.filter(x => x.user === user.email).length >= school.quota} onClick={() => registerTask(v)}>Register</Button>
-                                        )}
-                                    </Group>
+                                    {!school.opening_at || dayjs(school.opening_at).isAfter(now) ? <></> : (
+                                        <Group mt="md">
+                                            {assignments.find(x => x.user === user.email && x.task === v.id) ? (
+                                                <Button onClick={() => dropTask(v)} color="red">Drop</Button>
+                                            ) : (
+                                                <Button disabled={assignments.filter(x => x.task === v.id).length >= v.capacity || assignments.filter(x => x.user === user.email).length >= school.quota} onClick={() => registerTask(v)}>Register</Button>
+                                            )}
+                                        </Group>
+                                    )}
                                 </div>
                             </div>
                         </Accordion.Panel>

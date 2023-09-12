@@ -8,11 +8,11 @@ export default AuthRoute({
     GET: async (req: NextApiRequest, res: NextApiResponse, user: User) => {
         let s = await getSchool(Number(req.headers.school));
 
-        // Must have manager/admin rights before d-day
-        if (dayjs().isBefore(dayjs(s.opening_at))) {
-            let er = await getEnrollments(user.email);
-            if (!er.find(v => v.school === s.id).manager) return res.status(401).end();
-        }
+        // DEPRECATED - Must have manager/admin rights before d-day
+        // if (dayjs().isBefore(dayjs(s.opening_at))) {
+        //     let er = await getEnrollments(user.email);
+        //     if (!er.find(v => v.school === s.id).manager) return res.status(401).end();
+        // }
 
         let x = await listTasks(s.id);
         res.json(x);
