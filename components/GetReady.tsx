@@ -2,16 +2,19 @@ import SiteContext from "@/lib/site-context";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 import styles from '@/styles/GetReady.module.scss';
-import { Text } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
 
 export default function GetReady() {
     let { school } = useContext(SiteContext);
     let [day, setDay] = useState(0);
     let [time, setTime] = useState("");
+    let [open, setOpen] = useState(false);
 
     useEffect(() => {
         if (school.opening_at) setInterval(() => {
             let d = dayjs(school.opening_at).diff(dayjs());
+
+            if (d <= 0) setOpen(true);
 
             let seconds = Math.floor((d / 1000) % 60);
             let minutes = Math.floor((d / (1000 * 60)) % 60);
@@ -26,6 +29,13 @@ export default function GetReady() {
     if (!school.opening_at) return (
         <div className={styles.container}>
             <Text size="10vw">--:--:--</Text>
+        </div>
+    );
+
+    if (open) return (
+        <div className={styles.container}>
+            <Text size="10vw">Open!</Text>
+            <Button onClick={() => window.location.reload()} p="lg" m="lg" size="20px">Reload</Button>
         </div>
     );
 

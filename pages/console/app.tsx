@@ -16,7 +16,6 @@ import ManagerTasks from "@/components/Manager/ManagerTasks";
 import { Assignment, Member, Task } from "@/lib/schema";
 import dayjs from "dayjs";
 
-// TODO - fix glitches on logout, console
 export default function App() {
     let { user, school, enrollments } = useContext(SiteContext);
     let { status } = useSession();
@@ -46,7 +45,20 @@ export default function App() {
         // Members
         try {
             let m: Member[] = await (await fetch("/api/school/member", { method: "GET", headers: { school: String(id) } })).json();
-            m.sort((a, b) => a.manager ? -1 : b.manager ? 1 : a.name.localeCompare(b.name));
+            m.sort((a, b) => {
+                // Owner first, then manager, then registered, then alphabetical
+                if (school.owner === a.email) return -1;
+                if (school.owner === b.email) return 1;
+
+                if (a.manager) return -1;
+                if (b.manager) return 1;
+
+                if (a.name !== "" && b.name === "") return -1;
+                if (a.name === "" && b.name !== "") return 1;
+                if (a.name === "" && b.name === "") return a.email.localeCompare(b.email);
+
+                return a.name.localeCompare(b.name);
+            });
             setMembers(m);
         } catch (error) {
             setMembers([]);
@@ -101,7 +113,7 @@ export default function App() {
 
     // Protected route
     if (status === "unauthenticated") {
-        signIn();
+        signIn("google", { callbackUrl: "/console/app" });
         return <></>;
     }
 

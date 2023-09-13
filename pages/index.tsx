@@ -21,7 +21,7 @@ export default function Home() {
                                 <Button variant="outline" radius="xl" h={30}>Console</Button>
                             </Link>
                         ) : (
-                            <Button variant="gradient" radius="xl" h={30} onClick={() => signIn("google")}>Login</Button>
+                            <Button variant="gradient" radius="xl" h={30} onClick={() => signIn("google", { callbackUrl: "/console/app" })}>Login</Button>
                         )}
                     </Group>
                 </Container>

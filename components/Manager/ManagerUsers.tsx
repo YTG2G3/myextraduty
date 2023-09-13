@@ -59,11 +59,12 @@ export default function ManagerUsers({ members, assignments }: { members: Member
 
         Papa.parse(file, {
             complete: async ({ data: emails }) => {
+                modals.closeAll();
                 let e = emails as String[][];
 
                 notifications.show({
                     id: "uploading-inv",
-                    title: "Uploading invitations...",
+                    title: "Uploading invitations... Please leave the page open.",
                     loading: true,
                     autoClose: false,
                     withCloseButton: false,
@@ -84,7 +85,7 @@ export default function ManagerUsers({ members, assignments }: { members: Member
 
                     notifications.update({
                         id: "uploading-inv",
-                        title: "Uploading invitations...",
+                        title: "Uploading invitations... Please leave the page open.",
                         loading: true,
                         autoClose: false,
                         withCloseButton: false,
@@ -95,10 +96,15 @@ export default function ManagerUsers({ members, assignments }: { members: Member
                 notifications.update({
                     id: "uploading-inv",
                     title: "Upload complete",
+                    message: (
+                        <div>
+                            <Text mb="sm">Success: {s} | Failed: {f}</Text>
+                            <Button onClick={() => location.reload()}>Refresh</Button>
+                        </div>
+                    ),
                     loading: false,
                     autoClose: 4000,
-                    withCloseButton: true,
-                    message: `Success: ${s} | Failed: ${f}`
+                    withCloseButton: true
                 });
             }
         });

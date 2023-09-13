@@ -1,7 +1,7 @@
-import { ActionIcon, Button, Group, MANTINE_COLORS, Pagination, Select, TextInput, Image, Card, Text, Space, Tooltip, NumberInput } from "@mantine/core";
+import { ActionIcon, Button, Group, MANTINE_COLORS, Pagination, Select, TextInput, Image, Card, Text, Space, Tooltip, NumberInput, Autocomplete } from "@mantine/core";
 import styles from '@/styles/AdminSchools.module.scss';
 import { useContext, useState } from "react";
-import { School } from "@/lib/schema";
+import { School, User } from "@/lib/schema";
 import { IconArrowsTransferUp, IconCirclePlus, IconDoorExit, IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { modals } from '@mantine/modals';
 import { DateTimePicker } from "@mantine/dates";
@@ -10,7 +10,7 @@ import SiteContext from "@/lib/site-context";
 
 const viewPerPage = 9;
 
-export default function AdminSchools({ schools }: any) {
+export default function AdminSchools({ schools, users }: { schools: School[], users: User[] }) {
     let { user, enrollments } = useContext(SiteContext);
     let [search, setSearch] = useState("");
 
@@ -51,7 +51,7 @@ export default function AdminSchools({ schools }: any) {
         children: (
             <form onSubmit={createSchoolReq} style={{ padding: 30 }}>
                 <TextInput name="name" withAsterisk label="Name" />
-                <TextInput name="owner" withAsterisk label="Owner Email" />
+                <Autocomplete name="owner" withAsterisk label="Owner" data={users.map(v => v.email)} />
                 <TextInput name="address" withAsterisk label="Address" />
                 <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue="blue" />
                 <TextInput name="logo" withAsterisk label="School Logo URL" />
@@ -90,7 +90,7 @@ export default function AdminSchools({ schools }: any) {
         centered: true,
         children: (
             <form onSubmit={(e) => changeOwnerReq(e, s)}>
-                <TextInput name="owner" withAsterisk label="Owner" defaultValue={s.owner} />
+                <Autocomplete name="owner" withAsterisk label="Owner" defaultValue={s.owner} data={users.map(v => v.email)} />
 
                 <Group position="right" mt="md">
                     <Button type="submit">Save</Button>
@@ -142,6 +142,7 @@ export default function AdminSchools({ schools }: any) {
         onConfirm: async () => {
             let b = { email: user.email };
             let x = (await fetch("/api/school/member", { method: "POST", body: JSON.stringify(b), headers: { school: String(s.id) } })).status;
+            x = (await fetch("/api/school/member/promote", { method: "POST", body: JSON.stringify(b), headers: { school: String(s.id) } })).status;
 
             receivedResponse(x);
         }
@@ -154,7 +155,7 @@ export default function AdminSchools({ schools }: any) {
         confirmProps: { color: 'red' },
         onConfirm: async () => {
             let b = { email: user.email };
-            let x = (await fetch("/api/school/member", { method: "POST", body: JSON.stringify(b), headers: { school: String(s.id) } })).status;
+            let x = (await fetch("/api/school/member/remove", { method: "POST", body: JSON.stringify(b), headers: { school: String(s.id) } })).status;
 
             receivedResponse(x);
         }

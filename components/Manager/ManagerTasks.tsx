@@ -84,12 +84,13 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
 
         Papa.parse(file, {
             complete: async ({ data: tasks }) => {
+                modals.closeAll();
                 let t = tasks as String[][];
                 t.shift();
 
                 notifications.show({
                     id: "uploading-tasks",
-                    title: "Uploading tasks...",
+                    title: "Uploading tasks... Please leave the page open.",
                     loading: true,
                     autoClose: false,
                     withCloseButton: false,
@@ -120,7 +121,7 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
 
                     notifications.update({
                         id: "uploading-tasks",
-                        title: "Uploading tasks...",
+                        title: "Uploading tasks... Please leave the page open.",
                         loading: true,
                         autoClose: false,
                         withCloseButton: false,
@@ -131,10 +132,15 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
                 notifications.update({
                     id: "uploading-tasks",
                     title: "Upload complete",
+                    message: (
+                        <div>
+                            <Text mb="sm">Success: {s} | Failed: {f}</Text>
+                            <Button onClick={() => location.reload()}>Refresh</Button>
+                        </div>
+                    ),
                     loading: false,
                     autoClose: 4000,
-                    withCloseButton: true,
-                    message: `Success: ${s} | Failed: ${f}`
+                    withCloseButton: true
                 });
             }
         });

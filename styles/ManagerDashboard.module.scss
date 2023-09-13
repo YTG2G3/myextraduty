@@ -1,7 +1,6 @@
 .container {
-    height: 100%;
+    height: calc(100vh - 92px);
     display: grid;
-    overflow: auto;
     grid-template:
         "a b" 50%
         "c c" 50% / 1fr 1fr;

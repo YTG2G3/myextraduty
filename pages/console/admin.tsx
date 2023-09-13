@@ -48,7 +48,7 @@ export default function Admin() {
     if (!user || !schools || !users || !enrollments) return <LoadingPage />;
 
     let pgs = [
-        { label: "Schools", icon: <IconChalkboard />, page: <AdminSchools schools={schools} /> },
+        { label: "Schools", icon: <IconChalkboard />, page: <AdminSchools users={users} schools={schools} /> },
         { label: "Users", icon: <IconUsersGroup />, page: <AdminUsers users={users} schools={schools} /> }
     ];
 

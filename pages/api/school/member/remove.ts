@@ -8,8 +8,8 @@ export default AuthRoute({
         let { email } = JSON.parse(req.body);
         let s = await getSchool(Number(req.headers.school));
 
-        // Cannot be commited to oneself
-        if (user.email === email) return res.status(400).end();
+        // Cannot be commited to oneself unless admin
+        if (!user.admin && user.email === email) return res.status(400).end();
 
         // If user is admin/owner, action is forced
         if (user.admin || (s.owner === user.email)) {

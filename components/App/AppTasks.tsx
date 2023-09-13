@@ -14,14 +14,6 @@ export default function AppTasks({ tasks, categories, assignments }: { tasks: Ta
     let { school, user } = useContext(SiteContext);
     let [search, setSearch] = useState("");
     let [tg, setTg] = useState(true);
-    let [now, setNow] = useState(dayjs());
-
-    useEffect(() => {
-        let s = setInterval(() => {
-            setNow(dayjs());
-            if (dayjs(school.opening_at).isBefore(dayjs())) clearInterval(s);
-        }, 500);
-    }, []);
 
     // DEPRECATED - can't view tasks before opening time
     // if (!school.opening_at || dayjs(school.opening_at).isAfter(now)) return <GetReady />;
@@ -86,7 +78,7 @@ export default function AppTasks({ tasks, categories, assignments }: { tasks: Ta
                                     <Text>Time: {v.starting_time} - {v.ending_time}</Text>
                                     <Text>Attendants: {assignments.filter(x => x.task === v.id).length}/{v.capacity}</Text>
 
-                                    {!school.opening_at || dayjs(school.opening_at).isAfter(now) ? <></> : (
+                                    {!school.opening_at || dayjs(school.opening_at).isAfter(dayjs()) ? <></> : (
                                         <Group mt="md">
                                             {assignments.find(x => x.user === user.email && x.task === v.id) ? (
                                                 <Button onClick={() => dropTask(v)} color="red">Drop</Button>

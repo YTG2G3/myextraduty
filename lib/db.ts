@@ -268,7 +268,12 @@ export async function enrollUser(id: number, email: string): Promise<boolean> {
     email = email.toLowerCase();
     let db = await connectDB();
     try {
+        // Email format
         if (!email.trim().match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) throw null;
+
+        // Already enrolled
+        let er = await getEnrollments(email);
+        if (er.find(v => v.school === id)) throw null;
 
         await db.execute(`INSERT INTO enrollment (school, user) VALUES (?, ?)`, [id, email]);
 

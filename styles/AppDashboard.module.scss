@@ -1,5 +1,5 @@
 .container {
-    height: 100%;
+    height: calc(100vh - 92px);
     display: grid;
     overflow: auto;
     grid-template:
