@@ -34,7 +34,7 @@ export default function Home() {
                         <Text size="100px" weight={700}>MyExtraDuty</Text>
                     </Group>
 
-                    <Text size="40px" weight={500}>An easy way to manage your extra duties; powered by Algorix</Text>
+                    <Text size="40px" weight={500}>📅 An easy way to manage your extra duties. Powered by Algorix.</Text>
                 </div>
             </div>
         </Container>
