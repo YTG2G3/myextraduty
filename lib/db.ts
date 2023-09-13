@@ -1,204 +1,207 @@
-import { createConnection } from 'mysql2/promise';
 import { User, School, Enrollment, Task, Member, Assignment, Attendant } from './schema';
 import dayjs from 'dayjs';
+import { Client } from 'pg';
 
-const connectDB = async () => createConnection({
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE,
-    timezone: "+00:00"
-});
+const getClient = async () => {
+    const client = new Client({
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
+    await client.connect();
+    return client;
+}
 
 export async function getUser(email: string): Promise<User> {
     email = email.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        let [rows]: any[] = await db.execute(`SELECT * FROM user WHERE email=?`, [email]);
-        if (rows.length === 0) return null;
+        let { rows } = await db.query(`SELECT * FROM profile WHERE email=$1`, [email]);
+        if (rows.length === 0) throw null;
 
-        db.end();
+        await db.end();
         return rows[0];
     } catch (error) {
-        db.end();
+        await db.end();
         return null;
     }
 }
 
 export async function createUser(email: string, name: string, picture: string, admin = false): Promise<boolean> {
     email = email.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`INSERT INTO user VALUES (?,?,?,?)`, [email, name, picture, admin]);
+        await db.query(`INSERT INTO profile VALUES ($1,$2,$3,$4)`, [email, name, picture, admin]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function updateUserInfo(email: string, name: string, picture: string): Promise<boolean> {
     email = email.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`UPDATE user SET name=?, picture=? WHERE email=?`, [name, picture, email]);
+        await db.query(`UPDATE profile SET name=$1, picture=$2 WHERE email=$3`, [name, picture, email]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function getSchool(sid: number): Promise<School> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        let [rows]: any[] = await db.execute(`SELECT * FROM school WHERE id=?`, [sid]);
-        if (rows.length === 0) return null;
+        let { rows } = await db.query(`SELECT * FROM school WHERE id=$1`, [sid]);
+        if (rows.length === 0) throw null;
 
         let s: School = { ...rows[0], opening_at: rows[0].opening_at === "null" ? null : rows[0].opening_at };
 
-        db.end();
+        await db.end();
         return s;
     } catch (error) {
-        db.end();
+        await db.end();
         return null;
     }
 }
 
 export async function getEnrollments(email: string): Promise<Enrollment[]> {
     email = email.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        let [rows]: any[] = await db.execute(`SELECT * FROM enrollment WHERE user=?`, [email]);
+        let { rows } = await db.query(`SELECT * FROM enrollment WHERE app_user=$1`, [email]);
 
-        db.end();
+        await db.end();
         return rows as Enrollment[];
     } catch (error) {
-        db.end();
+        await db.end();
         return null;
     }
 }
 
 export async function listSchools(): Promise<School[]> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        let [rows]: any[] = await db.execute(`SELECT * FROM school`);
+        let { rows } = await db.query(`SELECT * FROM school`);
         rows = rows.map((v: School) => ({ ...v, opening_at: String(v.opening_at) }));
 
-        db.end();
+        await db.end();
         return rows as School[];
     } catch (error) {
-        db.end();
+        await db.end();
         return null;
     }
 }
 
 export async function createSchool(name: string, owner: string, address: string, primary_color: string, logo: string): Promise<boolean> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        let [rows]: any[] = await db.execute(`INSERT INTO school(name, owner, address, primary_color, logo) VALUES (?, ?, ?, ?, ?) RETURNING id`, [name, owner, address, primary_color, logo]);
+        let { rows } = await db.query(`INSERT INTO school(name, owner, address, primary_color, logo) VALUES ($1, $2, $3, $4, $5) RETURNING id`, [name, owner, address, primary_color, logo]);
         let sid = rows[0].id;
 
-        await db.execute(`INSERT INTO enrollment VALUES (?, ?, 1)`, [sid, owner]);
+        await db.query(`INSERT INTO enrollment VALUES ($1, $2, true)`, [sid, owner]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function updateSchool(id: number, address: string, primary_color: string, logo: string, opening_at: string, quota: number, max_assigned: number): Promise<boolean> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`UPDATE school SET address=?, primary_color=?, logo=?, opening_at=?, quota=?, max_assigned=? WHERE id=?`, [address, primary_color, logo, opening_at, quota, max_assigned, id]);
+        await db.query(`UPDATE school SET address=$1, primary_color=$2, logo=$3, opening_at=$4, quota=$5, max_assigned=$6 WHERE id=$7`, [address, primary_color, logo, opening_at, quota, max_assigned, id]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function deleteSchool(id: number): Promise<boolean> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`DELETE FROM school WHERE id=?`, [id]);
+        await db.query(`DELETE FROM school WHERE id=$1`, [id]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function listUsers(): Promise<User[]> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        let [rows] = await db.execute(`SELECT * FROM user`);
+        let { rows } = await db.query(`SELECT * FROM profile`);
 
-        db.end();
+        await db.end();
         return rows as User[];
     } catch (error) {
-        db.end();
+        await db.end();
         return null;
     }
 }
 
 export async function promoteUser(email: string): Promise<boolean> {
     email = email.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`UPDATE user SET admin=1 WHERE email=?`, [email]);
+        await db.query(`UPDATE profile SET admin=1 WHERE email=$1`, [email]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function removeUser(email: string): Promise<boolean> {
     email = email.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
         // Only removes non-admins
-        await db.execute(`DELETE FROM user WHERE email=? AND admin=0`, [email]);
+        await db.query(`DELETE FROM profile WHERE email=$1 AND admin=0`, [email]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function transferSchoolOwnership(id: number, email: string): Promise<boolean> {
     email = email.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`UPDATE school SET owner=? WHERE id=?`, [email, id]);
+        await db.query(`UPDATE school SET owner=$1 WHERE id=$2`, [email, id]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function getTask(id: number): Promise<Task> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        let [rows]: any[] = await db.execute(`SELECT * FROM task WHERE id=?`, [id]);
+        let { rows } = await db.query(`SELECT * FROM task WHERE id=$1`, [id]);
         let t: Task = {
             id: rows[0].id,
             school: Number(rows[0].school),
@@ -212,18 +215,18 @@ export async function getTask(id: number): Promise<Task> {
             capacity: Number(rows[0].capacity)
         };
 
-        db.end();
+        await db.end();
         return t;
     } catch (error) {
-        db.end();
+        await db.end();
         return null;
     }
 }
 
 export async function listTasks(id: number): Promise<Task[]> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        let [rows]: any[] = await db.execute(`SELECT * FROM task WHERE school=?`, [id]);
+        let { rows } = await db.query(`SELECT * FROM task WHERE school=$1`, [id]);
         let tx: Task[] = rows.map((v: any) => ({
             id: v.id,
             school: v.school,
@@ -237,36 +240,36 @@ export async function listTasks(id: number): Promise<Task[]> {
             capacity: Number(v.capacity)
         }));
 
-        db.end();
+        await db.end();
         return tx;
     } catch (error) {
-        db.end();
+        await db.end();
         return null;
     }
 }
 
 export async function listMembers(id: number): Promise<Member[]> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        let [rows]: any[] = await db.execute(`SELECT * FROM enrollment WHERE school=?`, [id]);
+        let { rows } = await db.query(`SELECT * FROM enrollment WHERE school=$1`, [id]);
 
         let u: Member[] = [];
         for (let er of (rows as Enrollment[])) {
-            let [x]: any[] = await db.execute(`SELECT * FROM user WHERE email=?`, [er.user]);
+            let { rows: x } = await db.query(`SELECT * FROM profile WHERE email=$1`, [er.user]);
             u.push(x.length === 0 ? { admin: false, email: er.user, manager: false, name: "", picture: "" } : { ...x[0], manager: er.manager });
         }
 
-        db.end();
+        await db.end();
         return u as Member[];
     } catch (error) {
-        db.end();
+        await db.end();
         return null;
     }
 }
 
 export async function enrollUser(id: number, email: string): Promise<boolean> {
     email = email.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
         // Email format
         if (!email.trim().match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) throw null;
@@ -275,132 +278,132 @@ export async function enrollUser(id: number, email: string): Promise<boolean> {
         let er = await getEnrollments(email);
         if (er.find(v => v.school === id)) throw null;
 
-        await db.execute(`INSERT INTO enrollment (school, user) VALUES (?, ?)`, [id, email]);
+        await db.query(`INSERT INTO enrollment (school, user) VALUES ($1, $2)`, [id, email]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function kickMember(id: number, email: string): Promise<boolean> {
     email = email.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`DELETE FROM enrollment WHERE school=? AND user=?`, [id, email]);
+        await db.query(`DELETE FROM enrollment WHERE school=$1 AND user=$2`, [id, email]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function promoteMember(id: number, email: string): Promise<boolean> {
     email = email.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`UPDATE enrollment SET manager=1 WHERE school=? AND user=?`, [id, email]);
+        await db.query(`UPDATE enrollment SET manager=1 WHERE school=$1 AND user=$2`, [id, email]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function createTask(id: number, category: string, name: string, description: string, starting_date: string, ending_date: string, starting_time: string, ending_time: string, capacity: number): Promise<boolean> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
         if (dayjs(starting_date).isAfter(dayjs(ending_date))) throw null;
         if (dayjs(starting_date + " " + starting_time).isAfter(dayjs(starting_date + " " + ending_time))) throw null;
 
-        await db.execute(`INSERT INTO task(school, category, name, description, starting_date, ending_date, starting_time, ending_time, capacity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [id, category, name, description, starting_date, ending_date, starting_time, ending_time, capacity]);
+        await db.query(`INSERT INTO task(school, category, name, description, starting_date, ending_date, starting_time, ending_time, capacity) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, [id, category, name, description, starting_date, ending_date, starting_time, ending_time, capacity]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function listCategories(id: number): Promise<string[]> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        let [rows]: any[] = await db.execute(`SELECT category FROM task WHERE school=?`, [id]);
+        let { rows } = await db.query(`SELECT category FROM task WHERE school=$1`, [id]);
         let ctg = Array.from(new Set(rows.map((v: any) => v.category)));
 
-        db.end();
+        await db.end();
         return ctg as string[];
     } catch (error) {
-        db.end();
+        await db.end();
         return null;
     }
 }
 
 export async function listAssignments(id: number): Promise<Assignment[]> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        let [rows]: any[] = await db.execute(`SELECT * FROM assignment WHERE school=?`, [id]);
+        let { rows } = await db.query(`SELECT * FROM assignment WHERE school=$1`, [id]);
 
-        db.end();
+        await db.end();
         return rows as Assignment[];
     } catch (error) {
-        db.end();
+        await db.end();
         return null;
     }
 }
 
 export async function assignMember(id: number, email: string, school: number): Promise<boolean> {
     email = email.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`INSERT INTO assignment(task, user, school) VALUES (?, ?, ?)`, [id, email, school]);
+        await db.query(`INSERT INTO assignment(task, user, school) VALUES ($1, $2, $3)`, [id, email, school]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function removeMemberFromTask(id: number, email: string): Promise<boolean> {
     email = email.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`DELETE FROM assignment WHERE task=? AND user=?`, [id, email]);
+        await db.query(`DELETE FROM assignment WHERE task=$1 AND user=$2`, [id, email]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function updateTask(id: number, category: string, name: string, description: string, starting_date: string, ending_date: string, starting_time: string, ending_time: string, capacity: number): Promise<boolean> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`UPDATE task SET category=?, name=?, description=?, starting_date=?, ending_date=?, starting_time=?, ending_time=?, capacity=? WHERE id=?`, [category, name, description, starting_date, ending_date, starting_time, ending_time, capacity, id]);
+        await db.query(`UPDATE task SET category=$1, name=$2, description=$3, starting_date=$4, ending_date=$5, starting_time=$6, ending_time=$7, capacity=$8 WHERE id=$9`, [category, name, description, starting_date, ending_date, starting_time, ending_time, capacity, id]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function listAttendants(id: number): Promise<Attendant[]> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        let [rows]: any[] = await db.execute(`SELECT * FROM assignment WHERE task=?`, [id]);
+        let { rows } = await db.query(`SELECT * FROM assignment WHERE task=$1`, [id]);
         let r: Attendant[] = [];
 
         for (let x of rows) {
@@ -408,64 +411,64 @@ export async function listAttendants(id: number): Promise<Attendant[]> {
             r.push({ user: u, assigned_at: x.assigned_at });
         }
 
-        db.end();
+        await db.end();
         return r;
     } catch (error) {
-        db.end();
+        await db.end();
         return null;
     }
 }
 
 export async function deleteTask(id: number): Promise<boolean> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`DELETE FROM task WHERE id=?`, [id]);
+        await db.query(`DELETE FROM task WHERE id=$1`, [id]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function listUserAssignments(school: number, user: string): Promise<Assignment[]> {
     user = user.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        let [rows]: any[] = await db.execute(`SELECT * FROM assignment WHERE school=? AND user=?`, [school, user]);
+        let { rows } = await db.query(`SELECT * FROM assignment WHERE school=$1 AND user=$2`, [school, user]);
 
-        db.end();
+        await db.end();
         return rows as Assignment[];
     } catch (error) {
-        db.end();
+        await db.end();
         return null;
     }
 }
 
 export async function clearTasks(school: number): Promise<boolean> {
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`DELETE FROM task WHERE school=?`, [school]);
+        await db.query(`DELETE FROM task WHERE school=$1`, [school]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }
 
 export async function clearMembers(school: number, owner: string): Promise<boolean> {
     owner = owner.toLowerCase();
-    let db = await connectDB();
+    let db = await getClient();
     try {
-        await db.execute(`DELETE FROM enrollment WHERE school=? AND NOT user=?`, [school, owner]);
+        await db.query(`DELETE FROM enrollment WHERE school=$1 AND NOT user=$2`, [school, owner]);
 
-        db.end();
+        await db.end();
         return true;
     } catch (error) {
-        db.end();
+        await db.end();
         return false;
     }
 }

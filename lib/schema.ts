@@ -1,11 +1,11 @@
-export type User = {
+export type Profile = {
     email: string,
     name: string,
     picture: string,
     admin: boolean
 };
 
-export type Member = User & {
+export type Member = Profile & {
     manager: boolean
 }
 
@@ -23,7 +23,7 @@ export type School = {
 
 export type Enrollment = {
     school: number,
-    user: string,
+    email: string,
     manager: boolean
 }
 
@@ -42,12 +42,12 @@ export type Task = {
 
 export type Assignment = {
     school: number,
-    user: string,
+    email: string,
     task: number,
     assigned_at: string
 }
 
 export type Attendant = {
-    user: User,
+    email: Profile,
     assigned_at: string
 }
