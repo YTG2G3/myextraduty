@@ -5,7 +5,7 @@
 # MyExtraDuty
 📅 An easy way to manage your extra duties. Powered by Algorix.
 
-## For Contributors
+## Contributing
 
 ### Environment Settings
 
@@ -31,3 +31,6 @@ NEXTAUTH_URL: Redirection URL
 ```
 
 ## Acknowledgement
+- @YTG2G3, Class of 2024 Taeksoo Kwon as the head developer
+- @unsignd, Employee of @algorix-corp that created the logo
+- @algorix-corp, Provision of hosted database
