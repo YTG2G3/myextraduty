@@ -31,6 +31,6 @@ NEXTAUTH_URL: Redirection URL
 ```
 
 ## Acknowledgement
-- @YTG2G3, Class of 2024 Taeksoo Kwon as the head developer
-- @unsignd, Employee of @algorix-corp that created the logo
-- @algorix-corp, Provision of hosted database
+- [Taeksoo Kwon](https://github.com/YTG2G3), Class of 2024, the head developer
+- [Yejoon Kim](https://github.com/unsignd), Employee of @algorix-corp that designed the logo
+- [Algorix Corporation](https://github.com/algorix-corp), Provision of hosted database
