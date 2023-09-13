@@ -30,7 +30,7 @@ NEXTAUTH_SECRET: JWT Secret
 NEXTAUTH_URL: Redirection URL
 ```
 
-## Acknowledgement
+## Acknowledgements
 - [Taeksoo Kwon](https://github.com/YTG2G3), Class of 2024, the head developer
 - [Yejoon Kim](https://github.com/unsignd), Employee of @algorix-corp that designed the logo
 - [Algorix Corporation](https://github.com/algorix-corp), Provision of hosted database
