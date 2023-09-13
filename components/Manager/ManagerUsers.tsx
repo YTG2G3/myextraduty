@@ -216,7 +216,7 @@ export default function ManagerUsers({ members, assignments }: { members: Member
                         <ActionIcon variant="filled" mr="xs" onClick={uploadInvitations}><IconUpload /></ActionIcon>
                     </Tooltip>
 
-                    <CSVLink style={{ marginRight: 10 }} data={...members.map(v => [v.email])} filename={`${school.name} members (${new Date().getUTCFullYear()})`}>
+                    <CSVLink style={{ marginRight: 10 }} data={members.map(v => [v.email])} filename={`${school.name} members (${new Date().getUTCFullYear()})`}>
                         <Tooltip label="Download">
                             <ActionIcon variant="filled"><IconDownload /></ActionIcon>
                         </Tooltip>
