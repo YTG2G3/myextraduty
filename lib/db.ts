@@ -164,8 +164,6 @@ export async function promoteUser(email: string): Promise<boolean> {
         await db.end();
         return true;
     } catch (error) {
-        console.log(error);
-
         await db.end();
         return false;
     }

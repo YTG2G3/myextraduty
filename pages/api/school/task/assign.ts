@@ -10,9 +10,6 @@ export default AuthRoute({
         let t = await getTask(task);
         let a = await listAttendants(task);
 
-        // Can't sign up for completed events
-        if (dayjs().isAfter(dayjs(t.ending_date + " " + t.ending_time))) return res.status(400).end();
-
         // Make sure it's not full
         if (a.length >= t.capacity) return res.status(400).end();
 
