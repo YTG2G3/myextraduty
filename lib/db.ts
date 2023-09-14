@@ -159,11 +159,13 @@ export async function promoteUser(email: string): Promise<boolean> {
     email = email.toLowerCase();
     let db = await getClient();
     try {
-        await db.query(`UPDATE profile SET admin=1 WHERE email=$1`, [email]);
+        await db.query(`UPDATE profile SET admin=true WHERE email=$1`, [email]);
 
         await db.end();
         return true;
     } catch (error) {
+        console.log(error);
+
         await db.end();
         return false;
     }
@@ -174,7 +176,7 @@ export async function removeUser(email: string): Promise<boolean> {
     let db = await getClient();
     try {
         // Only removes non-admins
-        await db.query(`DELETE FROM profile WHERE email=$1 AND admin=0`, [email]);
+        await db.query(`DELETE FROM profile WHERE email=$1 AND admin=false`, [email]);
 
         await db.end();
         return true;
