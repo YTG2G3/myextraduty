@@ -106,7 +106,7 @@ export default function ManagerDashboard({ members, tasks, assignments }: { memb
 
                                         <div className={styles.px}>
                                             <Text>Date(s): {dayjs(v.starting_date).format("MMMM D, YYYY")} {v.starting_date !== v.ending_date ? `~ ${dayjs(v.ending_date).format("MMMM D, YYYY")}` : ""}</Text>
-                                            <Text>Time: {v.starting_time} - {v.ending_time}</Text>
+                                            <Text>Time: {dayjs(v.starting_time, "HH:mm").format("h:mm A")} - {dayjs(v.ending_time, "HH:mm").format("h:mm A")}</Text>
                                             <Text>Attendants: {assignments.filter(x => x.task === v.id).length}/{v.capacity}</Text>
                                         </div>
                                     </div>
