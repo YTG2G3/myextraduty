@@ -308,7 +308,7 @@ export async function promoteMember(id: number, email: string): Promise<boolean>
     email = email.toLowerCase();
     let db = await getClient();
     try {
-        await db.query(`UPDATE enrollment SET manager=1 WHERE school=$1 AND email=$2`, [id, email]);
+        await db.query(`UPDATE enrollment SET manager=true WHERE school=$1 AND email=$2`, [id, email]);
 
         await db.end();
         return true;
