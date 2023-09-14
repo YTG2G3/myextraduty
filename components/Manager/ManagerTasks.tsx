@@ -25,8 +25,8 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
     const theme = useMantineTheme();
 
     const searchForTask = (v: Task) => (
-        (v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
-            v.category.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
+        (v.category.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
+            v.location.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
             v.starting_date.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
             v.ending_date.toLowerCase().indexOf(search.toLowerCase()) >= 0) &&
         !(dayjs(v.ending_date + " " + v.ending_time) < dayjs() && !past)
@@ -43,11 +43,11 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
 
         let b = {
             category: e.target.category.value,
-            name: e.target.name.value,
+            location: e.target.location.value,
             description: e.target.description.value,
             starting_date: dayjs(e.target.starting_date.value).format("YYYY-MM-DD"),
-            starting_time: e.target.starting_time.value,
             ending_date: dayjs(e.target.ending_date.value).format("YYYY-MM-DD"),
+            starting_time: e.target.starting_time.value,
             ending_time: e.target.ending_time.value,
             capacity: e.target.capacity.value,
         };
@@ -64,7 +64,7 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
             <form onSubmit={addTaskReq}>
                 <Autocomplete name="category" withAsterisk label="Category" data={categories} dropdownPosition='bottom' />
 
-                <TextInput name="name" withAsterisk label="Name" />
+                <TextInput name="location" withAsterisk label="Location" />
                 <Textarea name="description" withAsterisk label="Description" />
 
                 <DatePickerInput name="starting_date" withAsterisk label="Starting Date" />
@@ -93,14 +93,14 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
 
                 let t = x.map(v => ({
                     category: v[0],
-                    name: v[1],
+                    location: v[1],
                     description: v[2],
                     starting_date: v[3],
                     ending_date: v[4] === "" ? v[3] : v[4],
                     starting_time: v[5],
                     ending_time: v[6],
                     capacity: isNaN(Number(v[7])) ? 1 : Number(v[7])
-                })).filter(v => v.name !== "" && v.starting_date !== "" && v.ending_date !== "" && v.starting_time !== "" && v.ending_time !== "");
+                })).filter(v => v.category !== "" && v.starting_date !== "" && v.ending_date !== "" && v.starting_time !== "" && v.ending_time !== "");
 
                 notifications.show({
                     id: "uploading-tasks",
@@ -198,7 +198,7 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
     });
 
     const openTaskModal = (t: Task) => modals.open({
-        title: `Editing ${t.name}`,
+        title: `Editing Task`,
         centered: true,
         size: "fit-content",
         children: <TaskEditModal task={t} members={members} />
@@ -245,7 +245,7 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
                         <ActionIcon variant="filled" mr="xs" onClick={uploadTasks}><IconUpload /></ActionIcon>
                     </Tooltip>
 
-                    <CSVLink style={{ marginRight: 10 }} data={[["Category", "Name", "Description", "Starting Date", "Ending Date", "Starting Time", "Ending Time", "Capacity"], ...tasks.map(v => [v.category, v.name, v.description, v.starting_date, v.ending_date, v.starting_time, v.ending_time, v.capacity])]} filename={`${school.name} tasks (${new Date().getUTCFullYear()})`}>
+                    <CSVLink style={{ marginRight: 10 }} data={[["Category", "Location", "Description", "Starting Date", "Ending Date", "Starting Time", "Ending Time", "Capacity"], ...tasks.map(v => [v.category, v.location, v.description, v.starting_date, v.ending_date, v.starting_time, v.ending_time, v.capacity])]} filename={`${school.name} tasks (${new Date().getUTCFullYear()})`}>
                         <Tooltip label="Download">
                             <ActionIcon variant="filled"><IconDownload /></ActionIcon>
                         </Tooltip>
@@ -263,36 +263,38 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
 
             <Accordion style={{ width: "100%", marginTop: 20 }}>
                 {t.map((v, i) => (
-                    <Accordion.Item key={i} value={String(v.id)}>
-                        <Accordion.Control icon={<DynamicIcon v={v} />}>
-                            <Group align='baseline'>
-                                <Text weight="bold">{v.name}</Text>
-                                <Text color="dimmed" size="sm">{v.category} | {v.starting_date}</Text>
-                            </Group>
-                        </Accordion.Control>
+                    <Tooltip key={i} label={v.description.substring(0, 30)} position='left'>
+                        <Accordion.Item key={i} value={String(v.id)}>
+                            <Accordion.Control icon={<DynamicIcon v={v} />}>
+                                <Group align='baseline'>
+                                    <Text weight="bold">{v.category}</Text>
+                                    <Text color="dimmed" size="sm">{v.location} | {v.starting_date}</Text>
+                                </Group>
+                            </Accordion.Control>
 
-                        <Accordion.Panel>
-                            <div className={styles.pan}>
-                                <Text w="50%" mr="10%" color="dimmed">{v.description}</Text>
+                            <Accordion.Panel>
+                                <div className={styles.pan}>
+                                    <Text w="50%" mr="10%" color="dimmed">Description: {v.description}</Text>
 
-                                <div className={styles.px}>
-                                    <Text>Date(s): {dayjs(v.starting_date).format("MMMM D, YYYY")} {v.starting_date !== v.ending_date ? `~ ${dayjs(v.ending_date).format("MMMM D, YYYY")}` : ""}</Text>
-                                    <Text>Time: {dayjs(v.starting_time, "HH:mm").format("h:mm A")} - {dayjs(v.ending_time, "HH:mm").format("h:mm A")}</Text>
-                                    <Text>Attendants: {assignments.filter(x => x.task === v.id).length}/{v.capacity}</Text>
+                                    <div className={styles.px}>
+                                        <Text>Date(s): {dayjs(v.starting_date).format("MMMM D, YYYY")} {v.starting_date !== v.ending_date ? `~ ${dayjs(v.ending_date).format("MMMM D, YYYY")}` : ""}</Text>
+                                        <Text>Time: {dayjs(v.starting_time, "HH:mm").format("h:mm A")} - {dayjs(v.ending_time, "HH:mm").format("h:mm A")}</Text>
+                                        <Text>Attendants: {assignments.filter(x => x.task === v.id).length}/{v.capacity}</Text>
 
-                                    <Group mt="md">
-                                        {assignments.find(x => x.email === user.email && x.task === v.id) ? (
-                                            <Button onClick={() => dropTask(v)} color="red">Drop</Button>
-                                        ) : (
-                                            <Button disabled={assignments.filter(x => x.task === v.id).length >= v.capacity || assignments.filter(x => x.email === user.email).length >= school.quota} onClick={() => registerTask(v)}>Register</Button>
-                                        )}
+                                        <Group mt="md">
+                                            {assignments.find(x => x.email === user.email && x.task === v.id) ? (
+                                                <Button onClick={() => dropTask(v)} color="red">Drop</Button>
+                                            ) : (
+                                                <Button disabled={assignments.filter(x => x.task === v.id).length >= v.capacity || assignments.filter(x => x.email === user.email).length >= school.quota} onClick={() => registerTask(v)}>Register</Button>
+                                            )}
 
-                                        <Button onClick={() => openTaskModal(v)}>Manage</Button>
-                                    </Group>
+                                            <Button onClick={() => openTaskModal(v)}>Manage</Button>
+                                        </Group>
+                                    </div>
                                 </div>
-                            </div>
-                        </Accordion.Panel>
-                    </Accordion.Item>
+                            </Accordion.Panel>
+                        </Accordion.Item>
+                    </Tooltip>
                 ))}
             </Accordion>
         </div>

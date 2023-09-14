@@ -208,9 +208,9 @@ export async function getTask(id: number): Promise<Task> {
             id: rows[0].id,
             school: Number(rows[0].school),
             category: rows[0].category,
-            name: rows[0].name,
+            location: rows[0].location,
             description: rows[0].description,
-            starting_date: rows[0].starting_date.toISOString().substring(0, 10), // TODO - convert this col into string
+            starting_date: rows[0].starting_date.toISOString().substring(0, 10),
             ending_date: rows[0].ending_date.toISOString().substring(0, 10),
             starting_time: rows[0].starting_time.substring(0, 5),
             ending_time: rows[0].ending_time.substring(0, 5),
@@ -233,7 +233,7 @@ export async function listTasks(id: number): Promise<Task[]> {
             id: v.id,
             school: v.school,
             category: v.category,
-            name: v.name,
+            location: v.location,
             description: v.description,
             starting_date: v.starting_date.toISOString().substring(0, 10), // TODO - convert this col into string
             ending_date: v.ending_date.toISOString().substring(0, 10),
@@ -318,13 +318,13 @@ export async function promoteMember(id: number, email: string): Promise<boolean>
     }
 }
 
-export async function createTask(id: number, category: string, name: string, description: string, starting_date: string, ending_date: string, starting_time: string, ending_time: string, capacity: number): Promise<boolean> {
+export async function createTask(id: number, category: string, location: string, description: string, starting_date: string, ending_date: string, starting_time: string, ending_time: string, capacity: number): Promise<boolean> {
     let db = await getClient();
     try {
         if (dayjs(starting_date).isAfter(dayjs(ending_date))) throw null;
         if (dayjs(starting_date + " " + starting_time).isAfter(dayjs(starting_date + " " + ending_time))) throw null;
 
-        await db.query(`INSERT INTO task(school, category, name, description, starting_date, ending_date, starting_time, ending_time, capacity) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, [id, category, name, description, starting_date, ending_date, starting_time, ending_time, capacity]);
+        await db.query(`INSERT INTO task(school, category, location, description, starting_date, ending_date, starting_time, ending_time, capacity) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, [id, category, location, description, starting_date, ending_date, starting_time, ending_time, capacity]);
 
         await db.end();
         return true;
@@ -389,10 +389,10 @@ export async function removeMemberFromTask(id: number, email: string): Promise<b
     }
 }
 
-export async function updateTask(id: number, category: string, name: string, description: string, starting_date: string, ending_date: string, starting_time: string, ending_time: string, capacity: number): Promise<boolean> {
+export async function updateTask(id: number, category: string, location: string, description: string, starting_date: string, ending_date: string, starting_time: string, ending_time: string, capacity: number): Promise<boolean> {
     let db = await getClient();
     try {
-        await db.query(`UPDATE task SET category=$1, name=$2, description=$3, starting_date=$4, ending_date=$5, starting_time=$6, ending_time=$7, capacity=$8 WHERE id=$9`, [category, name, description, starting_date, ending_date, starting_time, ending_time, capacity, id]);
+        await db.query(`UPDATE task SET category=$1, location=$2, description=$3, starting_date=$4, ending_date=$5, starting_time=$6, ending_time=$7, capacity=$8 WHERE id=$9`, [category, location, description, starting_date, ending_date, starting_time, ending_time, capacity, id]);
 
         await db.end();
         return true;

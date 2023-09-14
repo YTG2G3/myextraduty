@@ -1,5 +1,5 @@
 import SiteContext from "@/lib/site-context";
-import { Accordion, Button, Group, Stack, Text } from "@mantine/core";
+import { Accordion, Button, Group, Stack, Text, Tooltip } from "@mantine/core";
 import { useContext } from "react";
 import GetReady from "../GetReady";
 import dayjs from "dayjs";
@@ -45,26 +45,28 @@ export default function AppDashboard({ tasks, assignments, setPageIndex }: { tas
                 ) : (
                     <Accordion style={{ width: "100%" }}>
                         {upcomingEvents.map((v, i) => (
-                            <Accordion.Item key={i} value={String(v.id)}>
-                                <Accordion.Control icon={<DynamicIcon v={v} />}>
-                                    <Group align='baseline'>
-                                        <Text weight="bold">{v.name}</Text>
-                                        <Text color="dimmed" size="sm">{v.category} | {v.starting_date}</Text>
-                                    </Group>
-                                </Accordion.Control>
+                            <Tooltip key={i} label={v.description.substring(0, 30)} position='left'>
+                                <Accordion.Item key={i} value={String(v.id)}>
+                                    <Accordion.Control icon={<DynamicIcon v={v} />}>
+                                        <Group align='baseline'>
+                                            <Text weight="bold">{v.category}</Text>
+                                            <Text color="dimmed" size="sm">{v.location} | {v.starting_date}</Text>
+                                        </Group>
+                                    </Accordion.Control>
 
-                                <Accordion.Panel>
-                                    <div className={styles.pan}>
-                                        <Text w="50%" mr="10%" color="dimmed">{v.description}</Text>
+                                    <Accordion.Panel>
+                                        <div className={styles.pan}>
+                                            <Text w="50%" mr="10%" color="dimmed">Description: {v.description}</Text>
 
-                                        <div className={styles.px}>
-                                            <Text>Date(s): {dayjs(v.starting_date).format("MMMM D, YYYY")} {v.starting_date !== v.ending_date ? `~ ${dayjs(v.ending_date).format("MMMM D, YYYY")}` : ""}</Text>
-                                            <Text>Time: {dayjs(v.starting_time, "HH:mm").format("h:mm A")} - {dayjs(v.ending_time, "HH:mm").format("h:mm A")}</Text>
-                                            <Text>Attendants: {assignments.filter(x => x.task === v.id).length}/{v.capacity}</Text>
+                                            <div className={styles.px}>
+                                                <Text>Date(s): {dayjs(v.starting_date).format("MMMM D, YYYY")} {v.starting_date !== v.ending_date ? `~ ${dayjs(v.ending_date).format("MMMM D, YYYY")}` : ""}</Text>
+                                                <Text>Time: {dayjs(v.starting_time, "HH:mm").format("h:mm A")} - {dayjs(v.ending_time, "HH:mm").format("h:mm A")}</Text>
+                                                <Text>Attendants: {assignments.filter(x => x.task === v.id).length}/{v.capacity}</Text>
+                                            </div>
                                         </div>
-                                    </div>
-                                </Accordion.Panel>
-                            </Accordion.Item>
+                                    </Accordion.Panel>
+                                </Accordion.Item>
+                            </Tooltip>
                         ))}
                     </Accordion>
                 )}

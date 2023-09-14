@@ -4,9 +4,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 export default AuthRoute({
     POST: async (req: NextApiRequest, res: NextApiResponse) => {
-        let { task, category, name, description, starting_date, ending_date, starting_time, ending_time, capacity } = JSON.parse(req.body);
+        let { task, category, location, description, starting_date, ending_date, starting_time, ending_time, capacity } = JSON.parse(req.body);
 
-        let r = await updateTask(task, category, name, description, starting_date, ending_date, starting_time, ending_time, capacity);
+        let r = await updateTask(task, category, location, description, starting_date, ending_date, starting_time, ending_time, capacity);
 
         res.status(r ? 200 : 400).end();
     }

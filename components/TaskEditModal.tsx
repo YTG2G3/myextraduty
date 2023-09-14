@@ -38,7 +38,7 @@ export default function TaskEditModal({ task, members }: { task: Task, members: 
     }
 
     const assignMember = () => modals.open({
-        title: `Assign a member to ${task.name}`,
+        title: `Assign a Member`,
         centered: true,
         children: (
             <form onSubmit={assignMemberReq}>
@@ -52,7 +52,7 @@ export default function TaskEditModal({ task, members }: { task: Task, members: 
     });
 
     const removeMember = (u: Profile) => modals.openConfirmModal({
-        title: `Are you sure about removing ${u.name} from ${task.name}?`,
+        title: `Are you sure about removing ${u.name}?`,
         children: <Text size="sm">{u.name} will be able to sign up again manually.</Text>,
         labels: { confirm: "Confirm", cancel: "Cancel" },
         confirmProps: { color: 'red' },
@@ -71,7 +71,7 @@ export default function TaskEditModal({ task, members }: { task: Task, members: 
         let b = {
             task: task.id,
             category: e.target.category.value,
-            name: e.target.name.value,
+            location: e.target.location.value,
             description: e.target.description.value,
             starting_date: dayjs(e.target.starting_date.value).format("YYYY-MM-DD"),
             starting_time: e.target.starting_time.value,
@@ -86,7 +86,7 @@ export default function TaskEditModal({ task, members }: { task: Task, members: 
     }
 
     const deleteTask = () => modals.openConfirmModal({
-        title: `Are you sure about deleting ${task.name}?`,
+        title: `Are you sure about deleting?`,
         children: <Text size="sm">This action is irreversible.</Text>,
         labels: { confirm: "Confirm", cancel: "Cancel" },
         confirmProps: { color: 'red' },
@@ -105,7 +105,7 @@ export default function TaskEditModal({ task, members }: { task: Task, members: 
                 <form className={styles.lbox} onSubmit={saveChanges}>
                     <Autocomplete name="category" withAsterisk label="Category" data={categories} defaultValue={task.category} dropdownPosition="bottom" />
 
-                    <TextInput name="name" withAsterisk label="Name" defaultValue={task.name} />
+                    <TextInput name="location" withAsterisk label="Location" defaultValue={task.location} />
                     <Textarea name="description" withAsterisk label="Description" defaultValue={task.description} />
 
                     <DatePickerInput name="starting_date" withAsterisk label="Starting Date" defaultValue={dayjs(task.starting_date).toDate()} />

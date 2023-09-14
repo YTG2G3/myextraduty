@@ -32,7 +32,7 @@ export default function RecordsModal({ school, email }: { school: School, email:
                 {tasks.map((t, i) => (
                     <Accordion.Item key={i} value={String(t.id)}>
                         <Accordion.Control icon={<DynamicIcon v={t} />}>
-                            <Text weight="bold">{t.name}</Text>
+                            <Text weight="bold">{t.category}</Text>
                         </Accordion.Control>
 
                         <Accordion.Panel>

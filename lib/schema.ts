@@ -31,7 +31,7 @@ export type Task = {
     id: number,
     school: number,
     category: string,
-    name: string,
+    location: string,
     description: string,
     starting_date: string,
     ending_date: string,
