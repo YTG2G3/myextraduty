@@ -15,9 +15,9 @@ export default function ManagerDashboard({ members, tasks, assignments }: { memb
     if (!school.opening_at || dayjs(school.opening_at).isAfter(dayjs())) return <GetReady />;
 
     let noAcc = members.filter(v => v.name === "");
-    let notMetQ = members.filter(v => assignments.filter(vv => vv.user === v.email).length < school.quota);
+    let notMetQ = members.filter(v => assignments.filter(vv => vv.email === v.email).length < school.quota);
     let upcomingEvents = tasks.filter(v => dayjs(v.ending_date + " " + v.ending_time).isAfter(dayjs()) &&
-        assignments.find(vv => v.id === vv.task && vv.user === user.email));
+        assignments.find(vv => v.id === vv.task && vv.email === user.email));
 
     // TODO - warning & guide email
     return (

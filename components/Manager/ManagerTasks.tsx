@@ -85,8 +85,19 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
         Papa.parse(file, {
             complete: async ({ data: tasks }) => {
                 modals.closeAll();
-                let t = tasks as String[][];
-                t.shift();
+                let x = tasks as String[][];
+                x.shift();
+
+                let t = x.map(v => ({
+                    category: v[0],
+                    name: v[1],
+                    description: v[2],
+                    starting_date: v[3],
+                    ending_date: v[4] === "" ? v[3] : v[4],
+                    starting_time: v[5],
+                    ending_time: v[6],
+                    capacity: isNaN(Number(v[7])) ? 1 : Number(v[7])
+                })).filter(v => v.name !== "" && v.starting_date !== "" && v.ending_date !== "" && v.starting_time !== "" && v.ending_time !== "");
 
                 notifications.show({
                     id: "uploading-tasks",
@@ -98,19 +109,8 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
                 });
 
                 let s = 0, f = 0;
-                for (let i in t) {
+                for (let v of t) {
                     try {
-                        let v = {
-                            category: t[i][0],
-                            name: t[i][1],
-                            description: t[i][2],
-                            starting_date: t[i][3],
-                            ending_date: t[i][4],
-                            starting_time: t[i][5],
-                            ending_time: t[i][6],
-                            capacity: t[i][7]
-                        };
-
                         let x = (await fetch("/api/school/task/create", { method: "POST", body: JSON.stringify(v), headers: { school: String(school.id) } })).status;
 
                         if (x === 200) s++;
@@ -278,10 +278,10 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
                                     <Text>Attendants: {assignments.filter(x => x.task === v.id).length}/{v.capacity}</Text>
 
                                     <Group mt="md">
-                                        {assignments.find(x => x.user === user.email && x.task === v.id) ? (
+                                        {assignments.find(x => x.email === user.email && x.task === v.id) ? (
                                             <Button onClick={() => dropTask(v)} color="red">Drop</Button>
                                         ) : (
-                                            <Button disabled={assignments.filter(x => x.task === v.id).length >= v.capacity || assignments.filter(x => x.user === user.email).length >= school.quota} onClick={() => registerTask(v)}>Register</Button>
+                                            <Button disabled={assignments.filter(x => x.task === v.id).length >= v.capacity || assignments.filter(x => x.email === user.email).length >= school.quota} onClick={() => registerTask(v)}>Register</Button>
                                         )}
 
                                         <Button onClick={() => openTaskModal(v)}>Manage</Button>

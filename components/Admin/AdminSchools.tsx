@@ -1,7 +1,7 @@
 import { ActionIcon, Button, Group, MANTINE_COLORS, Pagination, Select, TextInput, Image, Card, Text, Space, Tooltip, NumberInput, Autocomplete } from "@mantine/core";
 import styles from '@/styles/AdminSchools.module.scss';
 import { useContext, useState } from "react";
-import { School, User } from "@/lib/schema";
+import { School, Profile } from "@/lib/schema";
 import { IconArrowsTransferUp, IconCirclePlus, IconDoorExit, IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { modals } from '@mantine/modals';
 import { DateTimePicker } from "@mantine/dates";
@@ -10,7 +10,7 @@ import SiteContext from "@/lib/site-context";
 
 const viewPerPage = 9;
 
-export default function AdminSchools({ schools, users }: { schools: School[], users: User[] }) {
+export default function AdminSchools({ schools, users }: { schools: School[], users: Profile[] }) {
     let { user, enrollments } = useContext(SiteContext);
     let [search, setSearch] = useState("");
 

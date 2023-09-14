@@ -1,11 +1,11 @@
 import { receivedResponse } from "@/lib/received-response";
-import { Enrollment, School, User } from "@/lib/schema";
+import { Enrollment, School, Profile } from "@/lib/schema";
 import { Accordion, Autocomplete, Button, Center, Group, Loader, Text, Tooltip } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconShieldStar, IconUser, IconUserCog } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
-export default function EnrollmentsModal({ user, sc }: { user: User, sc: School[] }) {
+export default function EnrollmentsModal({ user, sc }: { user: Profile, sc: School[] }) {
     let [enrollments, setEnrollments] = useState<Enrollment[]>(undefined);
     let [schools, setSchools] = useState<School[]>(undefined);
 

@@ -17,7 +17,7 @@ export default AuthRoute({
         if (a.length >= t.capacity) return res.status(400).end();
 
         // Make sure it's not overlapping
-        if (a.find(v => v.user.email === user)) return res.status(400).end();
+        if (a.find(v => v.email === user)) return res.status(400).end();
 
         let e = await listUserAssignments(s.id, user);
 

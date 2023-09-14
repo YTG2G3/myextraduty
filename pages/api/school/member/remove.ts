@@ -1,10 +1,10 @@
 import AuthRoute from "@/lib/auth-route";
 import { getEnrollments, getSchool, kickMember } from "@/lib/db";
-import { User } from "@/lib/schema";
+import { Profile } from "@/lib/schema";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default AuthRoute({
-    POST: async (req: NextApiRequest, res: NextApiResponse, user: User) => {
+    POST: async (req: NextApiRequest, res: NextApiResponse, user: Profile) => {
         let { email } = JSON.parse(req.body);
         let s = await getSchool(Number(req.headers.school));
 

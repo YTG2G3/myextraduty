@@ -1,9 +1,9 @@
 import AuthRoute from "@/lib/auth-route";
-import { User } from "@/lib/schema";
+import { Profile } from "@/lib/schema";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default AuthRoute({
-    GET: async (req: NextApiRequest, res: NextApiResponse, user: User) => {
+    GET: async (req: NextApiRequest, res: NextApiResponse, user: Profile) => {
         res.json(user);
     }
 });

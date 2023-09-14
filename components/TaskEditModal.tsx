@@ -1,4 +1,4 @@
-import { Attendant, Member, Task, User } from "@/lib/schema";
+import { Attendant, Member, Task, Profile } from "@/lib/schema";
 import { Accordion, ActionIcon, Autocomplete, Button, Center, Group, Loader, NumberInput, Text, TextInput, Textarea, Tooltip } from "@mantine/core";
 import { DatePickerInput, TimeInput } from "@mantine/dates";
 import { useEffect, useState } from "react";
@@ -51,7 +51,7 @@ export default function TaskEditModal({ task, members }: { task: Task, members: 
         )
     });
 
-    const removeMember = (u: User) => modals.openConfirmModal({
+    const removeMember = (u: Profile) => modals.openConfirmModal({
         title: `Are you sure about removing ${u.name} from ${task.name}?`,
         children: <Text size="sm">{u.name} will be able to sign up again manually.</Text>,
         labels: { confirm: "Confirm", cancel: "Cancel" },
@@ -127,15 +127,15 @@ export default function TaskEditModal({ task, members }: { task: Task, members: 
 
                     <Accordion>
                         {attendants.map((u, i) => (
-                            <Accordion.Item key={i} value={u.user.email}>
+                            <Accordion.Item key={i} value={u.email}>
                                 <Accordion.Control>
-                                    <Text weight="bold">{u.user.name}</Text>
+                                    <Text weight="bold">{u.name}</Text>
                                     <Text color="dimmed" size="xs">{dayjs(u.assigned_at).format("MMMM D, YYYY HH:MM:ss A")}</Text>
                                 </Accordion.Control>
 
                                 <Accordion.Panel>
                                     <Group position="center">
-                                        <Button onClick={() => removeMember(u.user)} color="red" radius="lg" size="xs" leftIcon={<IconX />}>Remove</Button>
+                                        <Button onClick={() => removeMember(u)} color="red" radius="lg" size="xs" leftIcon={<IconX />}>Remove</Button>
                                     </Group>
                                 </Accordion.Panel>
                             </Accordion.Item>

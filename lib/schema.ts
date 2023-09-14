@@ -47,7 +47,6 @@ export type Assignment = {
     assigned_at: string
 }
 
-export type Attendant = {
-    email: Profile,
+export type Attendant = Profile & {
     assigned_at: string
 }

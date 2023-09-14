@@ -1,5 +1,5 @@
 import { receivedResponse } from '@/lib/received-response';
-import { School, User } from '@/lib/schema';
+import { School, Profile } from '@/lib/schema';
 import styles from '@/styles/AdminUsers.module.scss';
 import { Accordion, ActionIcon, Group, Stack, Text, TextInput, Tooltip } from '@mantine/core';
 import { modals } from '@mantine/modals';
@@ -10,22 +10,22 @@ import EnrollmentsModal from '../EnrollmentsModal';
 
 const viewPerPage = 50;
 
-export default function AdminUsers({ users, schools }: { users: User[], schools: School[] }) {
+export default function AdminUsers({ users, schools }: { users: Profile[], schools: School[] }) {
     let [search, setSearch] = useState("");
 
-    const searchForUser = (v: User) => (
+    const searchForUser = (v: Profile) => (
         v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
         v.email.toLowerCase().indexOf(search.toLowerCase()) >= 0
     );
 
-    let us: User[] = users.filter(searchForUser).splice(0, viewPerPage);
+    let us: Profile[] = users.filter(searchForUser).splice(0, viewPerPage);
 
     const onSearch = (e: any) => {
         let str = e.currentTarget.value;
         setSearch(str);
     }
 
-    const promoteUser = async (u: User) => modals.openConfirmModal({
+    const promoteUser = async (u: Profile) => modals.openConfirmModal({
         title: `Are you sure about promoting ${u.name}?`,
         children: <Text size="sm">This action is irreversible.</Text>,
         labels: { confirm: "Confirm", cancel: "Cancel" },
@@ -37,7 +37,7 @@ export default function AdminUsers({ users, schools }: { users: User[], schools:
         }
     });
 
-    const removeUser = async (u: User) => modals.openConfirmModal({
+    const removeUser = async (u: Profile) => modals.openConfirmModal({
         title: `Are you sure about removing ${u.name}?`,
         children: <Text size="sm">Any schools that the user owns will also be removed and this action is irreversible.</Text>,
         labels: { confirm: "Confirm", cancel: "Cancel" },
@@ -50,7 +50,7 @@ export default function AdminUsers({ users, schools }: { users: User[], schools:
         }
     });
 
-    const enrollmentsUser = async (u: User) => modals.open({
+    const enrollmentsUser = async (u: Profile) => modals.open({
         title: `Enrollments for ${u.name}`,
         children: <EnrollmentsModal user={u} sc={schools} />,
         centered: true

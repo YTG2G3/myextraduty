@@ -1,9 +1,9 @@
 import { createContext } from "react";
-import { Enrollment, School, User } from "./schema";
+import { Enrollment, School, Profile } from "./schema";
 
 // TS Context
 type AuthContext = {
-    user: User,
+    user: Profile,
     school: School,
     enrollments: Enrollment[]
 };

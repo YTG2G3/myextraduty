@@ -1,10 +1,10 @@
 import AuthRoute from "@/lib/auth-route";
 import { getEnrollments } from "@/lib/db";
-import { User } from "@/lib/schema";
+import { Profile } from "@/lib/schema";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default AuthRoute({
-    GET: async (req: NextApiRequest, res: NextApiResponse, user: User) => {
+    GET: async (req: NextApiRequest, res: NextApiResponse, user: Profile) => {
         let { email } = req.query;
 
         if (!email) {

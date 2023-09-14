@@ -7,7 +7,6 @@ export default AuthRoute({
         let { task, user } = JSON.parse(req.body);
 
         let r = await removeMemberFromTask(task, user);
-
         res.status(r ? 200 : 400).end();
     }
 }, false, true, false, true);

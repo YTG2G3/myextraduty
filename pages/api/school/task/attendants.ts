@@ -1,6 +1,5 @@
 import AuthRoute from "@/lib/auth-route";
-import { getUser, listAttendants } from "@/lib/db";
-import { User } from "@/lib/schema";
+import { listAttendants } from "@/lib/db";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default AuthRoute({

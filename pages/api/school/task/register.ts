@@ -1,11 +1,11 @@
 import AuthRoute from "@/lib/auth-route";
 import { assignMember, listUserAssignments, getSchool, getTask, listAttendants } from "@/lib/db";
-import { User } from "@/lib/schema";
+import { Profile } from "@/lib/schema";
 import dayjs from "dayjs";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default AuthRoute({
-    POST: async (req: NextApiRequest, res: NextApiResponse, user: User) => {
+    POST: async (req: NextApiRequest, res: NextApiResponse, user: Profile) => {
         let { task } = JSON.parse(req.body);
         let s = await getSchool(Number(req.headers.school));
 
@@ -19,7 +19,7 @@ export default AuthRoute({
         if (a.length >= t.capacity) return res.status(400).end();
 
         // Make sure it's not overlapping
-        if (a.find(v => v.user.email === user.email)) return res.status(400).end();
+        if (a.find(v => v.email === user.email)) return res.status(400).end();
 
         let e = await listUserAssignments(s.id, user.email);
 

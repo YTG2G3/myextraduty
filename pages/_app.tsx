@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { SessionProvider, useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import SiteContext from '@/lib/site-context';
-import { User, School, Enrollment } from '@/lib/schema';
+import { Profile, School, Enrollment } from '@/lib/schema';
 import { RouterTransition } from '@/components/RouterTransition';
 import { Notifications } from '@mantine/notifications';
 import { ModalsProvider } from '@mantine/modals';
@@ -16,7 +16,7 @@ import { useLocalStorage } from '@mantine/hooks';
 function Layout({ children, ...props }: any) {
     let { status } = useSession();
 
-    let [user, setUser] = useState<User>(undefined);
+    let [user, setUser] = useState<Profile>(undefined);
     let [school, setSchool] = useState<School>(undefined);
     let [enrollments, setEnrollments] = useState<Enrollment[]>(undefined);
 

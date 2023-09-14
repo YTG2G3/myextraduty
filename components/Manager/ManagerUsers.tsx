@@ -1,7 +1,7 @@
-import { Accordion, ActionIcon, Avatar, Button, Group, Stack, Text, TextInput, Tooltip, rem, useMantineTheme } from "@mantine/core";
+import { Accordion, ActionIcon, Avatar, Button, Group, Text, TextInput, Tooltip, rem, useMantineTheme } from "@mantine/core";
 import styles from '@/styles/ManagerUsers.module.scss';
 import { useContext, useState } from "react";
-import { Assignment, Member, User } from "@/lib/schema";
+import { Assignment, Member, Profile } from "@/lib/schema";
 import SiteContext from "@/lib/site-context";
 import { IconArrowBigUp, IconArrowsTransferUp, IconDownload, IconFile, IconHelpOctagon, IconPlus, IconShieldStar, IconTrash, IconTrophy, IconUpload, IconUser, IconUserCog, IconUserQuestion, IconUserX, IconX } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
@@ -21,7 +21,7 @@ export default function ManagerUsers({ members, assignments }: { members: Member
     const searchForMember = (v: Member) => (
         (v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
             v.email.toLowerCase().indexOf(search.toLowerCase()) >= 0) &&
-        !(assignments.filter(x => x.user === v.email).length >= school.quota && !tg)
+        !(assignments.filter(x => x.email === v.email).length >= school.quota && !tg)
     );
 
     let m: Member[] = members.filter(searchForMember);
@@ -61,6 +61,7 @@ export default function ManagerUsers({ members, assignments }: { members: Member
             complete: async ({ data: emails }) => {
                 modals.closeAll();
                 let e = emails as String[][];
+                let l = e.map(v => v[0].trim()).filter(v => v !== "");
 
                 notifications.show({
                     id: "uploading-inv",
@@ -68,13 +69,13 @@ export default function ManagerUsers({ members, assignments }: { members: Member
                     loading: true,
                     autoClose: false,
                     withCloseButton: false,
-                    message: `Pending: ${e.length} | Success: 0 | Failed: 0`
+                    message: `Pending: ${l.length} | Success: 0 | Failed: 0`
                 });
 
                 let s = 0, f = 0;
-                for (let i in e) {
+                for (let i of l) {
                     try {
-                        let v = { email: e[i][0] };
+                        let v = { email: i };
                         let x = (await fetch("/api/school/member", { method: "POST", body: JSON.stringify(v), headers: { school: String(school.id) } })).status;
 
                         if (x === 200) s++;
@@ -89,7 +90,7 @@ export default function ManagerUsers({ members, assignments }: { members: Member
                         loading: true,
                         autoClose: false,
                         withCloseButton: false,
-                        message: `Pending: ${e.length - s - f} | Success: ${s} | Failed: ${f}`
+                        message: `Pending: ${l.length - s - f} | Success: ${s} | Failed: ${f}`
                     });
                 }
 
@@ -190,7 +191,7 @@ export default function ManagerUsers({ members, assignments }: { members: Member
         }
     });
 
-    const openTaskModal = (u: User) => modals.open({
+    const openTaskModal = (u: Profile) => modals.open({
         title: `Records of ${u.name}`,
         centered: true,
         children: <RecordsModal school={school} email={u.email} />
@@ -254,10 +255,10 @@ export default function ManagerUsers({ members, assignments }: { members: Member
                                 <IconUserCog color="blue" />
                             </Tooltip>
                         ) : <IconUser />}>
-                            <Tooltip position="top-start" label={assignments.filter(x => x.user === v.email).length >= school.quota ? (
+                            <Tooltip position="top-start" label={assignments.filter(x => x.email === v.email).length >= school.quota ? (
                                 <Text>Met quota!</Text>
                             ) : (
-                                <Text>{school.quota - assignments.filter(x => x.user === v.email).length} more to go!</Text>
+                                <Text>{school.quota - assignments.filter(x => x.email === v.email).length} more to go!</Text>
                             )}>
                                 <Group align='baseline'>
                                     <Text weight="bold">{v.name === "" ? "Unknown User" : v.name}</Text>
@@ -277,10 +278,10 @@ export default function ManagerUsers({ members, assignments }: { members: Member
 
                                     {v.name !== "" ? (
                                         <div className={styles.ou}>
-                                            {assignments.filter(x => x.user === v.email).length >= school.quota ? (
+                                            {assignments.filter(x => x.email === v.email).length >= school.quota ? (
                                                 <Text>This user has met quota!</Text>
                                             ) : (
-                                                <Text>{school.quota - assignments.filter(x => x.user === v.email).length} more task(s) to take before meeting quota.</Text>
+                                                <Text>{school.quota - assignments.filter(x => x.email === v.email).length} more task(s) to take before meeting quota.</Text>
                                             )}
 
                                             <Button variant="light" onClick={() => openTaskModal(v)}>Details</Button>

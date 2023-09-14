@@ -1,4 +1,4 @@
-import { User, School, Enrollment, Task, Member, Assignment, Attendant } from './schema';
+import { Profile, School, Enrollment, Task, Member, Assignment, Attendant } from './schema';
 import dayjs from 'dayjs';
 import { Client } from 'pg';
 
@@ -13,7 +13,7 @@ const getClient = async () => {
     return client;
 }
 
-export async function getUser(email: string): Promise<User> {
+export async function getUser(email: string): Promise<Profile> {
     email = email.toLowerCase();
     let db = await getClient();
     try {
@@ -76,7 +76,7 @@ export async function getEnrollments(email: string): Promise<Enrollment[]> {
     email = email.toLowerCase();
     let db = await getClient();
     try {
-        let { rows } = await db.query(`SELECT * FROM enrollment WHERE app_user=$1`, [email]);
+        let { rows } = await db.query(`SELECT * FROM enrollment WHERE email=$1`, [email]);
 
         await db.end();
         return rows as Enrollment[];
@@ -142,13 +142,13 @@ export async function deleteSchool(id: number): Promise<boolean> {
     }
 }
 
-export async function listUsers(): Promise<User[]> {
+export async function listUsers(): Promise<Profile[]> {
     let db = await getClient();
     try {
         let { rows } = await db.query(`SELECT * FROM profile`);
 
         await db.end();
-        return rows as User[];
+        return rows as Profile[];
     } catch (error) {
         await db.end();
         return null;
@@ -255,8 +255,8 @@ export async function listMembers(id: number): Promise<Member[]> {
 
         let u: Member[] = [];
         for (let er of (rows as Enrollment[])) {
-            let { rows: x } = await db.query(`SELECT * FROM profile WHERE email=$1`, [er.user]);
-            u.push(x.length === 0 ? { admin: false, email: er.user, manager: false, name: "", picture: "" } : { ...x[0], manager: er.manager });
+            let { rows: x } = await db.query(`SELECT * FROM profile WHERE email=$1`, [er.email]);
+            u.push(x.length === 0 ? { admin: false, email: er.email, manager: false, name: "", picture: "" } : { ...x[0], manager: er.manager });
         }
 
         await db.end();
@@ -278,7 +278,7 @@ export async function enrollUser(id: number, email: string): Promise<boolean> {
         let er = await getEnrollments(email);
         if (er.find(v => v.school === id)) throw null;
 
-        await db.query(`INSERT INTO enrollment (school, user) VALUES ($1, $2)`, [id, email]);
+        await db.query(`INSERT INTO enrollment (school, email) VALUES ($1, $2)`, [id, email]);
 
         await db.end();
         return true;
@@ -292,7 +292,7 @@ export async function kickMember(id: number, email: string): Promise<boolean> {
     email = email.toLowerCase();
     let db = await getClient();
     try {
-        await db.query(`DELETE FROM enrollment WHERE school=$1 AND user=$2`, [id, email]);
+        await db.query(`DELETE FROM enrollment WHERE school=$1 AND email=$2`, [id, email]);
 
         await db.end();
         return true;
@@ -306,7 +306,7 @@ export async function promoteMember(id: number, email: string): Promise<boolean>
     email = email.toLowerCase();
     let db = await getClient();
     try {
-        await db.query(`UPDATE enrollment SET manager=1 WHERE school=$1 AND user=$2`, [id, email]);
+        await db.query(`UPDATE enrollment SET manager=1 WHERE school=$1 AND email=$2`, [id, email]);
 
         await db.end();
         return true;
@@ -363,7 +363,7 @@ export async function assignMember(id: number, email: string, school: number): P
     email = email.toLowerCase();
     let db = await getClient();
     try {
-        await db.query(`INSERT INTO assignment(task, user, school) VALUES ($1, $2, $3)`, [id, email, school]);
+        await db.query(`INSERT INTO assignment(task, email, school) VALUES ($1, $2, $3)`, [id, email, school]);
 
         await db.end();
         return true;
@@ -377,7 +377,7 @@ export async function removeMemberFromTask(id: number, email: string): Promise<b
     email = email.toLowerCase();
     let db = await getClient();
     try {
-        await db.query(`DELETE FROM assignment WHERE task=$1 AND user=$2`, [id, email]);
+        await db.query(`DELETE FROM assignment WHERE task=$1 AND email=$2`, [id, email]);
 
         await db.end();
         return true;
@@ -403,12 +403,12 @@ export async function updateTask(id: number, category: string, name: string, des
 export async function listAttendants(id: number): Promise<Attendant[]> {
     let db = await getClient();
     try {
-        let { rows } = await db.query(`SELECT * FROM assignment WHERE task=$1`, [id]);
+        let { rows }: { rows: Assignment[] } = await db.query(`SELECT * FROM assignment WHERE task=$1`, [id]);
         let r: Attendant[] = [];
 
         for (let x of rows) {
-            let u = await getUser(x.user);
-            r.push({ user: u, assigned_at: x.assigned_at });
+            let u = await getUser(x.email);
+            r.push({ ...u, assigned_at: x.assigned_at });
         }
 
         await db.end();
@@ -432,11 +432,11 @@ export async function deleteTask(id: number): Promise<boolean> {
     }
 }
 
-export async function listUserAssignments(school: number, user: string): Promise<Assignment[]> {
-    user = user.toLowerCase();
+export async function listUserAssignments(school: number, email: string): Promise<Assignment[]> {
+    email = email.toLowerCase();
     let db = await getClient();
     try {
-        let { rows } = await db.query(`SELECT * FROM assignment WHERE school=$1 AND user=$2`, [school, user]);
+        let { rows } = await db.query(`SELECT * FROM assignment WHERE school=$1 AND email=$2`, [school, email]);
 
         await db.end();
         return rows as Assignment[];
@@ -463,7 +463,7 @@ export async function clearMembers(school: number, owner: string): Promise<boole
     owner = owner.toLowerCase();
     let db = await getClient();
     try {
-        await db.query(`DELETE FROM enrollment WHERE school=$1 AND NOT user=$2`, [school, owner]);
+        await db.query(`DELETE FROM enrollment WHERE school=$1 AND NOT email=$2`, [school, owner]);
 
         await db.end();
         return true;

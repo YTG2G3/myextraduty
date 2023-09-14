@@ -1,7 +1,6 @@
 import SiteContext from "@/lib/site-context";
 import dayjs from "dayjs";
-import { useContext, useEffect, useState } from "react";
-import GetReady from "../GetReady";
+import { useContext, useState } from "react";
 import styles from '@/styles/ManagerTasks.module.scss';
 import { Accordion, ActionIcon, Autocomplete, Button, Group, Text, Tooltip } from "@mantine/core";
 import { IconUserCancel } from "@tabler/icons-react";
@@ -14,9 +13,6 @@ export default function AppTasks({ tasks, categories, assignments }: { tasks: Ta
     let { school, user } = useContext(SiteContext);
     let [search, setSearch] = useState("");
     let [tg, setTg] = useState(true);
-
-    // DEPRECATED - can't view tasks before opening time
-    // if (!school.opening_at || dayjs(school.opening_at).isAfter(now)) return <GetReady />;
 
     const searchForTask = (v: Task) => (
         (v.name.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
@@ -80,10 +76,10 @@ export default function AppTasks({ tasks, categories, assignments }: { tasks: Ta
 
                                     {!school.opening_at || dayjs(school.opening_at).isAfter(dayjs()) ? <></> : (
                                         <Group mt="md">
-                                            {assignments.find(x => x.user === user.email && x.task === v.id) ? (
+                                            {assignments.find(x => x.email === user.email && x.task === v.id) ? (
                                                 <Button onClick={() => dropTask(v)} color="red">Drop</Button>
                                             ) : (
-                                                <Button disabled={assignments.filter(x => x.task === v.id).length >= v.capacity || assignments.filter(x => x.user === user.email).length >= school.quota} onClick={() => registerTask(v)}>Register</Button>
+                                                <Button disabled={assignments.filter(x => x.task === v.id).length >= v.capacity || assignments.filter(x => x.email === user.email).length >= school.quota} onClick={() => registerTask(v)}>Register</Button>
                                             )}
                                         </Group>
                                     )}
