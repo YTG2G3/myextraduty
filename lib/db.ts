@@ -407,7 +407,7 @@ export async function listAttendants(id: number): Promise<Attendant[]> {
         let r: Attendant[] = [];
 
         for (let x of rows) {
-            let u = await getUser(x.email);
+            let u = (await getUser(x.email)) ?? { admin: false, email: x.email, manager: false, name: "", picture: "" };
             r.push({ ...u, assigned_at: x.assigned_at });
         }
 
