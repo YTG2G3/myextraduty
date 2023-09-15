@@ -129,7 +129,7 @@ export default function TaskEditModal({ task, members }: { task: Task, members: 
                         {attendants.map((u, i) => (
                             <Accordion.Item key={i} value={u.email}>
                                 <Accordion.Control>
-                                    <Text weight="bold">{u.name}</Text>
+                                    <Text weight="bold">{u.name === "" ? u.email : u.name}</Text>
                                     <Text color="dimmed" size="xs">{dayjs(u.assigned_at).format("MMMM D, YYYY HH:MM:ss A")}</Text>
                                 </Accordion.Control>
 

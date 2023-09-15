@@ -50,7 +50,7 @@ export default function AppDashboard({ tasks, assignments, setPageIndex }: { tas
                                     <Accordion.Control icon={<DynamicIcon v={v} />}>
                                         <Group align='baseline'>
                                             <Text weight="bold">{v.category}</Text>
-                                            <Text color="dimmed" size="sm">{v.location} | {v.starting_date}</Text>
+                                            <Text color="dimmed" size="sm">{v.location} | {dayjs(v.starting_date).format("dddd, MMMM D, YYYY")}</Text>
                                         </Group>
                                     </Accordion.Control>
 
@@ -59,7 +59,7 @@ export default function AppDashboard({ tasks, assignments, setPageIndex }: { tas
                                             <Text w="50%" mr="10%" color="dimmed">Description: {v.description}</Text>
 
                                             <div className={styles.px}>
-                                                <Text>Date(s): {dayjs(v.starting_date).format("MMMM D, YYYY")} {v.starting_date !== v.ending_date ? `~ ${dayjs(v.ending_date).format("MMMM D, YYYY")}` : ""}</Text>
+                                                <Text>Date(s): {dayjs(v.starting_date).format("ddd, MMMM D, YYYY")} {v.starting_date !== v.ending_date ? `~ ${dayjs(v.ending_date).format("ddd, MMMM D, YYYY")}` : ""}</Text>
                                                 <Text>Time: {dayjs(v.starting_time, "HH:mm").format("h:mm A")} - {dayjs(v.ending_time, "HH:mm").format("h:mm A")}</Text>
                                                 <Text>Attendants: {assignments.filter(x => x.task === v.id).length}/{v.capacity}</Text>
                                             </div>

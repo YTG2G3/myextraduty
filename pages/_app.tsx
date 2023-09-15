@@ -12,6 +12,10 @@ import { Notifications } from '@mantine/notifications';
 import { ModalsProvider } from '@mantine/modals';
 import { DatesProvider } from '@mantine/dates';
 import { useLocalStorage } from '@mantine/hooks';
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
 
 function Layout({ children, ...props }: any) {
     let { status } = useSession();
