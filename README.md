@@ -7,8 +7,7 @@
 
 ## Contributing
 
-### Schema
-[ERDCloud](https://www.erdcloud.com/d/t4EyzNjYxkjH8cHQS)
+### [Schema](https://www.erdcloud.com/d/t4EyzNjYxkjH8cHQS)
 
 ### Environment Settings
 
