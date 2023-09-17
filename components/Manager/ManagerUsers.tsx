@@ -192,7 +192,7 @@ export default function ManagerUsers({ members, assignments }: { members: Member
     });
 
     const openTaskModal = (u: Profile) => modals.open({
-        title: `Records of ${u.name}`,
+        title: `Records of ${u.name === "" ? u.email : u.name}`,
         centered: true,
         children: <RecordsModal school={school} email={u.email} />
     });
@@ -276,17 +276,15 @@ export default function ManagerUsers({ members, assignments }: { members: Member
                                         <Avatar mr="20px" src={v.picture} size={80} alt={v.name} />
                                     )}
 
-                                    {v.name !== "" ? (
-                                        <div className={styles.ou}>
-                                            {assignments.filter(x => x.email === v.email).length >= school.quota ? (
-                                                <Text>This user has met quota!</Text>
-                                            ) : (
-                                                <Text>{school.quota - assignments.filter(x => x.email === v.email).length} more task(s) to take before meeting quota.</Text>
-                                            )}
+                                    <div className={styles.ou}>
+                                        {assignments.filter(x => x.email === v.email).length >= school.quota ? (
+                                            <Text>This user has met quota!</Text>
+                                        ) : (
+                                            <Text>{school.quota - assignments.filter(x => x.email === v.email).length} more task(s) to take before meeting quota.</Text>
+                                        )}
 
-                                            <Button variant="light" onClick={() => openTaskModal(v)}>Details</Button>
-                                        </div>
-                                    ) : undefined}
+                                        <Button variant="light" onClick={() => openTaskModal(v)}>Details</Button>
+                                    </div>
 
                                     <Group className={styles.g}>
                                         {v.email !== user.email ? user.email === school.owner ? ( // Me owner
