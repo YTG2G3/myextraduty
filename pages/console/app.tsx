@@ -34,8 +34,14 @@ export default function App() {
             t.sort((a, b) => {
                 let sd = dayjs(a.starting_date + " " + a.starting_time);
                 let ssd = dayjs(b.starting_date + " " + b.starting_time);
+                let ed = dayjs(a.ending_date + " " + a.ending_time);
+                let eed = dayjs(b.ending_date + " " + b.ending_time);
 
-                return sd.isAfter(ssd) ? 1 : -1;
+                if (sd.isSame(ssd)) {
+                    if (ed.isSame(eed)) return a.category.localeCompare(b.category);
+                    return ed.isBefore(eed) ? -1 : 1;
+                }
+                return sd.isBefore(ssd) ? -1 : 1;
             });
             setTasks(t);
         } catch (error) {
