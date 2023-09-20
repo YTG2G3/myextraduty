@@ -408,8 +408,13 @@ export async function updateTask(id: number, category: string, location: string,
 export async function listAttendants(id: number): Promise<Attendant[]> {
     let db = await getClient();
     try {
+        console.log("a");
+
         let { rows }: { rows: Assignment[] } = await db.query(`SELECT * FROM assignment WHERE task=$1`, [id]);
         let r: Attendant[] = [];
+
+        console.log(rows);
+
 
         for (let x of rows) {
             let u = (await getUser(x.email)) ?? { admin: false, email: x.email, manager: false, name: "", picture: "" };
@@ -419,7 +424,7 @@ export async function listAttendants(id: number): Promise<Attendant[]> {
         await db.end();
         return r;
     } catch (error) {
-        console.log(error);
+        console.error(error);
 
         await db.end();
         return null;

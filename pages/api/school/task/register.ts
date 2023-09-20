@@ -13,6 +13,9 @@ export default AuthRoute({
 
         let m = await listMembers(s.id);
         console.log("b");
+        res.status(400).end();
+
+        return;
         let a = await listAttendants(Number(task));
         console.log("c");
         try {
