@@ -16,13 +16,13 @@ export default AuthRoute({
         let a = await listAttendants(task);
         console.log("c");
         try {
-            let t = await getTask(Number(task));
+            let x = await getTask(Number(task));
+            console.log(x);
 
         } catch (error) {
             console.log(error);
 
         }
-        // let t = await getTask(Number(task));
         console.log("d");
 
 
@@ -30,6 +30,7 @@ export default AuthRoute({
         // res.json({ today: dayjs().toISOString(), after: dayjs(t.ending_date + " " + t.ending_time).toISOString() });
         res.status(400).end();
         return;
+        let t = await getTask(Number(task));
 
         if (!m.find(v => v.email === user.email && (v.manager || v.admin)) && dayjs().isAfter(dayjs(t.ending_date + " " + t.ending_time))) return res.status(400).end();
 
