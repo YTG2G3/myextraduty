@@ -8,18 +8,9 @@ export default AuthRoute({
     POST: async (req: NextApiRequest, res: NextApiResponse, user: Profile) => {
         let { task } = JSON.parse(req.body);
         let s = await getSchool(Number(req.headers.school));
-        console.log(s);
-
         let m = await listMembers(s.id);
-        console.log(m);
-
-
         let a = await listAttendants(task);
-
-        console.log(a);
-
         let t = await getTask(task);
-        console.log(t);
 
         console.log(dayjs().toISOString());
         console.log(dayjs(t.ending_date + " " + t.ending_time).toISOString());

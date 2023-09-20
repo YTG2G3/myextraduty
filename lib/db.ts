@@ -202,6 +202,8 @@ export async function getTask(id: number): Promise<Task> {
     let db = await getClient();
     try {
         let { rows } = await db.query(`SELECT * FROM task WHERE id=$1`, [id]);
+        console.log("yee ", rows[0]);
+
         let t: Task = {
             id: rows[0].id,
             school: Number(rows[0].school),
@@ -218,6 +220,8 @@ export async function getTask(id: number): Promise<Task> {
         await db.end();
         return t;
     } catch (error) {
+        console.log(error);
+
         await db.end();
         return null;
     }
