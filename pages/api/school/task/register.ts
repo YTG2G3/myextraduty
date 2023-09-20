@@ -10,7 +10,9 @@ export default AuthRoute({
         let s = await getSchool(Number(req.headers.school));
         let m = await listMembers(s.id);
         let a = await listAttendants(task);
-        let t = await getTask(task);
+        console.log("so far so good", task);
+
+        let t = await getTask(Number(task));
 
         console.log(dayjs().toISOString());
         console.log(dayjs(t.ending_date + " " + t.ending_time).toISOString());

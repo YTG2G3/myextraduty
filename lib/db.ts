@@ -220,7 +220,7 @@ export async function getTask(id: number): Promise<Task> {
         await db.end();
         return t;
     } catch (error) {
-        console.log(error);
+        console.error(error);
 
         await db.end();
         return null;
