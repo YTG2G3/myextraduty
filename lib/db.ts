@@ -419,6 +419,8 @@ export async function listAttendants(id: number): Promise<Attendant[]> {
         await db.end();
         return r;
     } catch (error) {
+        console.log(error);
+
         await db.end();
         return null;
     }
