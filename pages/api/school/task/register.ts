@@ -6,6 +6,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 export default AuthRoute({
     POST: async (req: NextApiRequest, res: NextApiResponse, user: Profile) => {
+
+        console.log(dayjs().toISOString());
+        res.json({ today: dayjs().toISOString(), after: dayjs("2023-09-21 16:00").toISOString() });
+        return;
+
         let { task } = JSON.parse(req.body);
         let s = await getSchool(Number(req.headers.school));
         let m = await listMembers(s.id);
