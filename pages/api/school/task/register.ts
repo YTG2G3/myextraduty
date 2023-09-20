@@ -7,24 +7,28 @@ import { NextApiRequest, NextApiResponse } from "next";
 export default AuthRoute({
     POST: async (req: NextApiRequest, res: NextApiResponse, user: Profile) => {
 
-        console.log(dayjs().toISOString());
-        res.json({ today: dayjs().toISOString(), after: dayjs("2023-09-21 16:00").toISOString() });
-        return;
-
         let { task } = JSON.parse(req.body);
         let s = await getSchool(Number(req.headers.school));
+        console.log("a");
+
         let m = await listMembers(s.id);
+        console.log("b");
         let a = await listAttendants(task);
-        console.log("so far so good", task);
+        console.log("c");
+        try {
+            let t = await getTask(Number(task));
 
-        let t = await getTask(Number(task));
+        } catch (error) {
+            console.log(error);
 
-        console.log(dayjs().toISOString());
-        console.log(dayjs(t.ending_date + " " + t.ending_time).toISOString());
+        }
+        // let t = await getTask(Number(task));
+        console.log("d");
 
 
         // Can't sign up for completed events unless manager
-        res.json({ today: dayjs().toISOString(), after: dayjs(t.ending_date + " " + t.ending_time).toISOString() });
+        // res.json({ today: dayjs().toISOString(), after: dayjs(t.ending_date + " " + t.ending_time).toISOString() });
+        res.status(400).end();
         return;
 
         if (!m.find(v => v.email === user.email && (v.manager || v.admin)) && dayjs().isAfter(dayjs(t.ending_date + " " + t.ending_time))) return res.status(400).end();
