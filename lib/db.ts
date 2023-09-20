@@ -182,209 +182,124 @@ export async function listTasks(client: Client, sid: number): Promise<Task[]> {
     }
 }
 
-export async function enrollUser(client: Client, id: number, email: string): Promise<boolean> {
-    email = email.toLowerCase();
-
+export async function enrollUser(client: Client, sid: number, email: string): Promise<boolean> {
     try {
-
-        await client.query(`INSERT INTO enrollment (school, email) VALUES ($1, $2)`, [id, email]);
-
-
+        await client.query(`INSERT INTO enrollment (school, email) VALUES ($1, $2)`, [sid, email.toLowerCase()]);
         return true;
     } catch (error) {
-
         return false;
     }
 }
 
-export async function kickMember(client: Client, id: number, email: string): Promise<boolean> {
-    email = email.toLowerCase();
-
+export async function kickMember(client: Client, sid: number, email: string): Promise<boolean> {
     try {
-        await client.query(`DELETE FROM enrollment WHERE school=$1 AND email=$2`, [id, email]);
-
-
+        await client.query(`DELETE FROM enrollment WHERE school=$1 AND email=$2`, [sid, email.toLowerCase()]);
         return true;
     } catch (error) {
-
         return false;
     }
 }
 
-export async function promoteMember(client: Client, id: number, email: string): Promise<boolean> {
-    email = email.toLowerCase();
-
+export async function promoteMember(client: Client, sid: number, email: string): Promise<boolean> {
     try {
-        await client.query(`UPDATE enrollment SET manager=true WHERE school=$1 AND email=$2`, [id, email]);
-
-
+        await client.query(`UPDATE enrollment SET manager=true WHERE school=$1 AND email=$2`, [sid, email.toLowerCase()]);
         return true;
     } catch (error) {
-
         return false;
     }
 }
 
-export async function createTask(client: Client, id: number, category: string, location: string, description: string, starting_date: string, ending_date: string, starting_time: string, ending_time: string, capacity: number): Promise<boolean> {
-
+export async function createTask(client: Client, sid: number, category: string, location: string, description: string, starting_date: string, ending_date: string, starting_time: string, ending_time: string, capacity: number): Promise<boolean> {
     try {
         if (dayjs(starting_date).isAfter(dayjs(ending_date))) throw null;
         if (dayjs(starting_date + " " + starting_time).isAfter(dayjs(starting_date + " " + ending_time))) throw null;
 
-        await client.query(`INSERT INTO task(school, category, location, description, starting_date, ending_date, starting_time, ending_time, capacity) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, [id, category, location, description, starting_date, ending_date, starting_time, ending_time, capacity]);
-
-
+        await client.query(`INSERT INTO task(school, category, location, description, starting_date, ending_date, starting_time, ending_time, capacity) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, [sid, category, location, description, starting_date, ending_date, starting_time, ending_time, capacity]);
         return true;
     } catch (error) {
-
         return false;
     }
 }
 
-export async function listCategories(client: Client, id: number): Promise<string[]> {
-
+export async function listCategories(client: Client, sid: number): Promise<string[]> {
     try {
-        let { rows } = await client.query(`SELECT category FROM task WHERE school=$1`, [id]);
+        let { rows } = await client.query(`SELECT category FROM task WHERE school=$1`, [sid]);
         let ctg = Array.from(new Set(rows.map((v: any) => v.category)));
-
 
         return ctg as string[];
     } catch (error) {
-
         return null;
     }
 }
 
-export async function listAssignments(client: Client, id: number): Promise<Assignment[]> {
-
+export async function listAssignments(client: Client, sid: number): Promise<Assignment[]> {
     try {
-        let { rows } = await client.query(`SELECT * FROM assignment WHERE school=$1`, [id]);
-
-
+        let { rows } = await client.query(`SELECT * FROM assignment WHERE school=$1`, [sid]);
         return rows as Assignment[];
     } catch (error) {
-
         return null;
     }
 }
 
-export async function assignMember(client: Client, id: number, email: string, school: number): Promise<boolean> {
-    email = email.toLowerCase();
-
+export async function assignMember(client: Client, tid: number, email: string, school: number): Promise<boolean> {
     try {
-        await client.query(`INSERT INTO assignment(task, email, school) VALUES ($1, $2, $3)`, [id, email, school]);
-
-
+        await client.query(`INSERT INTO assignment(task, email, school) VALUES ($1, $2, $3)`, [tid, email.toLowerCase(), school]);
         return true;
     } catch (error) {
-
         return false;
     }
 }
 
-export async function removeMemberFromTask(client: Client, id: number, email: string): Promise<boolean> {
-    email = email.toLowerCase();
-
+export async function removeMemberFromTask(client: Client, tid: number, email: string): Promise<boolean> {
     try {
-        await client.query(`DELETE FROM assignment WHERE task=$1 AND email=$2`, [id, email]);
-
-
+        await client.query(`DELETE FROM assignment WHERE task=$1 AND email=$2`, [tid, email.toLowerCase()]);
         return true;
     } catch (error) {
-
         return false;
     }
 }
 
-export async function updateTask(client: Client, id: number, category: string, location: string, description: string, starting_date: string, ending_date: string, starting_time: string, ending_time: string, capacity: number): Promise<boolean> {
-
+export async function updateTask(client: Client, tid: number, category: string, location: string, description: string, starting_date: string, ending_date: string, starting_time: string, ending_time: string, capacity: number): Promise<boolean> {
     try {
-        await client.query(`UPDATE task SET category=$1, location=$2, description=$3, starting_date=$4, ending_date=$5, starting_time=$6, ending_time=$7, capacity=$8 WHERE id=$9`, [category, location, description, starting_date, ending_date, starting_time, ending_time, capacity, id]);
-
-
+        await client.query(`UPDATE task SET category=$1, location=$2, description=$3, starting_date=$4, ending_date=$5, starting_time=$6, ending_time=$7, capacity=$8 WHERE id=$9`, [category, location, description, starting_date, ending_date, starting_time, ending_time, capacity, tid]);
         return true;
     } catch (error) {
-
         return false;
     }
 }
 
-export async function listAttendants(client: Client, id: number): Promise<Attendant[]> {
-
+export async function deleteTask(client: Client, tid: number): Promise<boolean> {
     try {
-        console.log("a");
-
-        let { rows }: { rows: Assignment[] } = await client.query(`SELECT * FROM assignment WHERE task=$1`, [id]);
-        let r: Attendant[] = [];
-
-        console.log(rows);
-
-
-        for (let x of rows) {
-            let u = (await getUser(x.email)) ?? { admin: false, email: x.email, manager: false, name: "", picture: "" };
-            r.push({ ...u, assigned_at: x.assigned_at });
-        }
-
-
-        return r;
-    } catch (error) {
-        console.error(error);
-
-
-        return null;
-    }
-}
-
-export async function deleteTask(client: Client, id: number): Promise<boolean> {
-
-    try {
-        await client.query(`DELETE FROM task WHERE id=$1`, [id]);
-
-
+        await client.query(`DELETE FROM task WHERE id=$1`, [tid]);
         return true;
     } catch (error) {
-
         return false;
     }
 }
 
-export async function listUserAssignments(client: Client, school: number, email: string): Promise<Assignment[]> {
-    email = email.toLowerCase();
-
+export async function listUserAssignments(client: Client, sid: number, email: string): Promise<Assignment[]> {
     try {
-        let { rows } = await client.query(`SELECT * FROM assignment WHERE school=$1 AND email=$2`, [school, email]);
-
-
+        let { rows } = await client.query(`SELECT * FROM assignment WHERE school=$1 AND email=$2`, [sid, email.toLowerCase()]);
         return rows as Assignment[];
     } catch (error) {
-
         return null;
     }
 }
 
-export async function clearTasks(client: Client, school: number): Promise<boolean> {
-
+export async function clearTasks(client: Client, sid: number): Promise<boolean> {
     try {
-        await client.query(`DELETE FROM task WHERE school=$1`, [school]);
-
-
+        await client.query(`DELETE FROM task WHERE school=$1`, [sid]);
         return true;
     } catch (error) {
-
         return false;
     }
 }
 
-export async function clearMembers(client: Client, school: number, owner: string): Promise<boolean> {
-    owner = owner.toLowerCase();
-
+export async function clearMembers(client: Client, sid: number, owner: string): Promise<boolean> {
     try {
-        await client.query(`DELETE FROM enrollment WHERE school=$1 AND NOT email=$2`, [school, owner]);
-
-
+        await client.query(`DELETE FROM enrollment WHERE school=$1 AND NOT email=$2`, [sid, owner.toLowerCase()]);
         return true;
     } catch (error) {
-
         return false;
     }
 }

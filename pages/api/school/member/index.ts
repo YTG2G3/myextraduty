@@ -24,9 +24,9 @@ export default AuthRoute({
 
         // Already enrolled
         let er = await listUserEnrollments(client, email);
-        if (er.find(v => v.school === id)) throw null;
+        if (er.find(v => v.school === Number(req.headers.school))) res.status(400).end();
 
-        let s = await enrollUser(Number(req.headers.school), email);
+        let s = await enrollUser(client, Number(req.headers.school), email);
         res.status(s ? 200 : 400).end();
     }
 }, false, true, false, true);

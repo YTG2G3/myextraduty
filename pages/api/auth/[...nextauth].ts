@@ -2,6 +2,7 @@ import { createUser, getUser, updateUserInfo } from "@/lib/db";
 import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import GoogleProvider from 'next-auth/providers/google';
+import { Client } from "pg";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -13,11 +14,17 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async signIn({ profile }) {
             let { email, name, picture }: any = profile;
-            let u = await getUser(email);
+            let client = new Client({ ssl: { rejectUnauthorized: false } });
 
-            return u
-                ? await updateUserInfo(email, name, picture)
-                : await createUser(email, name, picture);
+            await client.connect();
+            let u = await getUser(client, email);
+
+            let res = u
+                ? await updateUserInfo(client, email, name, picture)
+                : await createUser(client, email, name, picture);
+
+            await client.end();
+            return res;
         }
     }
 }
