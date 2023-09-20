@@ -2,6 +2,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { getEnrollments, getSchool, getUser } from "./db";
+import { Client } from 'pg';
 
 export default function AuthRoute({ GET, POST }: any, admin = false, school = false, owner = false, manager = false): Function {
     return async (req: NextApiRequest, res: NextApiResponse) => {
@@ -36,9 +37,20 @@ export default function AuthRoute({ GET, POST }: any, admin = false, school = fa
             if (manager && !s.manager) return res.status(403).end();
         }
 
+        // Connect to database
+        let client = new Client({ ssl: { rejectUnauthorized: false } });
+        await client.connect();
+
+        // Run method
         switch (req.method) {
-            case 'GET': GET(req, res, user); break;
-            case 'POST': POST(req, res, user); break;
+            case 'GET':
+                await GET(req, res, client, user);
+                await client.end();
+                break;
+            case 'POST':
+                await POST(req, res, client, user);
+                await client.end();
+                break;
         }
     }
 }
