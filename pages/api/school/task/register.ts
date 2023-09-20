@@ -13,7 +13,7 @@ export default AuthRoute({
 
         let m = await listMembers(s.id);
         console.log("b");
-        let a = await listAttendants(task);
+        let a = await listAttendants(Number(task));
         console.log("c");
         try {
             let x = await getTask(Number(task));
