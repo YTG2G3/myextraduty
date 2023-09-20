@@ -14,6 +14,9 @@ export default AuthRoute({
         let t = await getTask(task);
 
         // Can't sign up for completed events unless manager
+        res.status(400).json({ today: dayjs().toISOString(), after: dayjs(t.ending_date + " " + t.ending_time).toISOString() });
+        return;
+
         if (!m.find(v => v.email === user.email && (v.manager || v.admin)) && dayjs().isAfter(dayjs(t.ending_date + " " + t.ending_time))) return res.status(400).end();
 
         // Make sure it's not full
