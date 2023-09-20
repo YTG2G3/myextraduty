@@ -12,7 +12,7 @@ export default AuthRoute({
         console.log("a");
 
         let m = await listMembers(s.id);
-        console.log("b");
+        console.log("b", task);
         res.status(400).end();
 
         return;
