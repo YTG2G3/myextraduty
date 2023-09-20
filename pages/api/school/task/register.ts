@@ -8,13 +8,25 @@ export default AuthRoute({
     POST: async (req: NextApiRequest, res: NextApiResponse, user: Profile) => {
         let { task } = JSON.parse(req.body);
         let s = await getSchool(Number(req.headers.school));
+        console.log(s);
+
         let m = await listMembers(s.id);
+        console.log(m);
+
 
         let a = await listAttendants(task);
+
+        console.log(a);
+
         let t = await getTask(task);
+        console.log(t);
+
+        console.log(dayjs().toISOString());
+        console.log(dayjs(t.ending_date + " " + t.ending_time).toISOString());
+
 
         // Can't sign up for completed events unless manager
-        res.status(400).json({ today: dayjs().toISOString(), after: dayjs(t.ending_date + " " + t.ending_time).toISOString() });
+        res.json({ today: dayjs().toISOString(), after: dayjs(t.ending_date + " " + t.ending_time).toISOString() });
         return;
 
         if (!m.find(v => v.email === user.email && (v.manager || v.admin)) && dayjs().isAfter(dayjs(t.ending_date + " " + t.ending_time))) return res.status(400).end();
