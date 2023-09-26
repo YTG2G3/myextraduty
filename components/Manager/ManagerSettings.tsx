@@ -20,7 +20,7 @@ export default function ManagerSettings({ members }: { members: Member[] }) {
             address: e.target.address.value,
             primary_color: e.target.primary_color.value,
             logo: e.target.logo.value,
-            opening_at: e.target.opening_at.value === "" ? null : dayjs.tz(e.target.opening_at.value, "America/Los_Angeles").toISOString(),
+            opening_at: e.target.opening_at.value === "" ? null : e.target.opening_at.value,
             quota: e.target.quota.value,
             max_assigned: e.target.max_assigned.value
         }
