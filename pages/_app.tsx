@@ -14,7 +14,11 @@ import { DatesProvider } from '@mantine/dates';
 import { useLocalStorage } from '@mantine/hooks';
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 dayjs.extend(customParseFormat);
 
 function Layout({ children, ...props }: any) {
