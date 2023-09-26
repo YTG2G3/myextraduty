@@ -24,6 +24,8 @@ export default function ManagerSettings({ members }: { members: Member[] }) {
             quota: e.target.quota.value,
             max_assigned: e.target.max_assigned.value
         }
+        console.log(e.target.opening_at.value);
+
         let s = (await fetch("/api/school/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
         receivedResponse(s);
