@@ -6,6 +6,7 @@ import { useContext, useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
 import { receivedResponse } from '@/lib/received-response';
 import { Member } from '@/lib/schema';
+import dayjs from 'dayjs';
 
 export default function ManagerSettings({ members }: { members: Member[] }) {
     let { school, user } = useContext(SiteContext);
@@ -19,11 +20,10 @@ export default function ManagerSettings({ members }: { members: Member[] }) {
             address: e.target.address.value,
             primary_color: e.target.primary_color.value,
             logo: e.target.logo.value,
-            opening_at: e.target.opening_at.value === "" ? null : e.target.opening_at.value,
+            opening_at: e.target.opening_at.value === "" ? null : dayjs(e.target.opening_at.value).format("YYYY-MM-DD HH:mm:ss"),
             quota: e.target.quota.value,
             max_assigned: e.target.max_assigned.value
         }
-
         let s = (await fetch("/api/school/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
         receivedResponse(s);
@@ -34,7 +34,6 @@ export default function ManagerSettings({ members }: { members: Member[] }) {
         e.preventDefault();
 
         let b = { email: e.target.owner.value };
-
         let s = (await fetch("/api/school/transfer", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
         receivedResponse(s);

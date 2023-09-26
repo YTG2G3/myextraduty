@@ -75,7 +75,7 @@ export default function AppTasks({ tasks, categories, assignments }: { tasks: Ta
                                         <Text>Time: {dayjs(v.starting_time, "HH:mm").format("h:mm A")} - {dayjs(v.ending_time, "HH:mm").format("h:mm A")}</Text>
                                         <Text>Attendants: {assignments.filter(x => x.task === v.id).length}/{v.capacity}</Text>
 
-                                        {!school.opening_at || dayjs(school.opening_at).isAfter(dayjs()) ? <></> : (
+                                        {!school.opening_at || dayjs().isBefore(dayjs.tz(school.opening_at, "America/Los_Angeles")) ? <></> : (
                                             <Group mt="md">
                                                 {assignments.find(x => x.email === user.email && x.task === v.id) ? (
                                                     <Button onClick={() => dropTask(v)} color="red">Drop</Button>

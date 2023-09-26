@@ -37,7 +37,7 @@ export async function getSchool(client: Client, sid: number): Promise<School> {
         let { rows } = await client.query(`SELECT * FROM school WHERE id=$1`, [sid]);
         if (rows.length === 0) throw null;
 
-        let s: School = { ...rows[0], opening_at: rows[0].opening_at === "null" ? null : rows[0].opening_at };
+        let s: School = { ...rows[0], opening_at: rows[0].opening_at };
         return s;
     } catch (error) {
         return null;

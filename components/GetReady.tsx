@@ -12,8 +12,7 @@ export default function GetReady() {
 
     useEffect(() => {
         if (school.opening_at) setInterval(() => {
-            let d = dayjs(school.opening_at).diff(dayjs());
-
+            let d = dayjs.tz(school.opening_at, "America/Los_Angeles").diff(dayjs());
             if (d <= 0) setOpen(true);
 
             let seconds = Math.floor((d / 1000) % 60);
