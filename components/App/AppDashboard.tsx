@@ -10,7 +10,7 @@ import DynamicIcon from "../DynamicIcon";
 export default function AppDashboard({ tasks, assignments, setPageIndex }: { tasks: Task[], assignments: Assignment[], setPageIndex: Function }) {
     let { school, user } = useContext(SiteContext);
 
-    if (!school.opening_at || dayjs(school.opening_at).isAfter(dayjs())) return <GetReady />;
+    if (!school.opening_at || dayjs().isBefore(dayjs(school.opening_at))) return <GetReady />;
 
     let reg = assignments.filter(v => v.email === user.email);
     let upcomingEvents = tasks.filter(v => dayjs(v.ending_date + " " + v.ending_time).isAfter(dayjs()) &&

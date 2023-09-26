@@ -12,7 +12,7 @@ import DynamicIcon from "../DynamicIcon";
 export default function ManagerDashboard({ members, tasks, assignments }: { members: Member[], tasks: Task[], assignments: Assignment[] }) {
     let { school, user } = useContext(SiteContext);
 
-    if (!school.opening_at || dayjs(school.opening_at).isAfter(dayjs())) return <GetReady />;
+    if (!school.opening_at || dayjs().isBefore(dayjs(school.opening_at))) return <GetReady />;
 
     let noAcc = members.filter(v => v.name === "");
     let notMetQ = members.filter(v => assignments.filter(vv => vv.email === v.email).length < school.quota);
