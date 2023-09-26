@@ -1,10 +1,11 @@
 import AuthRoute from "@/lib/auth-route";
 import { listCategories } from "@/lib/db";
 import { NextApiRequest, NextApiResponse } from "next";
+import { Client } from "pg";
 
 export default AuthRoute({
-    GET: async (req: NextApiRequest, res: NextApiResponse) => {
-        let s = await listCategories(Number(req.headers.school));
+    GET: async (req: NextApiRequest, res: NextApiResponse, client: Client) => {
+        let s = await listCategories(client, Number(req.headers.school));
         res.json(s);
     }
 }, false, true);

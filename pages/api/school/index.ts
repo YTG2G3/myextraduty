@@ -1,11 +1,11 @@
 import AuthRoute from "@/lib/auth-route";
 import { getSchool } from "@/lib/db";
 import { NextApiRequest, NextApiResponse } from "next";
+import { Client } from "pg";
 
 export default AuthRoute({
-    GET: async (req: NextApiRequest, res: NextApiResponse) => {
-        let s = await getSchool(Number(req.headers.school));
-
+    GET: async (req: NextApiRequest, res: NextApiResponse, client: Client) => {
+        let s = await getSchool(client, Number(req.headers.school));
         res.json(s);
     }
 }, false, true);

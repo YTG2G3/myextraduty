@@ -1,4 +1,4 @@
-import { Profile, School, Enrollment, Task, Member, Assignment, Attendant } from './schema';
+import { Profile, School, Enrollment, Task, Assignment } from './schema';
 import dayjs from 'dayjs';
 import { Client } from 'pg';
 
@@ -232,9 +232,18 @@ export async function listCategories(client: Client, sid: number): Promise<strin
     }
 }
 
-export async function listAssignments(client: Client, sid: number): Promise<Assignment[]> {
+export async function listSchoolAssignments(client: Client, sid: number): Promise<Assignment[]> {
     try {
         let { rows } = await client.query(`SELECT * FROM assignment WHERE school=$1`, [sid]);
+        return rows as Assignment[];
+    } catch (error) {
+        return null;
+    }
+}
+
+export async function listTaskAssignments(client: Client, tid: number): Promise<Assignment[]> {
+    try {
+        let { rows } = await client.query(`SELECT * FROM assignment WHERE task=$1`, [tid]);
         return rows as Assignment[];
     } catch (error) {
         return null;

@@ -1,13 +1,21 @@
 import AuthRoute from "@/lib/auth-route";
-import { listAttendants } from "@/lib/db";
+import { getUser, listTaskAssignments } from "@/lib/db";
+import { Attendant } from "@/lib/schema";
 import { NextApiRequest, NextApiResponse } from "next";
+import { Client } from "pg";
 
 export default AuthRoute({
-    GET: async (req: NextApiRequest, res: NextApiResponse) => {
+    GET: async (req: NextApiRequest, res: NextApiResponse, client: Client) => {
         let { task } = req.query;
+        let a: Attendant[] = [];
+        let s = await listTaskAssignments(client, Number(task));
 
-        let s = await listAttendants(Number(task));
-        res.json(s);
+        for (let i of s) {
+            let x = await getUser(client, i.email);
+            a.push({ ...x, assigned_at: i.assigned_at });
+        }
+
+        res.json(a);
     }
 }, false, true);
 

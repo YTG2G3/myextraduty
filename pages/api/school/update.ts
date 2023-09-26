@@ -1,13 +1,13 @@
 import AuthRoute from "@/lib/auth-route";
 import { updateSchool } from "@/lib/db";
 import { NextApiRequest, NextApiResponse } from "next";
+import { Client } from "pg";
 
 export default AuthRoute({
-    POST: async (req: NextApiRequest, res: NextApiResponse) => {
+    POST: async (req: NextApiRequest, res: NextApiResponse, client: Client) => {
         let { school } = req.headers;
         let { address, primary_color, logo, opening_at, quota, max_assigned } = JSON.parse(req.body);
-
-        let r = await updateSchool(Number(school), address, primary_color, logo, opening_at, quota, max_assigned);
+        let r = await updateSchool(client, Number(school), address, primary_color, logo, opening_at, quota, max_assigned);
 
         res.status(r ? 200 : 400).end();
     }
