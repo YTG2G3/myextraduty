@@ -53,6 +53,8 @@ export default function ManagerSettings({ members }: { members: Member[] }) {
         )
     });
 
+    console.log(school.opening_at);
+
     return (
         <form className={styles.container} onSubmit={saveChanges}>
             <TextInput name="address" label="Address" defaultValue={school.address} />
