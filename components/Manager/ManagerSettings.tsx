@@ -20,12 +20,10 @@ export default function ManagerSettings({ members }: { members: Member[] }) {
             address: e.target.address.value,
             primary_color: e.target.primary_color.value,
             logo: e.target.logo.value,
-            opening_at: e.target.opening_at.value === "" ? null : dayjs(e.target.opening_at.value).format("YYYY-MM-DD HH:mm:ss"),
+            opening_at: e.target.opening_at.value === "" ? null : dayjs.tz(e.target.opening_at.value, "America/Los_Angeles").toISOString(),
             quota: e.target.quota.value,
             max_assigned: e.target.max_assigned.value
         }
-        console.log(e.target.opening_at.value);
-
         let s = (await fetch("/api/school/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
         receivedResponse(s);
@@ -62,7 +60,7 @@ export default function ManagerSettings({ members }: { members: Member[] }) {
             <TextInput name="address" label="Address" defaultValue={school.address} />
             <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue={school.primary_color} />
             <TextInput name="logo" label="Logo URL" defaultValue={school.logo} />
-            <DateTimePicker valueFormat='MMM DD YYYY hh:mm A' name="opening_at" label="Opening At" defaultValue={school.opening_at ? new Date(school.opening_at) : null} clearable />
+            <DateTimePicker valueFormat='MMM DD YYYY hh:mm A' name="opening_at" label="Opening At" defaultValue={school.opening_at ? dayjs.tz(school.opening_at, "America/Los_Angeles").toDate() : null} clearable />
             <NumberInput name="quota" label="Quota" min={0} defaultValue={school.quota} />
             <NumberInput name="max_assigned" label="Max Assigned" min={1} defaultValue={school.max_assigned} />
 
