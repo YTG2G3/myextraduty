@@ -67,8 +67,6 @@ export async function listSchoolEnrollments(client: Client, sid: number): Promis
 export async function listSchools(client: Client): Promise<School[]> {
     try {
         let { rows } = await client.query(`SELECT * FROM school`);
-        rows = rows.map((v: School) => ({ ...v, opening_at: dayjs(v.opening_at).toISOString() }));
-
         return rows as School[];
     } catch (error) {
         return null;
