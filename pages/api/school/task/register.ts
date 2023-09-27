@@ -1,5 +1,5 @@
 import AuthRoute from "@/lib/auth-route";
-import { assignMember, listUserAssignments, getSchool, getTask, listSchoolEnrollments, listTaskAssignments, getUser } from "@/lib/db";
+import { getSchool, getTask, listSchoolEnrollments, getUser, registerMember } from "@/lib/db";
 import { Member, Profile } from "@/lib/schema";
 import dayjs from "dayjs";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -22,7 +22,7 @@ export default AuthRoute({
         // TODO - customizable timezone
         if (!m.find(v => v.email === user.email && (v.manager || v.admin)) && dayjs().isAfter(dayjs.tz(t.ending_date + " " + t.ending_time, "America/Los_Angeles"))) return res.status(400).end();
 
-        let r = await assignMember(client, task, user.email, s.id, t.capacity, s.max_assigned);
+        let r = await registerMember(client, task, user.email, s.id, t.capacity, s.max_assigned);
         res.status(r ? 200 : 400).end();
     }
 }, false, true);

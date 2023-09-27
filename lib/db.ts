@@ -248,7 +248,17 @@ export async function listTaskAssignments(client: Client, tid: number): Promise<
     }
 }
 
-export async function assignMember(client: Client, tid: number, email: string, school: number, capacity: number, limit: number): Promise<boolean> {
+export async function assignMember(client: Client, tid: number, email: string, school: number): Promise<boolean> {
+    try {
+        await client.query(`INSERT INTO assignment (task, email, school) VALUES ($1, $2, $3)`, [tid, email.toLowerCase(), school]);
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+export async function registerMember(client: Client, tid: number, email: string, school: number, capacity: number, limit: number): Promise<boolean> {
     try {
         await client.query(`
         INSERT INTO assignment (task, email, school)
