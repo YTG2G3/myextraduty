@@ -53,12 +53,15 @@ export default function ManagerSettings({ members }: { members: Member[] }) {
         )
     });
 
+    let defOpeningAtConv = new Date(school.opening_at);
+    defOpeningAtConv.setSeconds(0);
+
     return (
         <form className={styles.container} onSubmit={saveChanges}>
             <TextInput name="address" label="Address" defaultValue={school.address} />
             <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue={school.primary_color} />
             <TextInput name="logo" label="Logo URL" defaultValue={school.logo} />
-            <DateTimePicker valueFormat='MMM DD YYYY hh:mm A' name="opening_at" label="Opening At" defaultValue={school.opening_at ? new Date(school.opening_at) : null} clearable />
+            <DateTimePicker valueFormat='MMM DD YYYY hh:mm A' name="opening_at" label="Opening At" defaultValue={school.opening_at ? defOpeningAtConv : null} clearable />
             <NumberInput name="quota" label="Quota" min={0} defaultValue={school.quota} />
             <NumberInput name="max_assigned" label="Max Assigned" min={1} defaultValue={school.max_assigned} />
 
