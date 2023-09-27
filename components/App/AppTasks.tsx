@@ -36,7 +36,7 @@ export default function AppTasks({ tasks, categories, assignments }: { tasks: Ta
         let s = (await fetch("/api/school/task/register", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
         setIsLoading(false);
 
-        receivedResponse(s);
+        receivedResponse(s, "This event may already be full! Please try refreshing the page.");
     }
 
     const dropTask = async (t: Task) => {

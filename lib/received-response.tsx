@@ -2,9 +2,9 @@ import { Button, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 
-export function receivedResponse(status: number) {
+export function receivedResponse(status: number, failMessage = "Failed to execute the command.") {
     if (status === 200) successNoti();
-    else failNoti();
+    else failNoti(failMessage);
 }
 
 export function successNoti() {
@@ -19,6 +19,6 @@ export function successNoti() {
     modals.closeAll();
 }
 
-export function failNoti() {
-    notifications.show({ title: "Unexpected Error", message: "Failed to execute the command.", color: "red" });
+export function failNoti(message: string) {
+    notifications.show({ title: "Unexpected Error", message, color: "red" });
 }
