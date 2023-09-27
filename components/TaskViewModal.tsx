@@ -2,6 +2,7 @@ import { Task } from "@/lib/schema";
 import { Text } from "@mantine/core";
 import dayjs from 'dayjs';
 
+// TODO - go to task page
 export default function TaskViewModal({ task }: { task: Task }) {
     return (
         <div>
