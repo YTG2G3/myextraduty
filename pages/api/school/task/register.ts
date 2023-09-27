@@ -19,8 +19,8 @@ export default AuthRoute({
             m.push({ ...x, manager: i.manager });
         }
 
-        // Make sure it's after the opening date
-        if (dayjs().isBefore(dayjs(s.opening_at))) return res.status(400).end();
+        // Make sure it's after the opening date but exception for managers
+        if (!m.find(v => v.email === user.email && (v.manager || v.admin)) && dayjs().isBefore(dayjs(s.opening_at))) return res.status(400).end();
 
         // TODO - customizable timezone
         if (!m.find(v => v.email === user.email && (v.manager || v.admin)) && dayjs().isAfter(dayjs.tz(t.ending_date + " " + t.ending_time, "America/Los_Angeles"))) return res.status(400).end();
