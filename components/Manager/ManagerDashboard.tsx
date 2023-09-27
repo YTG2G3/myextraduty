@@ -9,6 +9,7 @@ import { IconUser } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import DynamicIcon from "../DynamicIcon";
 
+// TODO - events droppable from dashboard
 export default function ManagerDashboard({ members, tasks, assignments }: { members: Member[], tasks: Task[], assignments: Assignment[] }) {
     let { school, user } = useContext(SiteContext);
 
