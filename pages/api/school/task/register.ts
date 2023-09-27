@@ -11,7 +11,6 @@ export default AuthRoute({
 
         let s = await getSchool(client, Number(req.headers.school));
         let er = await listSchoolEnrollments(client, s.id);
-        let a = await listTaskAssignments(client, Number(task));
         let t = await getTask(client, Number(task));
 
         let m: Member[] = [];
@@ -23,19 +22,7 @@ export default AuthRoute({
         // TODO - customizable timezone
         if (!m.find(v => v.email === user.email && (v.manager || v.admin)) && dayjs().isAfter(dayjs.tz(t.ending_date + " " + t.ending_time, "America/Los_Angeles"))) return res.status(400).end();
 
-        // Make sure it's not full
-        if (a.length >= t.capacity) return res.status(400).end();
-
-        // Make sure it's not overlapping
-        if (a.find(v => v.email === user.email)) return res.status(400).end();
-
-        let e = await listUserAssignments(client, s.id, user.email);
-
-        // Make sure we're not going over limit
-        if (e.length >= s.max_assigned) return res.status(400).end();
-
-        let r = await assignMember(client, task, user.email, s.id);
-
+        let r = await assignMember(client, task, user.email, s.id, t.capacity, s.max_assigned);
         res.status(r ? 200 : 400).end();
     }
 }, false, true);

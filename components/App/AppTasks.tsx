@@ -13,6 +13,7 @@ export default function AppTasks({ tasks, categories, assignments }: { tasks: Ta
     let { school, user } = useContext(SiteContext);
     let [search, setSearch] = useState("");
     let [tg, setTg] = useState(true);
+    let [isLoading, setIsLoading] = useState(false);
 
     const searchForTask = (v: Task) => (
         (v.category.toLowerCase().indexOf(search.toLowerCase()) >= 0 ||
@@ -31,7 +32,9 @@ export default function AppTasks({ tasks, categories, assignments }: { tasks: Ta
     const registerTask = async (t: Task) => {
         let b = { task: t.id };
 
+        setIsLoading(true);
         let s = (await fetch("/api/school/task/register", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
+        setIsLoading(false);
 
         receivedResponse(s);
     }
@@ -80,7 +83,7 @@ export default function AppTasks({ tasks, categories, assignments }: { tasks: Ta
                                                 {assignments.find(x => x.email === user.email && x.task === v.id) ? (
                                                     <Button onClick={() => dropTask(v)} color="red">Drop</Button>
                                                 ) : (
-                                                    <Button disabled={assignments.filter(x => x.task === v.id).length >= v.capacity || assignments.filter(x => x.email === user.email).length >= school.quota} onClick={() => registerTask(v)}>Register</Button>
+                                                    <Button loading={isLoading} disabled={assignments.filter(x => x.task === v.id).length >= v.capacity || assignments.filter(x => x.email === user.email).length >= school.quota} onClick={() => registerTask(v)}>Register</Button>
                                                 )}
                                             </Group>
                                         )}

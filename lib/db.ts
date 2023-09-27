@@ -248,9 +248,27 @@ export async function listTaskAssignments(client: Client, tid: number): Promise<
     }
 }
 
-export async function assignMember(client: Client, tid: number, email: string, school: number): Promise<boolean> {
+export async function assignMember(client: Client, tid: number, email: string, school: number, capacity: number, limit: number): Promise<boolean> {
     try {
-        await client.query(`INSERT INTO assignment(task, email, school) VALUES ($1, $2, $3)`, [tid, email.toLowerCase(), school]);
+        await client.query(`
+        INSERT INTO assignment (task, email, school)
+        SELECT $1, $2, $3
+        WHERE (
+            -- Check capacity
+            (SELECT COUNT(*) FROM assignment WHERE task = $1) < $4
+            AND
+            -- Check if the user is already assigned to the same task
+            (SELECT COUNT(*) FROM assignment WHERE task = $1 AND email = $2 AND school = $3) = 0
+            AND
+            -- Check the user's task limit
+            (SELECT COUNT(*) FROM assignment WHERE email = $2 AND school = $3) < $5
+        );
+        `, [tid, email.toLowerCase(), school, capacity, limit]);
+
+        // Double check if the user is assigned to the task
+        let { rows } = await client.query(`SELECT * FROM assignment WHERE task=$1 AND email=$2 AND school=$3`, [tid, email.toLowerCase(), school]);
+        if (rows.length === 0) throw null;
+
         return true;
     } catch (error) {
         return false;

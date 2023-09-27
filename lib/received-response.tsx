@@ -9,7 +9,7 @@ export function receivedResponse(status: number) {
 
 export function successNoti() {
     notifications.show({
-        title: "Success!", message: (
+        title: "Success! 👍", message: (
             <div>
                 <Text mb="sm">Please refresh the screen to apply changes.</Text>
                 <Button onClick={() => location.reload()}>Refresh</Button>
