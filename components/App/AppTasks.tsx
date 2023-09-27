@@ -12,7 +12,7 @@ import { receivedResponse } from "@/lib/received-response";
 export default function AppTasks({ tasks, categories, assignments }: { tasks: Task[], categories: string[], assignments: Assignment[] }) {
     let { school, user } = useContext(SiteContext);
     let [search, setSearch] = useState("");
-    let [tg, setTg] = useState(true);
+    let [tg, setTg] = useState(false);
     let [isLoading, setIsLoading] = useState(false);
 
     const searchForTask = (v: Task) => (
