@@ -71,9 +71,9 @@ export async function listSchools(client: Client): Promise<School[]> {
     }
 }
 
-export async function createSchool(client: Client, name: string, owner: string, address: string, primary_color: string, logo: string): Promise<boolean> {
+export async function createSchool(client: Client, name: string, owner: string, address: string, primary_color: string, logo: string, timezone: string): Promise<boolean> {
     try {
-        let { rows } = await client.query(`INSERT INTO school(name, owner, address, primary_color, logo) VALUES ($1, $2, $3, $4, $5) RETURNING id`, [name, owner, address, primary_color, logo]);
+        let { rows } = await client.query(`INSERT INTO school(name, owner, address, primary_color, logo, timezone) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`, [name, owner, address, primary_color, logo, timezone]);
         let sid = rows[0].id;
 
         await client.query(`INSERT INTO enrollment VALUES ($1, $2, true)`, [sid, owner]);
@@ -83,9 +83,9 @@ export async function createSchool(client: Client, name: string, owner: string, 
     }
 }
 
-export async function updateSchool(client: Client, id: number, address: string, primary_color: string, logo: string, opening_at: string, quota: number, max_assigned: number): Promise<boolean> {
+export async function updateSchool(client: Client, id: number, address: string, primary_color: string, logo: string, opening_at: string, quota: number, max_assigned: number, drop_enabled: boolean, timezone: string): Promise<boolean> {
     try {
-        await client.query(`UPDATE school SET address=$1, primary_color=$2, logo=$3, opening_at=$4, quota=$5, max_assigned=$6 WHERE id=$7`, [address, primary_color, logo, opening_at, quota, max_assigned, id]);
+        await client.query(`UPDATE school SET address=$1, primary_color=$2, logo=$3, opening_at=$4, quota=$5, max_assigned=$6, drop_enabled=$7, timezone=$8 WHERE id=$9`, [address, primary_color, logo, opening_at, quota, max_assigned, id, drop_enabled, timezone]);
         return true;
     } catch (error) {
         return false;

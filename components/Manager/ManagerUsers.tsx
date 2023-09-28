@@ -12,7 +12,6 @@ import { receivedResponse } from "@/lib/received-response";
 import RecordsModal from "../RecordsModal";
 import { notifications } from "@mantine/notifications";
 
-// TODO - remove replicate in case of invitation
 export default function ManagerUsers({ members, assignments }: { members: Member[], assignments: Assignment[] }) {
     let [search, setSearch] = useState("");
     let [tg, setTg] = useState(true);

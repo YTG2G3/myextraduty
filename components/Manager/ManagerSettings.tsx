@@ -1,12 +1,11 @@
 import SiteContext from '@/lib/site-context';
 import styles from '@/styles/ManagerSettings.module.scss';
-import { Autocomplete, Button, Group, MANTINE_COLORS, NumberInput, Select, TextInput } from '@mantine/core';
+import { Autocomplete, Button, Checkbox, Group, MANTINE_COLORS, NumberInput, Select, TextInput } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { useContext, useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
 import { receivedResponse } from '@/lib/received-response';
 import { Member } from '@/lib/schema';
-import dayjs from 'dayjs';
 
 export default function ManagerSettings({ members }: { members: Member[] }) {
     let { school, user } = useContext(SiteContext);
@@ -22,7 +21,9 @@ export default function ManagerSettings({ members }: { members: Member[] }) {
             logo: e.target.logo.value,
             opening_at: e.target.opening_at.value === "" ? null : e.target.opening_at.value,
             quota: e.target.quota.value,
-            max_assigned: e.target.max_assigned.value
+            max_assigned: e.target.max_assigned.value,
+            drop_enabled: e.target.drop_enabled.value,
+            timezone: e.target.timezone.value
         }
         let s = (await fetch("/api/school/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
 
@@ -64,6 +65,8 @@ export default function ManagerSettings({ members }: { members: Member[] }) {
             <DateTimePicker valueFormat='MMM DD YYYY hh:mm A' name="opening_at" label="Opening At" defaultValue={school.opening_at ? defOpeningAtConv : null} clearable />
             <NumberInput name="quota" label="Quota" min={0} defaultValue={school.quota} />
             <NumberInput name="max_assigned" label="Max Assigned" min={1} defaultValue={school.max_assigned} />
+            <TextInput name="timezone" withAsterisk label="Timezone" defaultValue={school.timezone} />
+            <Checkbox name="drop_enabled" label="Drop Enabled" defaultChecked={school.drop_enabled} />
 
             <div className={styles.ho}>
                 <Button loading={loading} m="lg" color="red" onClick={transferOwner} disabled={school.owner !== user.email}>Transfer Ownership</Button>

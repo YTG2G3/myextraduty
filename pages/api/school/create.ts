@@ -5,8 +5,8 @@ import { Client } from "pg";
 
 export default AuthRoute({
     POST: async (req: NextApiRequest, res: NextApiResponse, client: Client) => {
-        let { name, owner, address, primary_color, logo } = JSON.parse(req.body);
-        let r = await createSchool(client, name, owner, address, primary_color, logo);
+        let { name, owner, address, primary_color, logo, timezone } = JSON.parse(req.body);
+        let r = await createSchool(client, name, owner, address, primary_color, logo, timezone);
 
         res.status(r ? 200 : 400).end();
     }

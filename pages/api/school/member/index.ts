@@ -20,11 +20,11 @@ export default AuthRoute({
         let { email } = JSON.parse(req.body);
 
         // Email format
-        if (!email.trim().match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) res.status(400).end();
+        if (!email.trim().match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) return res.status(400).end();
 
         // Already enrolled
         let er = await listUserEnrollments(client, email);
-        if (er.find(v => v.school === Number(req.headers.school))) res.status(400).end();
+        if (er.find(v => v.school === Number(req.headers.school))) return res.status(400).end();
 
         let s = await enrollUser(client, Number(req.headers.school), email);
         res.status(s ? 200 : 400).end();

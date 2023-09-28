@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Group, MANTINE_COLORS, Pagination, Select, TextInput, Image, Card, Text, Space, Tooltip, NumberInput, Autocomplete } from "@mantine/core";
+import { ActionIcon, Button, Group, MANTINE_COLORS, Pagination, Select, TextInput, Image, Card, Text, Space, Tooltip, NumberInput, Autocomplete, Checkbox } from "@mantine/core";
 import styles from '@/styles/AdminSchools.module.scss';
 import { useContext, useState } from "react";
 import { School, Profile } from "@/lib/schema";
@@ -37,7 +37,8 @@ export default function AdminSchools({ schools, users }: { schools: School[], us
             owner: e.target.owner.value,
             address: e.target.address.value,
             primary_color: e.target.primary_color.value,
-            logo: e.target.logo.value
+            logo: e.target.logo.value,
+            timezone: e.target.timezone.value
         }
 
         let s = (await fetch("/api/school/create", { method: "POST", body: JSON.stringify(b) })).status;
@@ -55,6 +56,7 @@ export default function AdminSchools({ schools, users }: { schools: School[], us
                 <TextInput name="address" withAsterisk label="Address" />
                 <Select name="primary_color" withAsterisk label="School Color" data={MANTINE_COLORS.map((v) => ({ value: v, label: v }))} defaultValue="blue" />
                 <TextInput name="logo" withAsterisk label="School Logo URL" />
+                <TextInput name="timezone" withAsterisk label="Timezone" defaultValue="America/Los_Angeles" />
 
                 <Group position="right" mt="md">
                     <Button type="submit">Submit</Button>
@@ -108,7 +110,9 @@ export default function AdminSchools({ schools, users }: { schools: School[], us
             logo: e.target.logo.value,
             opening_at: e.target.opening_at.value === "" ? null : e.target.opening_at.value,
             quota: e.target.quota.value,
-            max_assigned: e.target.max_assigned.value
+            max_assigned: e.target.max_assigned.value,
+            drop_enabled: e.target.drop_enabled.value,
+            timezone: e.target.timezone.value
         };
 
         let s = (await fetch("/api/school/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(sc.id) } })).status;
@@ -127,6 +131,8 @@ export default function AdminSchools({ schools, users }: { schools: School[], us
                 <DateTimePicker valueFormat='MMMM D, YYYY HH:MM A' name="opening_at" label="Opening At" defaultValue={s.opening_at !== "null" ? new Date(s.opening_at) : null} />
                 <NumberInput name="quota" label="Quota" min={0} defaultValue={s.quota} />
                 <NumberInput name="max_assigned" label="Max Assigned" min={0} defaultValue={s.max_assigned} />
+                <TextInput name="timezone" withAsterisk label="Timezone" defaultValue={s.timezone} />
+                <Checkbox name="drop_enabled" label="Drop Enabled" defaultChecked={s.drop_enabled} />
 
                 <Group position="right" mt="md">
                     <Button type="submit">Save</Button>

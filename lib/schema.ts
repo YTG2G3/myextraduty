@@ -18,7 +18,9 @@ export type School = {
     primary_color: string,
     opening_at: string,
     quota: number,
-    max_assigned: number
+    max_assigned: number,
+    drop_enabled: boolean,
+    timezone: string
 };
 
 export type Enrollment = {

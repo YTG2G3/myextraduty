@@ -29,11 +29,7 @@ export default function Home() {
 
             <div className={styles.hero}>
                 <div className={styles.i}>
-                    <Group>
-                        <Image src="/images/logo_bg.png" width={100} height={100} alt="MyExtraDuty" />
-                        <Text size="100px" weight={700}>MyExtraDuty</Text>
-                    </Group>
-
+                    <Text size="100px" weight={700}>MyExtraDuty</Text>
                     <Text size="40px" weight={500}>📅 An easy way to manage your extra duties. Powered by Algorix.</Text>
                 </div>
             </div>
