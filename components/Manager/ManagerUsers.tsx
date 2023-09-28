@@ -194,7 +194,7 @@ export default function ManagerUsers({ members, assignments }: { members: Member
     const openTaskModal = (u: Profile) => modals.open({
         title: `Records of ${u.name === "" ? u.email : u.name}`,
         centered: true,
-        children: <RecordsModal school={school} email={u.email} />
+        children: <RecordsModal school={school} user={u} />
     });
 
     const clearMembers = () => modals.openConfirmModal({

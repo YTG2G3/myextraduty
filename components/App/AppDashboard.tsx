@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import styles from '@/styles/AppDashboard.module.scss';
 import { Assignment, Task } from "@/lib/schema";
 import DynamicIcon from "../DynamicIcon";
+import TaskViewModal from "../TaskViewModal";
+import { receivedResponse } from "@/lib/received-response";
 
 export default function AppDashboard({ tasks, assignments, setPageIndex }: { tasks: Task[], assignments: Assignment[], setPageIndex: Function }) {
     let { school, user } = useContext(SiteContext);
@@ -15,6 +17,13 @@ export default function AppDashboard({ tasks, assignments, setPageIndex }: { tas
     let reg = assignments.filter(v => v.email === user.email);
     let upcomingEvents = tasks.filter(v => dayjs(v.ending_date + " " + v.ending_time).isAfter(dayjs()) &&
         assignments.find(vv => v.id === vv.task && vv.email === user.email));
+
+    const dropTask = async (t: Task) => {
+        let b = { task: t.id };
+        let s = (await fetch("/api/school/task/drop", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
+
+        receivedResponse(s);
+    }
 
     return (
         <div className={styles.container}>
@@ -55,15 +64,8 @@ export default function AppDashboard({ tasks, assignments, setPageIndex }: { tas
                                     </Accordion.Control>
 
                                     <Accordion.Panel>
-                                        <div className={styles.pan}>
-                                            <Text w="50%" mr="10%" color="dimmed">Description: {v.description}</Text>
-
-                                            <div className={styles.px}>
-                                                <Text>Date(s): {dayjs(v.starting_date).format("ddd, MMMM D, YYYY")} {v.starting_date !== v.ending_date ? `~ ${dayjs(v.ending_date).format("ddd, MMMM D, YYYY")}` : ""}</Text>
-                                                <Text>Time: {dayjs(v.starting_time, "HH:mm").format("h:mm A")} - {dayjs(v.ending_time, "HH:mm").format("h:mm A")}</Text>
-                                                <Text>Attendants: {assignments.filter(x => x.task === v.id).length}/{v.capacity}</Text>
-                                            </div>
-                                        </div>
+                                        <TaskViewModal task={v} />
+                                        <Button disabled={!school.drop_enabled} onClick={() => dropTask(v)} color="red">Drop</Button>
                                     </Accordion.Panel>
                                 </Accordion.Item>
                             </Tooltip>
