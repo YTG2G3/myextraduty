@@ -85,9 +85,11 @@ export async function createSchool(client: Client, name: string, owner: string, 
 
 export async function updateSchool(client: Client, id: number, address: string, primary_color: string, logo: string, opening_at: string, quota: number, max_assigned: number, drop_enabled: boolean, timezone: string): Promise<boolean> {
     try {
-        await client.query(`UPDATE school SET address=$1, primary_color=$2, logo=$3, opening_at=$4, quota=$5, max_assigned=$6, drop_enabled=$7, timezone=$8 WHERE id=$9`, [address, primary_color, logo, opening_at, quota, max_assigned, id, drop_enabled, timezone]);
+        await client.query(`UPDATE school SET address=$1, primary_color=$2, logo=$3, opening_at=$4, quota=$5, max_assigned=$6, drop_enabled=$7, timezone=$8 WHERE id=$9`, [address, primary_color, logo, opening_at, quota, max_assigned, drop_enabled, timezone, id]);
         return true;
     } catch (error) {
+        console.log(error);
+
         return false;
     }
 }
