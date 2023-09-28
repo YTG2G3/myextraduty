@@ -231,7 +231,6 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
         }
     });
 
-    // TODO - grid view for convenience
     return (
         <div className={styles.container}>
             <div className={styles.gro} >
