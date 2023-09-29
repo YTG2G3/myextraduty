@@ -285,7 +285,7 @@ export default function ManagerTasks({ tasks, categories, assignments, members }
                                             {assignments.find(x => x.email === user.email && x.task === v.id) ? (
                                                 <Button disabled={!school.drop_enabled} onClick={() => dropTask(v)} color="red">Drop</Button>
                                             ) : (
-                                                <Button loading={isLoading} disabled={assignments.filter(x => x.task === v.id).length >= v.capacity || assignments.filter(x => x.email === user.email).length >= school.quota} onClick={() => registerTask(v)}>Register</Button>
+                                                <Button loading={isLoading} disabled={assignments.filter(x => x.task === v.id).length >= v.capacity || assignments.filter(x => x.email === user.email).length >= school.max_assigned} onClick={() => registerTask(v)}>Register</Button>
                                             )}
 
                                             <Button onClick={() => openTaskModal(v)}>Manage</Button>
