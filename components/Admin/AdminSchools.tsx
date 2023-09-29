@@ -2,7 +2,7 @@ import { ActionIcon, Button, Group, MANTINE_COLORS, Pagination, Select, TextInpu
 import styles from '@/styles/AdminSchools.module.scss';
 import { useContext, useState } from "react";
 import { School, Profile } from "@/lib/schema";
-import { IconArrowsTransferUp, IconCirclePlus, IconDoorExit, IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconArrowsTransferUp, IconCircleArrowUp, IconCirclePlus, IconDoorExit, IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { modals } from '@mantine/modals';
 import { DateTimePicker } from "@mantine/dates";
 import { receivedResponse } from "@/lib/received-response";
@@ -148,7 +148,6 @@ export default function AdminSchools({ schools, users }: { schools: School[], us
         onConfirm: async () => {
             let b = { email: user.email };
             let x = (await fetch("/api/school/member", { method: "POST", body: JSON.stringify(b), headers: { school: String(s.id) } })).status;
-            x = (await fetch("/api/school/member/promote", { method: "POST", body: JSON.stringify(b), headers: { school: String(s.id) } })).status;
 
             receivedResponse(x);
         }
@@ -162,6 +161,18 @@ export default function AdminSchools({ schools, users }: { schools: School[], us
         onConfirm: async () => {
             let b = { email: user.email };
             let x = (await fetch("/api/school/member/remove", { method: "POST", body: JSON.stringify(b), headers: { school: String(s.id) } })).status;
+
+            receivedResponse(x);
+        }
+    });
+
+    const selfPromote = (s: School) => modals.openConfirmModal({
+        title: `Are you sure about promoting yourself in ${s.name}?`,
+        labels: { confirm: "Confirm", cancel: "Cancel" },
+        centered: true,
+        onConfirm: async () => {
+            let b = { email: user.email };
+            let x = (await fetch("/api/school/member/promote", { method: "POST", body: JSON.stringify(b), headers: { school: String(s.id) } })).status;
 
             receivedResponse(x);
         }
@@ -200,9 +211,13 @@ export default function AdminSchools({ schools, users }: { schools: School[], us
                             <Space h="md" />
 
                             <Group position="right">
-                                {enrollments.find(er => er.school === v.id) ? (
+                                {enrollments.find(er => er.school === v.id) ? enrollments.find(er => er.school === v.id).manager ? (
                                     <Tooltip label="Leave">
                                         <ActionIcon onClick={() => leaveSchool(v)}><IconDoorExit color="red" /></ActionIcon>
+                                    </Tooltip>
+                                ) : (
+                                    <Tooltip label="Self Promotion">
+                                        <ActionIcon onClick={() => selfPromote(v)}><IconCircleArrowUp /></ActionIcon>
                                     </Tooltip>
                                 ) : (
                                     <Tooltip label="Enroll">
