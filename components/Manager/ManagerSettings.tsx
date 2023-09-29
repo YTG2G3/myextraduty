@@ -22,7 +22,7 @@ export default function ManagerSettings({ members }: { members: Member[] }) {
             opening_at: e.target.opening_at.value === "" ? null : e.target.opening_at.value,
             quota: e.target.quota.value,
             max_assigned: e.target.max_assigned.value,
-            drop_enabled: e.target.drop_enabled.value === "on",
+            drop_enabled: e.target.drop_enabled.checked,
             timezone: e.target.timezone.value
         };
         let s = (await fetch("/api/school/update", { method: "POST", body: JSON.stringify(b), headers: { school: String(school.id) } })).status;
