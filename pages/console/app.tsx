@@ -119,7 +119,7 @@ export default function App() {
 
     // Protected route
     if (status === "unauthenticated") {
-        signIn("google", { callbackUrl: "/console/app" });
+        signIn(null, { callbackUrl: "/console/app" });
         return <></>;
     }
 

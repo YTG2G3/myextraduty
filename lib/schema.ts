@@ -2,7 +2,8 @@ export type Profile = {
     email: string,
     name: string,
     picture: string,
-    admin: boolean
+    admin: boolean,
+    password: string
 };
 
 export type Member = Profile & {
