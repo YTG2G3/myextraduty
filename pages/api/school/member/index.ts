@@ -11,7 +11,7 @@ export default AuthRoute({
 
         for (let er of s) {
             let uu = await getUser(client, er.email);
-            u.push({ ...(uu ?? { admin: false, email: er.email, name: "", picture: "" }), manager: er.manager });
+            u.push({ ...(uu ?? { admin: false, email: er.email, name: "", picture: "", password: "" }), manager: er.manager });
         }
 
         res.json(u);
