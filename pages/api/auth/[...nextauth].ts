@@ -1,5 +1,5 @@
 import { createUser, getUser, updateUserInfo } from "@/lib/db";
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, User } from "next-auth";
 import NextAuth from "next-auth/next";
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -24,8 +24,15 @@ export const authOptions: NextAuthOptions = {
                 await client.connect();
                 let u = await getUser(client, email);
 
+                let f: User = {
+                    id: u.email,
+                    email: u.email,
+                    image: u.picture,
+                    name: u.name
+                }
+
                 await client.end();
-                return u ? u.password === password ? u : null : null;
+                return u ? u.password === password ? f : null : null;
             }
         })
     ],
