@@ -5,6 +5,10 @@
 # MyExtraDuty
 📅 An easy way to manage your extra duties. Powered by Algorix.
 
+## Table of Contents
+* [Contributing](#contributing)
+* [Acknowledgements](#acknowledgements)
+
 ## Contributing
 
 ### [Schema](https://www.erdcloud.com/d/t4EyzNjYxkjH8cHQS)
