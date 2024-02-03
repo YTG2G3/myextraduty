@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://myextraduty.net"><img style="width: 30vw;" src="https://github.com/YTG2G3/myextraduty/blob/development/public/myed_logo.svg?raw=true" /></a>
+    <a href="https://myextraduty.net"><img style="width: 200px; height: 200px;" src="https://github.com/YTG2G3/myextraduty/blob/development/public/myed_logo.svg?raw=true" /></a>
 </p>
 
 # MyExtraDuty
