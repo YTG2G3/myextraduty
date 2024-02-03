@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://www.cen10extraduty.net"><img src="https://github.com/YTG2G3/myextraduty/blob/main/public/images/logo_bg.png?raw=true" /></a>
+    <a href="https://myextraduty.net"><img src="https://github.com/YTG2G3/myextraduty/blob/main/public/myed_logo.svg?raw=true" /></a>
 </p>
 
 # MyExtraDuty
@@ -11,13 +11,9 @@
 
 ### Environment Settings
 
-#### PostgreSQL
+#### Prisma
 ```
-PGHOST: PostgreSQL Server URL
-PGDATABASE: PostgreSQL Database Name
-PGUSER: PostgreSQL Login Username
-PGPASSWORD: PostgreSQL Login Password
-PGPORT: PostgreSQL Server Port
+DATABASE_URL: PostgreSQL Connection String
 ```
 
 #### Google OAuth
@@ -29,7 +25,6 @@ GOOGLE_CLIENT_SECRET: Google OAuth Secret
 #### [Next Auth](https://next-auth.js.org/configuration/options)
 ```
 NEXTAUTH_SECRET: JWT Secret
-NEXTAUTH_URL: Redirection URL
 ```
 
 ## Acknowledgements
