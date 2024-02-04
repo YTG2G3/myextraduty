@@ -51,7 +51,7 @@ model User {
     accounts     Account[]
     sessions     Session[]
     ownedSchools School[]
-    schools      Enrollment[]
+    enrollments  Enrollment[]
     assignments  Assignment[]
 }
 
