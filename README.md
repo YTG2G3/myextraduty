@@ -11,7 +11,8 @@
 
 ## Contributing
 
-### [Schema](https://www.erdcloud.com/d/t4EyzNjYxkjH8cHQS)
+### [Schema](https://www.erdcloud.com/d/RKYWgfFhHoGsDDfn8)
+> Only Algorix employees can access the schema.
 
 ### Environment Settings
 
