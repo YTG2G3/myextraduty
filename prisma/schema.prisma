@@ -65,6 +65,7 @@ model School {
     quota       Int?
     maxAssiged  Int?
     dropEnabled Boolean?
+    verified    Boolean   @default(false)
     createdAt   DateTime  @default(now())
     updatedAt   DateTime  @updatedAt
 

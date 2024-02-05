@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://myextraduty.com"><img style="width: 200px; height: 200px;" src="https://github.com/YTG2G3/myextraduty/blob/development/public/myed_logo.svg?raw=true" /></a>
+    <a href="https://myextraduty.com"><img style="width: 200px; height: 200px;" src="https://github.com/YTG2G3/myextraduty/blob/development/public/myed_logo_light.png?raw=true" /></a>
 </p>
 
 # MyExtraDuty
@@ -10,9 +10,6 @@
 * [Acknowledgements](#acknowledgements)
 
 ## Contributing
-
-### [Schema](https://www.erdcloud.com/d/RKYWgfFhHoGsDDfn8)
-> Only Algorix employees can access the schema.
 
 ### Environment Settings
 
@@ -30,6 +27,7 @@ GOOGLE_CLIENT_SECRET: Google OAuth Secret
 #### [Next Auth](https://next-auth.js.org/configuration/options)
 ```
 NEXTAUTH_SECRET: JWT Secret
+NEXTAUTH_URL: Redirection URL
 ```
 
 ## Acknowledgements
