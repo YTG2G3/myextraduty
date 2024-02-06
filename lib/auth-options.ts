@@ -13,9 +13,13 @@ const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         session({ session, user }) {
-            session.user.id = user.id;
-            session.user.admin = user.admin;
-            return session;
+            return {
+                ...session, user: {
+                    ...session.user,
+                    id: user.id,
+                    admin: user.admin
+                }
+            }
         }
     }
 };
