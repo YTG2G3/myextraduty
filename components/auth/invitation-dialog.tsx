@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { CalendarDays, Check, ShieldCheck, X } from "lucide-react";
 import formatInt from "@/lib/formatInt";
 
-export default function InvitationDialog({ invitations, schools, owners, decide }: { invitations: Invitation[], schools: School[], owners: User[], decide: (id: string, school: string, accept: boolean) => void }) {
+export default function InvitationDialog({ invitations, schools, owners, decide }: { invitations: Invitation[], schools: School[], owners: User[], decide: Function }) {
     let [isOpen, setIsOpen] = useState(false);
     let [decided, setDecided] = useState<boolean[]>(new Array(invitations.length).fill(false));
 
@@ -21,7 +21,7 @@ export default function InvitationDialog({ invitations, schools, owners, decide 
 
     function clientDecide(index: number, accept: boolean) {
         setDecided(decided.map((d, i) => i === index ? true : d));
-        decide(invitations[index].id, schools[index].id, accept);
+        decide(index, accept);
     }
 
     return (

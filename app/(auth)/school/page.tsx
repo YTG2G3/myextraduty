@@ -1,13 +1,15 @@
-'use client'
+import { getServerSession } from "next-auth";
+import Redirect from "./redirect";
+import prisma from "@/lib/db";
+import authOptions from "@/lib/auth-options";
+import { redirect } from "next/navigation";
 
-import { useEffect } from "react";
+export default async function SchoolInit() {
+    let session = await getServerSession(authOptions);
+    let school = await prisma.enrollment.findFirst({ where: { userId: session.user.id } });
 
-export default function SchoolInit() {
-    useEffect(() => {
-        // Load school id from local storage
-        let school = localStorage.getItem("school");
+    if (!school) redirect("/school/new");
 
-        // If not set, retrieve from server
-
-    }, []);
+    // Just in case localstorage has a previous record, client component is used
+    return <Redirect id={school.id} />
 }

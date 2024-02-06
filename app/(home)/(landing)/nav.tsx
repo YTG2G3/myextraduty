@@ -6,7 +6,7 @@ import Link from "next/link";
 // Imported the menu and viewport separately due to a bug with centering (left-0)
 import { NavigationMenu, NavigationMenuViewport } from "@radix-ui/react-navigation-menu";
 
-import { NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
+import { NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import oauthSignIn from "@/lib/oauthSignIn";
@@ -15,7 +15,7 @@ export default function Nav({ authed }: { authed: boolean }) {
     return (
         <nav className="z-20 fixed top-0 grid w-screen px-7 py-4 bg-white bg-opacity-80" style={{ gridTemplateColumns: "auto 1fr auto" }}>
             <Link href="/">
-                <p className="font-grotesque font-extrabold text-4xl">MyED</p>
+                <p className="select-none font-grotesque font-extrabold text-4xl">MyED</p>
             </Link>
 
             <NavigationMenu className="relative z-10 flex max-w-screen flex-1 items-center justify-center">
@@ -30,7 +30,7 @@ export default function Nav({ authed }: { authed: boolean }) {
                                             className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                                             href="/"
                                         >
-                                            <div className="mb-2 mt-4 text-lg font-grotesque font-extrabold">
+                                            <div className="select-none mb-2 mt-4 text-lg font-grotesque font-extrabold">
                                                 MyED
                                             </div>
                                             <p className="text-sm leading-tight text-muted-foreground">
@@ -96,9 +96,15 @@ export default function Nav({ authed }: { authed: boolean }) {
             </NavigationMenu>
 
             {authed ? (
-                <Button onClick={() => signOut()}>
-                    Sign Out
-                </Button>
+                <div>
+                    <Link href="/school" className={navigationMenuTriggerStyle()}>
+                        Console
+                    </Link>
+
+                    <Button onClick={() => signOut()} className="ml-3">
+                        Sign Out
+                    </Button>
+                </div>
             ) : (
                 <Button onClick={() => oauthSignIn()}>
                     Sign In

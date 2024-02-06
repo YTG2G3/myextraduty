@@ -14,31 +14,22 @@ export default async function HomeLayout({
 
     // Check if there are any invitations
     let invitations = await prisma.invitation.findMany({ where: { email: session.user.email } });
-
-    // New array of schools that the user has been invited to
-    let schools: School[] = [];
-    let owners: User[] = [];
-
-    for (let invitation of invitations) {
-        let school = await prisma.school.findUnique({ where: { id: invitation.schoolId } });
-        let owner = await prisma.user.findUnique({ where: { id: school.ownerId } });
-
-        schools.push(school);
-        owners.push(owner);
-    }
+    let schools = await prisma.school.findMany({ where: { id: { in: invitations.map((invitation) => invitation.schoolId) } } });
+    let owners = await prisma.user.findMany({ where: { id: { in: schools.map((school) => school.ownerId) } } });
 
     // Receive invitation id and school id
-    async function decide(id: string, school: string, accept: boolean) {
+    async function decide(index: number, accept: boolean) {
         'use server'
 
         if (accept) prisma.enrollment.create({
             data: {
                 userId: session.user.id,
-                schoolId: school
+                schoolId: schools[index].id,
+                manager: invitations[index].manager
             }
         });
 
-        prisma.invitation.delete({ where: { id } });
+        prisma.invitation.delete({ where: { id: invitations[index].id } });
     }
 
     return (
