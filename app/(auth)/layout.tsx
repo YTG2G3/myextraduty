@@ -1,15 +1,14 @@
-import { getServerSession } from "next-auth";
-import authOptions from "@/lib/auth-options";
 import AuthProvider from "@/components/auth/auth-provider";
 import prisma from "@/lib/db";
 import InvitationDialog from "@/components/auth/invitation-dialog";
+import authSession from "@/lib/auth-session";
 
 export default async function HomeLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    let session = await getServerSession(authOptions);
+    let session = await authSession();
 
     // Check if there are any invitations
     let invitations = await prisma.invitation.findMany({ where: { email: session.user.email } });

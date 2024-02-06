@@ -1,13 +1,12 @@
-import { getServerSession } from "next-auth";
+import authSession from "@/lib/auth-session";
 import Nav from "./nav";
-import authOptions from "@/lib/auth-options";
 
 export default async function HomeLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    let session = await getServerSession(authOptions);
+    let session = await authSession();
     let enrollments = await prisma.enrollment.findMany({ where: { userId: session.user.id } });
     let schools = await prisma.school.findMany({ where: { id: { in: enrollments.map((enrollment) => enrollment.schoolId) } } });
 

@@ -1,11 +1,10 @@
-import { getServerSession } from "next-auth";
+import authSession from "@/lib/auth-session";
 import Redirect from "./redirect";
 import prisma from "@/lib/db";
-import authOptions from "@/lib/auth-options";
 import { redirect } from "next/navigation";
 
 export default async function SchoolInit() {
-    let session = await getServerSession(authOptions);
+    let session = await authSession();
     let school = await prisma.enrollment.findFirst({ where: { userId: session.user.id } });
 
     if (!school) redirect("/school/new");
