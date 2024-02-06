@@ -12,7 +12,7 @@ const authOptions: NextAuthOptions = {
         })
     ],
     callbacks: {
-        session({ session, user }) {
+        session({ session, user }: { session: any, user: any }) {
             return {
                 ...session, user: {
                     ...session.user,
