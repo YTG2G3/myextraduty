@@ -2,7 +2,6 @@ import { getServerSession } from "next-auth";
 import authOptions from "@/lib/auth-options";
 import AuthProvider from "@/components/auth/auth-provider";
 import prisma from "@/lib/db";
-import { Invitation, School, User } from "@prisma/client";
 import InvitationDialog from "@/components/auth/invitation-dialog";
 
 export default async function HomeLayout({
