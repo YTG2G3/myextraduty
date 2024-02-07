@@ -9,7 +9,7 @@ import { NavigationMenu, NavigationMenuViewport } from "@radix-ui/react-navigati
 import { NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import oauthSignIn from "@/lib/oauthSignIn";
+import oauthSignIn from "@/lib/oauth-sign-in";
 
 export default function Nav({ authed }: { authed: boolean }) {
     return (

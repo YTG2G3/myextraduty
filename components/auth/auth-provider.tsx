@@ -1,6 +1,6 @@
 'use client'
 
-import oauthSignIn from "@/lib/oauthSignIn";
+import oauthSignIn from "@/lib/oauth-sign-in";
 import { Session } from "next-auth"
 import { SessionProvider } from "next-auth/react"
 
