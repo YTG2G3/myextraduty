@@ -1,5 +1,4 @@
-import { Session, getServerSession } from "next-auth";
-import authOptions from "./auth-options";
+import { Session } from "next-auth";
 
 type AuthSession = Session & {
     user: {
@@ -8,9 +7,4 @@ type AuthSession = Session & {
     };
 }
 
-export default async function authSession() {
-    let session = await getServerSession(authOptions);
-    let _session: AuthSession = session as AuthSession;
-
-    return _session;
-}
+export default AuthSession;

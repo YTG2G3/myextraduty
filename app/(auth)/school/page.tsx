@@ -1,13 +1,14 @@
-import authSession from "@/lib/auth-session";
 import Redirect from "./redirect";
 import prisma from "@/lib/db";
 import { redirect } from "next/navigation";
+import getServerSession from "@/lib/get-server-session";
 
+// TODO - optimize
 export default async function SchoolInit() {
-    let session = await authSession();
+    let session = await getServerSession();
     let school = await prisma.enrollment.findFirst({ where: { userId: session.user.id } });
 
-    if (!school) redirect("/school/new");
+    if (!school) redirect("/school/new/basic");
 
     // Just in case localstorage has a previous record, client component is used
     return <Redirect id={school.id} />

@@ -1,14 +1,14 @@
-import AuthProvider from "@/components/auth/auth-provider";
+import AuthProvider from "./auth-provider";
 import prisma from "@/lib/db";
-import InvitationDialog from "@/components/auth/invitation-dialog";
-import authSession from "@/lib/auth-session";
+import InvitationDialog from "./invitation-dialog";
+import getServerSession from "@/lib/get-server-session";
 
-export default async function HomeLayout({
+export default async function AuthLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    let session = await authSession();
+    let session = await getServerSession();
 
     // Check if there are any invitations
     let invitations = await prisma.invitation.findMany({ where: { email: session.user.email } });
