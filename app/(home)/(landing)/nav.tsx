@@ -70,10 +70,6 @@ export default function Nav({ authed }: { authed: boolean }) {
                         <NavigationMenuTrigger className="!bg-transparent">Developers</NavigationMenuTrigger>
                         <NavigationMenuContent>
                             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                                <ListItem href="/api/docs" title="Docs">
-                                    API documentation built with Swagger UI.
-                                </ListItem>
-
                                 <ListItem href="https://github.com/YTG2G3/myextraduty" title="GitHub">
                                     Source code and issue tracking. Only Algorix employees have access.
                                 </ListItem>
