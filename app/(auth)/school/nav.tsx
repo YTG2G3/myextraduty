@@ -9,15 +9,17 @@ import { Session } from "next-auth";
 import Link from "next/link";
 import { redirect, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { usePathname } from 'next/navigation';
 
-// TODO - prettier margin for navigator
+// TODO - prettier margin for navigator and fix avatar weird margin
 export default function Nav({ session, schools, enrollments }: { session: Session, schools: School[], enrollments: Enrollment[] }) {
+    let pathname = usePathname();
     let params = useParams<{ id: string }>();
     let [hash, setHash] = useState<string>(undefined);
 
-    useEffect(() => setHash(window.location.hash), []);
+    useEffect(() => setHash(pathname.indexOf("#") >= 0 ? pathname.substring(pathname.indexOf("#") + 1) : ""), [pathname]);
 
-    if (!hash) return <></>;
+    if (hash === undefined) return <></>;
 
     return (
         <nav className="w-72 grid bg-foreground h-screen p-6" style={{ gridTemplateRows: "auto auto 1fr auto" }}>
@@ -27,7 +29,7 @@ export default function Nav({ session, schools, enrollments }: { session: Sessio
                 </SelectTrigger>
 
                 <SelectContent>
-                    <SelectItem value="new">Create new school</SelectItem>
+                    <SelectItem value="new">Create a new school</SelectItem>
 
                     <SelectGroup>
                         <SelectLabel>Owned</SelectLabel>
@@ -103,9 +105,9 @@ function StepItem({ hash, index, children }: { hash: string, index: number, chil
 
     return (
         <div className="flex items-center">
-            <p className={`select-none text-white text-lg flex justify-center items-center border-2 w-8 h-8 rounded-full ${hl ? "border-solid border-whtie" : "border-dotted border-muted-foreground"}`}>{index}</p>
+            <p className={`select-none text-lg flex justify-center items-center border-2 w-8 h-8 rounded-full ${hl ? "text-white border-solid border-whtie" : "text-muted-foreground border-dotted border-muted-foreground"}`}>{index}</p>
 
-            <Button asChild variant="link" className={`text-white ${!hl ? "pointer-events-none text-muted-foreground" : ""}`}>
+            <Button asChild variant="link" className={`text-white ${!hl ? "pointer-events-none text-muted-foreground" : ""} ${Number(hash.substring(1)) === index ? "font-extrabold" : ""}`}>
                 <Link href={"#" + index}>
                     {children}
                 </Link>
