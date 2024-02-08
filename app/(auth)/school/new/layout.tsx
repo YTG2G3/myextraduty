@@ -1,3 +1,4 @@
+import FormRefProvider from "./form-ref-provider";
 import Nav from "./nav";
 
 export default async function NewSchoolLayout({
@@ -6,10 +7,14 @@ export default async function NewSchoolLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <div className="flex justify-center items-center">
-            <Nav />
+        <FormRefProvider>
+            <div className="flex w-full h-full justify-center items-center">
+                <div className="w-1/3 flex flex-col">
+                    {children}
 
-            {children}
-        </div>
+                    <Nav />
+                </div>
+            </div>
+        </FormRefProvider>
     );
 }

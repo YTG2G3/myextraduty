@@ -73,7 +73,7 @@ export default function Nav({ schools, enrollments }: { schools: School[], enrol
                     <AvatarFallback>{session.user.name}</AvatarFallback>
                 </Avatar>
 
-                <div className="text-white ml-4 overflow-hidden">
+                <div className="text-white ml-3 overflow-hidden">
                     <p className="truncate">{session.user.name}</p>
                     <p className="truncate text-muted-foreground text-sm">{session.user.email}</p>
                 </div>

@@ -11,10 +11,12 @@ export default async function SchoolLayout({
     let schools = await prisma.school.findMany({ where: { id: { in: enrollments.map((enrollment) => enrollment.schoolId) } } });
 
     return (
-        <div className="w-screen flex">
+        <div className="w-screen h-screen flex">
             <Nav schools={schools} enrollments={enrollments} />
 
-            {children}
+            <main className="w-[calc(100%-288px)] h-full">
+                {children}
+            </main>
         </div>
     );
 }

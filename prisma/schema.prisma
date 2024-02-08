@@ -3,7 +3,6 @@
 
 generator client {
     provider = "prisma-client-js"
-    output   = "./generated/client"
 }
 
 datasource db {
@@ -60,6 +59,7 @@ model School {
     id          String    @id @default(cuid())
     ownerId     String
     customerId  String?
+    timezone    String?
     name        String?
     image       String?
     openingAt   DateTime?
@@ -108,8 +108,8 @@ model Task {
     description  String?
     startingDate DateTime? @db.Date
     endingDate   DateTime? @db.Date
-    startingTime DateTime? @db.Timetz()
-    endingTime   DateTime? @db.Timetz()
+    startingTime DateTime? @db.Time(3)
+    endingTime   DateTime? @db.Time(3)
     createdAt    DateTime  @default(now())
     updatedAt    DateTime  @updatedAt
 
