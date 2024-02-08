@@ -8,7 +8,7 @@ import { CalendarIcon } from "lucide-react";
 import { Calendar } from "./calendar";
 import { Input } from "./input";
 import { Separator } from "./separator";
-import getOffset from "@/lib/get-offset";
+import buildISOString from "@/lib/build-iso-string";
 
 export default function DateTimePicker({ timezone, value, setValue }: {
     timezone: string, value: string, setValue: (d: string) => void
@@ -16,17 +16,14 @@ export default function DateTimePicker({ timezone, value, setValue }: {
     let [date, setDate] = useState(new Date());
     let [time, setTime] = useState(format(new Date(), "HH:mm"));
 
-    let tz = getOffset(timezone);
-    let r = format(date, "yyyy-MM-dd") + "T" + time + ":00" + (tz >= 0 ? '+' : '-') + pad(Math.floor(Math.abs(tz) / 60)) + ':' + pad(Math.abs(tz) % 60);
-
     function updateDate(d: Date) {
         setDate(d);
-        setValue(`${format(d, "yyyy-MM-dd")}T${time}Z`);
+        setValue(buildISOString(d, time, timezone));
     }
 
     function updateTime(t: string) {
         setTime(t);
-        setValue(`${format(date, "yyyy-MM-dd")}T${t}Z`);
+        setValue(buildISOString(date, t, timezone));
     }
 
     return (
@@ -41,7 +38,7 @@ export default function DateTimePicker({ timezone, value, setValue }: {
                         )}
                     >
                         {date ? (
-                            <p></p>
+                            <p>{format(buildISOString(date, time, timezone), "PPP ppp")}</p>
                         ) : (
                             <span>Pick a date and time</span>
                         )}
@@ -53,6 +50,7 @@ export default function DateTimePicker({ timezone, value, setValue }: {
             <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                     mode="single"
+                    disabled={(d) => d.getUTCFullYear() === date.getUTCFullYear() && d.getUTCMonth() === date.getUTCMonth() && d.getUTCDate() === date.getUTCDate()}
                     selected={date}
                     onSelect={updateDate}
                     initialFocus

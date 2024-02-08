@@ -10,7 +10,6 @@ import { FormContext } from '../form-ref-provider';
 import { navigate } from '@/lib/navigate';
 import { Checkbox } from '@/components/ui/checkbox';
 import DateTimePicker from '@/components/ui/date-time-picker';
-import getOffset from '@/lib/get-offset';
 
 const formSchema = z.object({
     openingAt: z.string().datetime(),
@@ -77,7 +76,7 @@ export default function Advanced() {
                             <DateTimePicker timezone={timezone} value={field.value} setValue={(d: string) => form.setValue("openingAt", d)} />
 
                             <FormDescription>
-                                Timezone is set to {timezone}, offset of {getOffset(timezone) / 60} hours
+                                Timezone is set to {timezone}
                             </FormDescription>
 
                             <FormMessage />
