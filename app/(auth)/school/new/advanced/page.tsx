@@ -3,16 +3,14 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from 'zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { FormContext } from '../form-ref-provider';
 import { navigate } from '@/lib/navigate';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
-import { CalendarIcon } from 'lucide-react';
-import { Calendar } from '@/components/ui/calendar';
+import DateTimePicker from '@/components/ui/date-time-picker';
+import getOffset from '@/lib/get-offset';
 
 const formSchema = z.object({
     openingAt: z.string().datetime(),
@@ -24,6 +22,7 @@ const formSchema = z.object({
 // TODO - image should be linked with bucket later on
 export default function Advanced() {
     let ref = useContext(FormContext);
+    let [timezone, setTimezone] = useState(null);
 
     let form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -38,6 +37,11 @@ export default function Advanced() {
     useEffect(() => {
         let plan = sessionStorage.getItem("plan");
         if (!plan) navigate("/school/new/plan");
+
+        let basic = sessionStorage.getItem("basic");
+        if (!basic) navigate("/school/new/basic");
+
+        setTimezone(JSON.parse(basic).timezone);
 
         let s = sessionStorage.getItem("advanced");
 
@@ -58,7 +62,8 @@ export default function Advanced() {
         navigate("/school/new/complete");
     }
 
-    // TODO - deal with timezone error
+    if (!timezone) return <></>
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" ref={ref}>
@@ -66,30 +71,15 @@ export default function Advanced() {
                     control={form.control}
                     name="openingAt"
                     render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>{field.value}</FormLabel>
+                        <FormItem className="flex flex-col">
+                            <FormLabel>Opening At</FormLabel>
 
-                            <FormControl>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <Button
-                                            variant={"outline"}
-                                            className={`w-[280px] justify-start text-left font-normal ${!field.value && "text-muted-foreground"}`}
-                                        >
-                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                            {<span>Pick a date</span>}
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0">
-                                        <Calendar
-                                            mode="single"
-                                            initialFocus
-                                            selected={new Date(field.value)}
-                                            onSelect={(date) => form.setValue("openingAt", date.toISOString())}
-                                        />
-                                    </PopoverContent>
-                                </Popover>
-                            </FormControl>
+                            <DateTimePicker timezone={timezone} value={field.value} setValue={(d: string) => form.setValue("openingAt", d)} />
+
+                            <FormDescription>
+                                Timezone is set to {timezone}, offset of {getOffset(timezone) / 60} hours
+                            </FormDescription>
+
                             <FormMessage />
                         </FormItem>
                     )}
