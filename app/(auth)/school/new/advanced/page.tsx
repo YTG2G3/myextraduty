@@ -58,6 +58,7 @@ export default function Advanced() {
         navigate("/school/new/complete");
     }
 
+    // TODO - deal with timezone error
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" ref={ref}>
