@@ -4,11 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import boardingSteps from "@/lib/boarding-steps";
+import { navigate } from "@/lib/navigate";
 import useClientSession from "@/lib/use-client-session";
 import { Enrollment, School } from "@prisma/client";
 import { Separator } from "@radix-ui/react-separator";
 import Link from "next/link";
-import { redirect, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from "react";
 
@@ -18,14 +19,16 @@ export default function Nav({ schools, enrollments }: { schools: School[], enrol
     let params = useParams<{ id: string }>();
     let [selectValue, setSelectValue] = useState("new");
 
-    useEffect(() => {
-        if (params?.id) setSelectValue(params.id);
-        console.log(params?.id);
-    }, [params]);
+    useEffect(() => params?.id ? setSelectValue(params.id) : undefined, [params]);
+
+    function update(v: string) {
+        setSelectValue(v);
+        navigate("/school/" + v);
+    }
 
     return (
         <nav className="w-72 grid bg-foreground h-screen p-6" style={{ gridTemplateRows: "auto auto 1fr auto" }}>
-            <Select value={selectValue} onValueChange={v => redirect("/school/" + v)}>
+            <Select value={selectValue} onValueChange={update}>
                 <SelectTrigger>
                     <SelectValue />
                 </SelectTrigger>
