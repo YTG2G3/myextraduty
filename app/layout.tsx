@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { bricolage, inter } from "./fonts";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
     title: "MyExtraDuty",
@@ -14,7 +15,11 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" className={`${inter.variable} ${bricolage.variable}`}>
-            <body className="font-sans">{children}</body>
+            <body className="font-sans">
+                {children}
+
+                <Toaster richColors />
+            </body>
         </html>
     );
 }

@@ -10,15 +10,22 @@ import { Separator } from "@radix-ui/react-separator";
 import Link from "next/link";
 import { redirect, useParams } from "next/navigation";
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from "react";
 
 // TODO - prettier margin for navigator and fix avatar weird margin
 export default function Nav({ schools, enrollments }: { schools: School[], enrollments: Enrollment[] }) {
     let session = useClientSession();
     let params = useParams<{ id: string }>();
+    let [selectValue, setSelectValue] = useState("new");
+
+    useEffect(() => {
+        if (params?.id) setSelectValue(params.id);
+        console.log(params?.id);
+    }, [params]);
 
     return (
         <nav className="w-72 grid bg-foreground h-screen p-6" style={{ gridTemplateRows: "auto auto 1fr auto" }}>
-            <Select defaultValue={params.id ?? "new"} onValueChange={v => redirect("/school/" + v)}>
+            <Select value={selectValue} onValueChange={v => redirect("/school/" + v)}>
                 <SelectTrigger>
                     <SelectValue />
                 </SelectTrigger>
@@ -28,17 +35,27 @@ export default function Nav({ schools, enrollments }: { schools: School[], enrol
 
                     {schools.find(s => s.ownerId === session.user.id) && (
                         <SelectGroup>
-                            <SelectLabel>Owned</SelectLabel>
+                            <SelectLabel>Owner</SelectLabel>
 
-                            {enrollments.filter(e => e.manager).map((_, i) => <SelectItem key={i} value={schools[i].id}>{schools[i].name}</SelectItem>)}
+                            {schools.filter(s => s.ownerId === session.user.id).map((s, i) => <SelectItem key={i} value={s.id}>{s.name}</SelectItem>)}
                         </SelectGroup>
                     )}
 
-                    <SelectGroup>
-                        <SelectLabel>Schools</SelectLabel>
+                    {enrollments.find((e, i) => e.manager && schools[i].ownerId !== session.user.id) && (
+                        <SelectGroup>
+                            <SelectLabel>Manager</SelectLabel>
 
-                        {enrollments.filter(e => !e.manager).map((_, i) => <SelectItem key={i} value={schools[i].id}>{schools[i].name}</SelectItem>)}
-                    </SelectGroup>
+                            {enrollments.filter((e, i) => e.manager && schools[i].ownerId !== session.user.id).map((_, i) => <SelectItem key={i} value={schools[i].id}>{schools[i].name}</SelectItem>)}
+                        </SelectGroup>
+                    )}
+
+                    {enrollments.find(e => !e.manager) && (
+                        <SelectGroup>
+                            <SelectLabel>Member</SelectLabel>
+
+                            {enrollments.filter(e => !e.manager).map((_, i) => <SelectItem key={i} value={schools[i].id}>{schools[i].name}</SelectItem>)}
+                        </SelectGroup>
+                    )}
                 </SelectContent>
             </Select>
 
@@ -101,6 +118,8 @@ function NavItem({ to, children }: { to: string, children: React.ReactNode }) {
 function StepItem({ to, children }: { to: string, children: React.ReactNode }) {
     let pathname = usePathname();
     if (!pathname) return <></>
+
+    // TODO - enable the one that is already complete using sessionStorage (ex. if saved 2, come back to 1, then 2 should still be clickable)
 
     let path = pathname.substring(pathname.lastIndexOf("/") + 1);
     let index_path = boardingSteps.findIndex(s => s.to === path);

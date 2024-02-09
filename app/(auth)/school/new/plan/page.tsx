@@ -23,7 +23,7 @@ export default function Plan() {
     let form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            code: "huskies"
+            code: ""
         }
     });
 

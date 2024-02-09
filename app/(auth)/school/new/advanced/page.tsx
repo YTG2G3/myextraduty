@@ -47,6 +47,7 @@ export default function Advanced() {
         if (s) {
             let ss: z.infer<typeof formSchema> = JSON.parse(s);
 
+            // TODO - bug fix. openingAt keep resetting instead of using saved because this code is rendered after <DateTimePicker />
             form.setValue("openingAt", ss.openingAt);
             form.setValue("quota", ss.quota);
             form.setValue("maxAssigned", ss.maxAssigned);

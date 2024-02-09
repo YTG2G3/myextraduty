@@ -58,14 +58,13 @@ model User {
 model School {
     id          String    @id @default(cuid())
     ownerId     String
-    customerId  String?
-    timezone    String?
-    name        String?
-    image       String?
+    timezone    String
+    name        String
+    image       String
+    quota       Int
+    maxAssigned Int
+    dropEnabled Boolean
     openingAt   DateTime?
-    quota       Int?
-    maxAssiged  Int?
-    dropEnabled Boolean?
     verified    Boolean   @default(false)
     createdAt   DateTime  @default(now())
     updatedAt   DateTime  @updatedAt

@@ -1,18 +1,55 @@
+import getServerSession from "@/lib/get-server-session";
 import FormRefProvider from "./form-ref-provider";
 import Nav from "./nav";
+import prisma from "@/lib/db";
 
 export default async function NewSchoolLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    let session = await getServerSession();
+
+    async function complete({ timezone, name, image, openingAt, quota, maxAssigned, dropEnabled, code }) {
+        'use server'
+
+        if (code !== "huskies") return false;
+
+        try {
+            let s = await prisma.school.create({
+                data: {
+                    ownerId: session.user.id,
+                    name,
+                    image,
+                    timezone,
+                    openingAt,
+                    quota,
+                    maxAssigned,
+                    dropEnabled,
+                },
+            });
+
+            await prisma.enrollment.create({
+                data: {
+                    manager: true,
+                    schoolId: s.id,
+                    userId: session.user.id,
+                }
+            });
+
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
     return (
         <FormRefProvider>
             <div className="flex w-full h-full justify-center items-center">
-                <div className="w-1/3 flex flex-col">
+                <div className="min-w-[40%] flex flex-col">
                     {children}
 
-                    <Nav />
+                    <Nav complete={complete} />
                 </div>
             </div>
         </FormRefProvider>
