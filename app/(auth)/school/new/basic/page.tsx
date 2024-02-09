@@ -12,7 +12,7 @@ import { navigate } from '@/lib/navigate';
 const formSchema = z.object({
     timezone: z.string().min(1),
     name: z.string().min(1),
-    image: z.string().min(1)
+    image: z.string().url()
 });
 
 // TODO - image should be linked with bucket later on

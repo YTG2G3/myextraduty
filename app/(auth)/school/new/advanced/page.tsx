@@ -26,7 +26,7 @@ export default function Advanced() {
     let form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            openingAt: new Date().toISOString(),
+            openingAt: null,
             quota: 4,
             maxAssigned: 10,
             dropEnabled: false
@@ -124,7 +124,7 @@ export default function Advanced() {
                             <FormLabel>Drop Enabled</FormLabel>
 
                             <FormControl className='!mt-0 ml-3'>
-                                <Checkbox />
+                                <Checkbox checked={field.value} onCheckedChange={(c: boolean) => form.setValue("dropEnabled", c)} />
                             </FormControl>
 
                             <FormMessage />

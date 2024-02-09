@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { FormControl } from "./form";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "./calendar";
 import { Input } from "./input";
@@ -16,15 +16,7 @@ export default function DateTimePicker({ timezone, value, setValue }: {
     let [date, setDate] = useState(new Date());
     let [time, setTime] = useState(format(new Date(), "HH:mm"));
 
-    function updateDate(d: Date) {
-        setDate(d);
-        setValue(buildISOString(d, time, timezone));
-    }
-
-    function updateTime(t: string) {
-        setTime(t);
-        setValue(buildISOString(date, t, timezone));
-    }
+    useEffect(() => setValue(parseISO(buildISOString(date, time, timezone)).toISOString()), [date, time, setValue, timezone]);
 
     return (
         <Popover>
@@ -38,7 +30,7 @@ export default function DateTimePicker({ timezone, value, setValue }: {
                         )}
                     >
                         {date ? (
-                            <p>{format(buildISOString(date, time, timezone), "PPP ppp")}</p>
+                            <p>{format(buildISOString(date, time, timezone), "PPP hh:mm a")}</p>
                         ) : (
                             <span>Pick a date and time</span>
                         )}
@@ -52,13 +44,13 @@ export default function DateTimePicker({ timezone, value, setValue }: {
                     mode="single"
                     disabled={(d) => d.getUTCFullYear() === date.getUTCFullYear() && d.getUTCMonth() === date.getUTCMonth() && d.getUTCDate() === date.getUTCDate()}
                     selected={date}
-                    onSelect={updateDate}
+                    onSelect={setDate}
                     initialFocus
                 />
 
                 <Separator className="h-0.5" />
 
-                <Input type="time" className="border-none flex justify-end" value={time} onChange={(e: any) => updateTime(e.target.value)} />
+                <Input type="time" className="bg-transparent border-0 focus-visible:ring-offset-0 focus-visible:ring-0" value={time} onChange={(e: any) => setTime(e.target.value)} />
             </PopoverContent>
         </Popover>
     );
