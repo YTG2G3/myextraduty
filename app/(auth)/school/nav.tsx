@@ -23,7 +23,7 @@ export default function Nav({ schools, enrollments }: { schools: School[], enrol
 
     function update(v: string) {
         setSelectValue(v);
-        navigate("/school/" + v);
+        navigate(`/school/${v}/dashboard`);
     }
 
     return (
