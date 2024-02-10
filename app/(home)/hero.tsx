@@ -1,4 +1,4 @@
-import { Separator } from "../ui/separator";
+import { Separator } from "../../components/ui/separator";
 
 export default function Hero({ title, description }: { title: string, description: string }) {
     return (
