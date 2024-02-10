@@ -31,7 +31,7 @@ export default function Advanced() {
             maxAssigned: 10,
             dropEnabled: false
         }
-    });
+    }); // TODO - possibly an option to set maxAssigned or quota as -1 (no condition)
 
     useEffect(() => {
         let plan = sessionStorage.getItem("plan");

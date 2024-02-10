@@ -43,7 +43,7 @@ export default function Nav({ complete: actionComplete }: { complete: Function }
             sessionStorage.removeItem("basic");
             sessionStorage.removeItem("advanced");
             sessionStorage.removeItem("plan");
-            navigate("/school");
+            navigate(`/school/${res}/dashboard`);
         }
         else toast.error("Unknown error has occured while creating a school.");
     }

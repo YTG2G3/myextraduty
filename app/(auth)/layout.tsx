@@ -3,6 +3,7 @@ import prisma from "@/lib/db";
 import InvitationDialog from "./invitation-dialog";
 import getServerSession from "@/lib/get-server-session";
 
+// TODO - alert feature as sonner
 export default async function AuthLayout({
     children,
 }: Readonly<{
