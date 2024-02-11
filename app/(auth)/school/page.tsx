@@ -8,7 +8,6 @@ export default async function SchoolInit() {
     let session = await getServerSession();
     if (!session) {
         redirect("/auth/signin");
-        return <></>
     }
 
     let enrollment = await prisma.enrollment.findFirst({ where: { userId: session.user.id } });

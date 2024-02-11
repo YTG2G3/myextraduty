@@ -2,7 +2,7 @@ import prisma from "@/lib/db";
 import InvitationDialog from "./invitation-dialog";
 import getServerSession from "@/lib/get-server-session";
 import Login from "@/components/login";
-import { SessionProvider } from "next-auth/react";
+import AuthProvider from "./auth-provider";
 
 // TODO - alert feature as sonner
 export default async function AuthLayout({
@@ -43,9 +43,9 @@ export default async function AuthLayout({
         <>
             <InvitationDialog loadData={loadData} decide={decide} />
 
-            <SessionProvider session={session}>
+            <AuthProvider session={session}>
                 {children}
-            </SessionProvider>
+            </AuthProvider>
         </>
     );
 }
