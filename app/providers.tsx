@@ -15,6 +15,7 @@ export default function Providers({ children }) {
                 <AppProgressBar
                     height="4px"
                     color="#020817"
+                    options={{ showSpinner: false }}
                 />
             </Suspense>
         </>
