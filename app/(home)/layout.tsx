@@ -1,4 +1,4 @@
-import Nav from "./(landing)/nav";
+import Nav from "./nav";
 import getServerSession from "@/lib/get-server-session";
 
 export default async function HomeLayout({
