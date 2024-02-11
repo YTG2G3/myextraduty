@@ -13,7 +13,7 @@ import { useParams } from "next/navigation";
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from "react";
 
-// TODO - prettier margin for navigator and fix avatar weird margin
+// TODO - prettier margin for navigator and fix avatar weird margin, add a logout button
 export default function Nav({ schools, enrollments }: { schools: School[], enrollments: Enrollment[] }) {
     let session = useClientSession();
     let params = useParams<{ id: string }>();

@@ -1,11 +1,16 @@
+'use client'
+
+import { Input } from "@/components/ui/input";
 import AuthSession from "@/lib/auth-session";
 import { School, Task } from "@prisma/client";
+import { useState } from "react";
 
-// TODO - tasks
 export default function User({ session, school, tasks }: { session: AuthSession, school: School[], tasks: Task[] }) {
+    let [search, setSearch] = useState("");
+
     return (
         <div>
-            <h1>Task</h1>
+
         </div>
     );
 }
