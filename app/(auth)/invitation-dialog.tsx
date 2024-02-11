@@ -10,19 +10,37 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CalendarDays, Check, ShieldCheck, X } from "lucide-react";
 import formatInt from "@/lib/formatInt";
 
-export default function InvitationDialog({ invitations, schools, owners, decide }: { invitations: Invitation[], schools: School[], owners: User[], decide: Function }) {
+export default function InvitationDialog({ loadData, decide }: { loadData: Function, decide: Function }) {
     let [isOpen, setIsOpen] = useState(false);
-    let [decided, setDecided] = useState<boolean[]>(new Array(invitations.length).fill(false));
 
-    useEffect(() => {
+    let [invitations, setInvitations] = useState<Invitation[]>(undefined);
+    let [schools, setSchools] = useState<School[]>(undefined);
+    let [owners, setOwners] = useState<User[]>(undefined);
+
+    let [decided, setDecided] = useState<boolean[]>(undefined);
+
+    async function load() {
+        let { invitations, schools, owners } = await loadData();
+
         if (invitations.length > 0) setIsOpen(true);
         else setIsOpen(false);
-    }, [invitations]);
+
+        setInvitations(invitations);
+        setSchools(schools);
+        setOwners(owners);
+
+        setDecided(invitations.map(() => false));
+    }
+
+    useEffect(() => { load() }, []);
 
     function clientDecide(index: number, accept: boolean) {
         setDecided(decided.map((d, i) => i === index ? true : d));
-        decide(index, accept);
+        decide(invitations[index].id, schools[index].id, invitations[index].manager, accept);
     }
+
+    // TODO - loading
+    if (!invitations || !schools || !owners || !decided) return <></>
 
     return (
         <TooltipProvider>

@@ -9,33 +9,40 @@ export default async function AuthLayout({
     children: React.ReactNode;
 }>) {
     let session = await getServerSession();
+    if (!session) return <></>
 
     // Check if there are any invitations
-    let invitations = await prisma.invitation.findMany({ where: { email: session.user.email } });
-    let schools = await prisma.school.findMany({ where: { id: { in: invitations.map((invitation) => invitation.schoolId) } } });
-    let owners = await prisma.user.findMany({ where: { id: { in: schools.map((school) => school.ownerId) } } });
+    async function loadData() {
+        'use server'
+
+        let invitations = await prisma.invitation.findMany({ where: { email: session.user.email } });
+        let schools = await prisma.school.findMany({ where: { id: { in: invitations.map((invitation) => invitation.schoolId) } } });
+        let owners = await prisma.user.findMany({ where: { id: { in: schools.map((school) => school.ownerId) } } });
+
+        return { invitations, schools, owners };
+    }
 
     // Receive invitation id and school id
-    async function decide(index: number, accept: boolean) {
+    async function decide(id: string, schoolId: string, manager: boolean, accept: boolean) {
         'use server'
 
         if (accept) prisma.enrollment.create({
             data: {
                 userId: session.user.id,
-                schoolId: schools[index].id,
-                manager: invitations[index].manager
+                schoolId,
+                manager
             }
         });
 
-        prisma.invitation.delete({ where: { id: invitations[index].id } });
+        prisma.invitation.delete({ where: { id } });
     }
 
     return (
         <>
-            <InvitationDialog invitations={invitations} schools={schools} owners={owners} decide={decide} />
+            <InvitationDialog loadData={loadData} decide={decide} />
 
             <AuthProvider session={session}>
-                {children}
+                abc
             </AuthProvider>
         </>
     );
