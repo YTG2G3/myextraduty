@@ -17,7 +17,7 @@ export default function Nav({ complete: actionComplete }: { complete: Function }
     if (!pathname) return <></>
 
     let path = pathname.substring(pathname.lastIndexOf("/") + 1);
-    let index = boardingSteps.findIndex(s => s.to === path);
+    let index = path === "new" ? -1 : boardingSteps.findIndex(s => s.to === path);
 
     function previous() {
         let p = boardingSteps[index - 1];
@@ -43,10 +43,12 @@ export default function Nav({ complete: actionComplete }: { complete: Function }
             sessionStorage.removeItem("basic");
             sessionStorage.removeItem("advanced");
             sessionStorage.removeItem("plan");
-            navigate("/school");
+            navigate(`/school/${res}/dashboard`);
         }
         else toast.error("Unknown error has occured while creating a school.");
     }
+
+    if (index === -1) return <></>
 
     if (index === 0) return (
         <nav className="flex justify-end mt-8">

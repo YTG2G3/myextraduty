@@ -13,7 +13,7 @@ export default async function NewSchoolLayout({
     async function complete({ timezone, name, image, openingAt, quota, maxAssigned, dropEnabled, code }) {
         'use server'
 
-        if (code !== "huskies") return false;
+        if (code !== "huskies") return null;
 
         try {
             let s = await prisma.school.create({
@@ -37,9 +37,9 @@ export default async function NewSchoolLayout({
                 }
             });
 
-            return true;
+            return s.id;
         } catch (error) {
-            return false;
+            return null;
         }
     }
 

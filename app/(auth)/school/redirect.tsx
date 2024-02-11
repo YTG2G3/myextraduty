@@ -11,10 +11,10 @@ export default function Redirect({ id }: { id: string }) {
         // If not set, redirect to id
         if (!school) {
             localStorage.setItem("school", id);
-            redirect("/school/" + id);
+            redirect(`/school/${id}/dashboard`);
         }
         else {
-            redirect("/school/" + school);
+            redirect(`/school/${school}/dashboard`);
         }
     }, [id]);
 

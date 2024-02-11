@@ -13,7 +13,7 @@ import { useParams } from "next/navigation";
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from "react";
 
-// TODO - prettier margin for navigator and fix avatar weird margin
+// TODO - prettier margin for navigator and fix avatar weird margin, add a logout button
 export default function Nav({ schools, enrollments }: { schools: School[], enrollments: Enrollment[] }) {
     let session = useClientSession();
     let params = useParams<{ id: string }>();
@@ -23,7 +23,7 @@ export default function Nav({ schools, enrollments }: { schools: School[], enrol
 
     function update(v: string) {
         setSelectValue(v);
-        navigate("/school/" + v);
+        navigate(v === "new" ? "/school/new" : `/school/${v}/dashboard`);
     }
 
     return (
@@ -68,9 +68,9 @@ export default function Nav({ schools, enrollments }: { schools: School[], enrol
                 <div className="flex flex-col">
                     <NavItem to="dashboard">Dashboard</NavItem>
                     <NavItem to="task">Tasks</NavItem>
-                    <NavItem to="notification">Notifications</NavItem>
+                    <NavItem to="alert">Alerts</NavItem>
 
-                    {enrollments.find(e => e.schoolId === params.id)?.manager ?? (
+                    {enrollments.find(e => e.schoolId === params.id).manager ? (
                         <>
                             <Separator className="bg-white mt-2 h-0.5 rounded" />
                             <p className="text-center text-muted-foreground text-sm mt-2 mb-4">Manager Only</p>
@@ -79,7 +79,7 @@ export default function Nav({ schools, enrollments }: { schools: School[], enrol
                             <NavItem to="report">Reports</NavItem>
                             <NavItem to="setting">Settings</NavItem>
                         </>
-                    )}
+                    ) : undefined}
                 </div>
             ) : (
                 <div className="flex flex-col justify-center">
