@@ -41,9 +41,9 @@ export default async function AuthLayout({
     return (
         <>
             <InvitationDialog loadData={loadData} decide={decide} />
-
+            
             <AuthProvider session={session}>
-                abc
+                {children}
             </AuthProvider>
         </>
     );

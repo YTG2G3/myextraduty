@@ -13,9 +13,9 @@ import oauthSignIn from "@/lib/oauth-sign-in";
 
 export default function Nav({ authed }: { authed: boolean }) {
     return (
-        <nav className="z-20 fixed top-0 grid w-screen px-7 py-4 bg-white bg-opacity-80" style={{ gridTemplateColumns: "auto 1fr auto" }}>
+        <nav className="z-20 fixed top-0 grid w-screen px-7 py-4 bg-white bg-opacity-80" style={{ gridTemplateColumns: " 1fr 1fr 1fr" }}>
             <Link href="/">
-                <p className="select-none font-grotesque font-extrabold text-4xl">MyED</p>
+                <p style={{ letterSpacing: "-0.05em" }} className="select-none font-grotesque font-extrabold text-4xl">MyExtraDuty</p>
             </Link>
 
             <NavigationMenu className="relative z-10 flex max-w-screen flex-1 items-center justify-center">
@@ -92,7 +92,7 @@ export default function Nav({ authed }: { authed: boolean }) {
             </NavigationMenu>
 
             {authed ? (
-                <div>
+                <div className="flex justify-end">
                     <Link href="/school" className={navigationMenuTriggerStyle()}>
                         Console
                     </Link>
@@ -102,9 +102,11 @@ export default function Nav({ authed }: { authed: boolean }) {
                     </Button>
                 </div>
             ) : (
-                <Button onClick={() => oauthSignIn()}>
-                    Sign In
-                </Button>
+                <div className="flex justify-end">
+                    <Button onClick={() => oauthSignIn()}>
+                        Sign In
+                    </Button>
+                </div>
             )}
         </nav>
     )
