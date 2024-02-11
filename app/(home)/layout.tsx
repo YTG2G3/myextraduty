@@ -1,18 +1,18 @@
-import Nav from "./nav";
-import getServerSession from "@/lib/get-server-session";
+import Nav from './nav';
+import getServerSession from '@/lib/get-server-session';
 
 export default async function HomeLayout({
-    children,
+  children
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    let session = await getServerSession();
+  let session = await getServerSession();
 
-    return (
-        <>
-            <Nav authed={!!session} />
+  return (
+    <>
+      <Nav authed={!!session} />
 
-            {children}
-        </>
-    );
+      {children}
+    </>
+  );
 }

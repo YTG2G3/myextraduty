@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import oauthSignIn from "@/lib/oauth-sign-in";
+import oauthSignIn from '@/lib/oauth-sign-in';
 
 export default function Login() {
-    oauthSignIn();
-    return <></>;
+  oauthSignIn();
+  return <></>;
 }
