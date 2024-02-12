@@ -1,12 +1,12 @@
 'use client';
 
+import { bricolage } from '@/app/fonts';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { navigate } from '@/lib/navigate';
 import { format } from 'date-fns';
 import { BellElectric } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-// TODO - currently, timezone is local. make that based on the school's timezone
 export default function Complete() {
   let [basic, setBasic] = useState(undefined);
   let [advanced, setAdvanced] = useState(undefined);
@@ -29,14 +29,14 @@ export default function Complete() {
   return (
     <div className="flex flex-col items-center">
       <div className="text-3xl flex space-x-2 items-center">
-        <b>Review</b>
-        <p>{basic.name}</p>
-        <b>before completion</b>
+        <p>Review</p>
+        <b className={`${bricolage.className}`}>{basic.name}</b>
+        <p>before completion</p>
         <BellElectric className="w-8 h-8" />
       </div>
 
       <div className="flex space-x-8 items-center mt-8">
-        <div className="flex flex-col">
+        <div className="flex flex-col leading-loose">
           <span>
             Timezone: <u>{basic.timezone}</u>
           </span>
@@ -59,7 +59,9 @@ export default function Complete() {
 
         <Avatar className="w-36 h-36 border">
           <AvatarImage src={basic.image} />
-          <AvatarFallback>SL</AvatarFallback>
+          <AvatarFallback>
+            <div className="text-center">Avatar not available</div>
+          </AvatarFallback>
         </Avatar>
       </div>
     </div>
