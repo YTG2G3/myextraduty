@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { useContext, useEffect } from 'react';
 import { FormContext } from '../form-ref-provider';
 import { navigate } from '@/lib/navigate';
+import { TimezoneSelector } from '@/components/timezone-selector';
 
 const formSchema = z.object({
   timezone: z.string().min(1),
@@ -107,7 +108,12 @@ export default function Basic() {
               <FormLabel>Timezone</FormLabel>
 
               <FormControl>
-                <Input placeholder="America/Los_Angeles" {...field} />
+                <TimezoneSelector
+                  initialValue={field.value || ''}
+                  setTimezone={(value) => {
+                    form.setValue('timezone', value);
+                  }}
+                />
               </FormControl>
 
               <FormMessage />
