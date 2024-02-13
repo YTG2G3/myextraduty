@@ -57,6 +57,7 @@ export default function InvitationDialog({
 
   useEffect(() => {
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function clientDecide(index: number, accept: boolean) {
