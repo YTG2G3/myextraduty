@@ -11,8 +11,8 @@ import {
 import { usePathname } from 'next/navigation';
 import { useContext, useState } from 'react';
 import { FormContext } from './form-ref-provider';
-import { navigate } from '@/lib/navigate';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export default function Nav({
   complete: actionComplete
@@ -21,6 +21,7 @@ export default function Nav({
 }) {
   let ref = useContext(FormContext);
   let [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   let pathname = usePathname();
   if (!pathname) return <></>;
@@ -31,7 +32,7 @@ export default function Nav({
 
   function previous() {
     let p = boardingSteps[index - 1];
-    navigate(p.to);
+    router.push(p.to);
   }
 
   function next() {
@@ -57,7 +58,7 @@ export default function Nav({
       sessionStorage.removeItem('basic');
       sessionStorage.removeItem('advanced');
       sessionStorage.removeItem('plan');
-      navigate(`/school/${res}/dashboard`);
+      router.push(`/school/${res}/dashboard`);
     } else toast.error('Unknown error has occured while creating a school.');
   }
 

@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useContext, useEffect } from 'react';
 import { FormContext } from '../form-ref-provider';
-import { navigate } from '@/lib/navigate';
+import { useRouter } from 'next/navigation';
 import { TimezoneSelector } from '@/components/timezone-selector';
 
 const formSchema = z.object({
@@ -25,6 +25,7 @@ const formSchema = z.object({
 
 // TODO - image should be linked with bucket later on
 export default function Basic() {
+  const router = useRouter();
   let ref = useContext(FormContext);
 
   let form = useForm<z.infer<typeof formSchema>>({
@@ -55,7 +56,7 @@ export default function Basic() {
     e.preventDefault();
 
     sessionStorage.setItem('basic', JSON.stringify(values));
-    navigate('/school/new/plan');
+    router.push('/school/new/plan');
   }
 
   return (

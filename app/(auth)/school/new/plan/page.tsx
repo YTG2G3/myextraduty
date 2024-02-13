@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useContext, useEffect } from 'react';
 import { FormContext } from '../form-ref-provider';
-import { navigate } from '@/lib/navigate';
+import { useRouter } from 'next/navigation';
 
 // TODO - this page is for selecting a stripe plan and registering credit card. when developing the stripe part, remove the placeholder
 // Collecte plan, billing address, etc needed to create a stripe customerId and save it in 'plan' session storage
@@ -25,6 +25,8 @@ const formSchema = z.object({
 });
 
 export default function Plan() {
+  const router = useRouter();
+
   let ref = useContext(FormContext);
 
   let form = useForm<z.infer<typeof formSchema>>({
@@ -36,7 +38,7 @@ export default function Plan() {
 
   useEffect(() => {
     let basic = sessionStorage.getItem('basic');
-    if (!basic) navigate('/school/new/basic');
+    if (!basic) router.push('/school/new/basic');
 
     let s = sessionStorage.getItem('plan');
 
@@ -45,7 +47,7 @@ export default function Plan() {
 
       form.setValue('code', ss.code);
     }
-  }, [form]);
+  }, [form, router]);
 
   function onSubmit(
     values: z.infer<typeof formSchema>,
@@ -54,7 +56,7 @@ export default function Plan() {
     e.preventDefault();
 
     sessionStorage.setItem('plan', JSON.stringify(values));
-    navigate('/school/new/advanced');
+    router.push('/school/new/advanced');
   }
 
   return (

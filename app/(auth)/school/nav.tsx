@@ -12,12 +12,11 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import boardingSteps from '@/lib/boarding-steps';
-import { navigate } from '@/lib/navigate';
 import useClientSession from '@/lib/use-client-session';
 import { Enrollment, School } from '@prisma/client';
 import { Separator } from '@radix-ui/react-separator';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -32,6 +31,7 @@ export default function Nav({
   let session = useClientSession();
   let params = useParams<{ id: string }>();
   let [selectValue, setSelectValue] = useState('new');
+  const router = useRouter();
 
   useEffect(
     () => (params?.id ? setSelectValue(params.id) : undefined),
@@ -40,7 +40,7 @@ export default function Nav({
 
   function update(v: string) {
     setSelectValue(v);
-    navigate(v === 'new' ? '/school/new' : `/school/${v}/dashboard`);
+    router.push(v === 'new' ? '/school/new' : `/school/${v}/dashboard`);
   }
 
   return (

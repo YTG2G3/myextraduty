@@ -2,12 +2,14 @@
 
 import { bricolage } from '@/app/fonts';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { navigate } from '@/lib/navigate';
+import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { BellElectric } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function Complete() {
+  const router = useRouter();
+
   let [basic, setBasic] = useState(undefined);
   let [advanced, setAdvanced] = useState(undefined);
   let [plan, setPlan] = useState(undefined);
@@ -17,12 +19,12 @@ export default function Complete() {
     let advanced = sessionStorage.getItem('advanced');
     let plan = sessionStorage.getItem('plan');
 
-    if (!basic || !advanced || !plan) navigate('/school/new/basic');
+    if (!basic || !advanced || !plan) router.push('/school/new/basic');
 
     setBasic(JSON.parse(basic));
     setAdvanced(JSON.parse(advanced));
     setPlan(JSON.parse(plan));
-  }, []);
+  }, [router]);
 
   if (!basic || !advanced) return <></>;
 

@@ -15,7 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useContext, useEffect, useState } from 'react';
 import { FormContext } from '../form-ref-provider';
-import { navigate } from '@/lib/navigate';
+import { useRouter } from 'next/navigation';
 import { Checkbox } from '@/components/ui/checkbox';
 import DateTimePicker from '@/components/ui/date-time-picker';
 
@@ -28,6 +28,7 @@ const formSchema = z.object({
 
 // TODO - image should be linked with bucket later on
 export default function Advanced() {
+  const router = useRouter();
   let ref = useContext(FormContext);
   let [timezone, setTimezone] = useState(null);
 
@@ -43,10 +44,10 @@ export default function Advanced() {
 
   useEffect(() => {
     let plan = sessionStorage.getItem('plan');
-    if (!plan) navigate('/school/new/plan');
+    if (!plan) router.push('/school/new/plan');
 
     let basic = sessionStorage.getItem('basic');
-    if (!basic) navigate('/school/new/basic');
+    if (!basic) router.push('/school/new/basic');
 
     setTimezone(JSON.parse(basic).timezone);
 
@@ -61,7 +62,7 @@ export default function Advanced() {
       form.setValue('maxAssigned', ss.maxAssigned);
       form.setValue('dropEnabled', ss.dropEnabled);
     }
-  }, [form]);
+  }, [form, router]);
 
   function onSubmit(
     values: z.infer<typeof formSchema>,
@@ -70,7 +71,7 @@ export default function Advanced() {
     e.preventDefault();
 
     sessionStorage.setItem('advanced', JSON.stringify(values));
-    navigate('/school/new/complete');
+    router.push('/school/new/complete');
   }
 
   if (!timezone) return <></>;
