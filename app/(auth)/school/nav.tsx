@@ -45,7 +45,7 @@ export default function Nav({
 
   return (
     <nav
-      className="w-72 grid bg-foreground h-screen p-6"
+      className="w-72 grid bg-gray-800 h-screen p-6 gap-2"
       style={{ gridTemplateRows: 'auto auto 1fr auto' }}
     >
       <Select value={selectValue} onValueChange={update}>
@@ -104,7 +104,7 @@ export default function Nav({
         </SelectContent>
       </Select>
 
-      <Separator className="bg-white my-6 h-0.5 rounded" />
+      <Separator className="display-none" />
 
       {params.id ? (
         <div className="flex flex-col">
@@ -114,7 +114,7 @@ export default function Nav({
 
           {enrollments.find((e) => e.schoolId === params.id).manager ? (
             <>
-              <Separator className="bg-white mt-2 h-0.5 rounded" />
+              <Separator className="bg-white h-[2px] opacity-15" />
               <p className="text-center text-muted-foreground text-sm mt-2 mb-4">
                 Manager Only
               </p>
