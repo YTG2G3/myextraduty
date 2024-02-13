@@ -1,4 +1,3 @@
-import AuthSession from '@/lib/auth-session';
 import prisma from '@/lib/db';
 import getServerSession from '@/lib/get-server-session';
 
