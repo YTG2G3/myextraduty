@@ -163,7 +163,7 @@ function NavItem({ to, children }: { to: string; children: React.ReactNode }) {
     <Button
       asChild
       variant="ghost"
-      className={`text-white mb-3 ${path === to ? 'bg-white text-foreground font-extrabold' : ''}`}
+      className={`text-white mb-3 ${path === to ? 'bg-white text-foreground font-bold' : 'font-normal'}`}
     >
       <Link href={`${pathway}/${to}`}>{children}</Link>
     </Button>
@@ -191,7 +191,7 @@ function StepItem({ to, children }: { to: string; children: React.ReactNode }) {
       <Button
         asChild
         variant="link"
-        className={`text-white ${index_path < index_to ? 'pointer-events-none text-muted-foreground' : ''} ${index_path === index_to ? 'font-extrabold' : ''}`}
+        className={`text-white ${index_path < index_to ? 'pointer-events-none text-muted-foreground' : ''} font-normal`}
       >
         <Link href={`/school/new/${to}`}>{children}</Link>
       </Button>

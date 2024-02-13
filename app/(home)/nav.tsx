@@ -51,7 +51,7 @@ export default function Nav({ authed }: { authed: boolean }) {
                       href="/"
                     >
                       <div className="select-none mb-2 mt-4 text-lg font-grotesque font-extrabold">
-                        MyED
+                        MyExtraduty
                       </div>
                       <p className="text-sm leading-tight text-muted-foreground">
                         Simplify extra duty organization. Streamline your

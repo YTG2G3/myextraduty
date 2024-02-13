@@ -44,12 +44,13 @@ export function TimezoneSelector({ initialValue, setTimezone }) {
         <Command>
           <CommandInput placeholder="Search timezone..." />
           <CommandEmpty>No timezone found.</CommandEmpty>
-          <CommandGroup className="overflow-scroll">
+          <CommandGroup className="overflow-scroll overflow-x-hidden">
             {timezones.map((timezone) => (
               <CommandItem
                 key={timezone}
                 value={timezone}
                 onSelect={(currentValue) => {
+                  console.log(currentValue);
                   setValue(currentValue);
                   setTimezone(currentValue);
                   setOpen(false);
