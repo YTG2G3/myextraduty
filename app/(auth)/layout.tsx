@@ -3,6 +3,7 @@ import InvitationDialog from './invitation-dialog';
 import getServerSession from '@/lib/get-server-session';
 import Login from '@/components/login';
 import AuthProvider from './auth-provider';
+import { Suspense } from 'react';
 
 // TODO - alert feature as sonner
 export default async function AuthLayout({
@@ -57,7 +58,9 @@ export default async function AuthLayout({
     <>
       <InvitationDialog loadData={loadData} decide={decide} />
 
-      <AuthProvider session={session}>{children}</AuthProvider>
+      <AuthProvider session={session}>
+        <Suspense>{children}</Suspense>
+      </AuthProvider>
     </>
   );
 }

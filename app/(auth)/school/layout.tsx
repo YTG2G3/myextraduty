@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import Nav from './nav';
 import getServerSession from '@/lib/get-server-session';
+import { Suspense } from 'react';
 
 export default async function SchoolLayout({
   children
@@ -23,8 +24,9 @@ export default async function SchoolLayout({
   return (
     <div className="w-screen h-screen flex">
       <Nav schools={schools} enrollments={enrollments} />
-
-      <main className="w-[calc(100%-288px)] h-full">{children}</main>
+      <main className="w-[calc(100%-288px)] h-full">
+        <Suspense>{children}</Suspense>
+      </main>
     </div>
   );
 }
