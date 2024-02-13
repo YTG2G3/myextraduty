@@ -8,8 +8,8 @@ export default function Providers({ children }) {
     <>
       {children}
       <AppProgressBar
-        height="4px"
-        color="#020817"
+        height="2px"
+        color="#0096FF"
         options={{ showSpinner: false }}
       />
       <Toaster richColors />
