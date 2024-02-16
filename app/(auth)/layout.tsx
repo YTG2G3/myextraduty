@@ -1,7 +1,7 @@
 import prisma from '@/lib/db';
-import InvitationDialog from './invitation-dialog';
+import InvitationDialog from '../../components/ui/invitation-dialog';
 import getServerSession from '@/lib/get-server-session';
-import Login from '@/components/login';
+import Login from '@/components/utils/login';
 import AuthProvider from './auth-provider';
 import { Suspense } from 'react';
 

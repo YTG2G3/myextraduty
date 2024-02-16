@@ -7,23 +7,18 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog';
+  AlertDialogTitle
+} from './alert-dialog';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from './button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
-} from '@/components/ui/tooltip';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger
-} from '@/components/ui/hover-card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+} from './tooltip';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from './hover-card';
+import { Avatar, AvatarFallback, AvatarImage } from './avatar';
 import { CalendarDays, Check, ShieldCheck, X } from 'lucide-react';
 import formatInt from '@/lib/formatInt';
 

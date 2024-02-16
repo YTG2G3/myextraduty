@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { useContext, useEffect } from 'react';
 import { FormContext } from '../form-ref-provider';
 import { useRouter } from 'next/navigation';
-import { TimezoneSelector } from '@/components/timezone-selector';
+import { TimezoneSelector } from '@/components/ui/timezone-selector';
 
 const formSchema = z.object({
   timezone: z.string().min(1),
