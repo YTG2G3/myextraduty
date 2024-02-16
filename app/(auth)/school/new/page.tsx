@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { Eclipse } from 'react-svg-spinners';
 
 export default function NewInit() {
   const router = useRouter();
@@ -28,5 +29,9 @@ export default function NewInit() {
     router.push('/school/new/complete');
   }, [router]);
 
-  return <></>;
+  return (
+    <div className="h-screen flex items-center justify-center">
+      <Eclipse className="h-16 w-16" />
+    </div>
+  );
 }

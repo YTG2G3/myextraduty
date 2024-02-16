@@ -2,6 +2,7 @@ import getServerSession from '@/lib/get-server-session';
 import FormRefProvider from './form-ref-provider';
 import Nav from './nav';
 import prisma from '@/lib/db';
+import { Suspense } from 'react';
 
 export default async function NewSchoolLayout({
   children
@@ -56,7 +57,7 @@ export default async function NewSchoolLayout({
     <FormRefProvider>
       <div className="flex w-full h-full justify-center items-center">
         <div className="min-w-[40%] flex flex-col">
-          {children}
+          <Suspense>{children}</Suspense>
 
           <Nav complete={complete} />
         </div>
