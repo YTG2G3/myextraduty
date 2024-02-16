@@ -32,7 +32,7 @@ export default function Nav({ authed }: { authed: boolean }) {
           style={{ letterSpacing: '-0.05em' }}
           className="select-none font-grotesque font-extrabold text-4xl"
         >
-          MyExtraDuty
+          MyED
         </p>
       </Link>
 
@@ -51,7 +51,7 @@ export default function Nav({ authed }: { authed: boolean }) {
                       href="/"
                     >
                       <div className="select-none mb-2 mt-4 text-lg font-grotesque font-extrabold">
-                        MyExtraduty
+                        MyED
                       </div>
                       <p className="text-sm leading-tight text-muted-foreground">
                         Simplify extra duty organization. Streamline your
