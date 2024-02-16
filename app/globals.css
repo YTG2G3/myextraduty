@@ -86,3 +86,7 @@
     scrollbar-width: none;
   }
 }
+
+h1 {
+  font-family: var(--font-bricolage-grotesque);
+}

@@ -4,5 +4,5 @@ import oauthSignIn from '@/lib/oauth-sign-in';
 
 export default function Login() {
   oauthSignIn();
-  return <></>;
+  return <>Please Wait...</>;
 }

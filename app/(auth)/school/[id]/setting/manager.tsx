@@ -1,3 +1,6 @@
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import AuthSession from '@/lib/auth-session';
 import { Enrollment, Invitation, School, Task } from '@prisma/client';
 
@@ -10,14 +13,19 @@ export default function Manager({
   enrollments
 }: {
   session: AuthSession;
-  school: School[];
+  school: School;
   tasks: Task[];
   invitations: Invitation[];
   enrollments: Enrollment[];
 }) {
   return (
-    <div>
-      <h1>Settings</h1>
+    <div className="p-12">
+      <h1 className="font-semibold text-4xl mb-2">Settings</h1>
+      <Separator />
+      <div className="py-2">
+        <Label htmlFor="school-name">School name</Label>
+        <Input id="school-name" defaultValue={school.name} />
+      </div>
     </div>
   );
 }

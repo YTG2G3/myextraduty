@@ -1,5 +1,7 @@
 import prisma from '@/lib/db';
 import getServerSession from '@/lib/get-server-session';
+import { bricolage } from '@/app/fonts';
+import BackButton from '@/components/utils/back-button';
 
 export default async function RoleRoute({
   id,
@@ -12,9 +14,13 @@ export default async function RoleRoute({
 }) {
   let session = await getServerSession();
   let { manager } = await prisma.enrollment.findFirst({
-    where: { userId: session.user.id },
+    where: { userId: session.user.id, schoolId: id },
     select: { manager: true }
   });
+  const owner = await prisma.school.findUnique({
+    where: { id: id, ownerId: session.user.id }
+  });
+  if (owner) manager = true;
 
   // TODO - cache
   let school = await prisma.school.findUnique({ where: { id: id } });
@@ -36,6 +42,17 @@ export default async function RoleRoute({
       <Manager {...{ session, school, tasks, invitations, enrollments }} />
     );
 
-  // TODO - change this into actual 403 error
-  return <>403</>;
+  return (
+    <div className="flex justify-center items-center w-parent h-screen">
+      <div className="flex flex-col items-center gap-4">
+        <span
+          className={`${bricolage.className} text-9xl opacity-40 font-black`}
+        >
+          Unauthorized
+        </span>
+        <span>You don&apos;t have permissions to access this content.</span>
+        <BackButton />
+      </div>
+    </div>
+  );
 }

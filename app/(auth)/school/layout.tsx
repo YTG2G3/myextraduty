@@ -16,6 +16,7 @@ export default async function SchoolLayout({
   let enrollments = await prisma.enrollment.findMany({
     where: { userId: session.user.id }
   });
+
   let schools = await prisma.school.findMany({
     where: { id: { in: enrollments.map((enrollment) => enrollment.schoolId) } }
   });
