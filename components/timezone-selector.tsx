@@ -49,10 +49,9 @@ export function TimezoneSelector({ initialValue, setTimezone }) {
               <CommandItem
                 key={timezone}
                 value={timezone}
-                onSelect={(currentValue) => {
-                  console.log(currentValue);
-                  setValue(currentValue);
-                  setTimezone(currentValue);
+                onSelect={() => {
+                  setValue(timezone);
+                  setTimezone(timezone);
                   setOpen(false);
                 }}
               >
