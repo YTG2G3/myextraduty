@@ -12,13 +12,13 @@ const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    session: async ({ session, token } : { session: any; token: any }) => {
+    session: async ({ session, user } : { session: any; user: any }) => {
       return {
         ...session,
         user: {
           ...session.user,
-          id: token.id,
-          admin: token.admin
+          id: user.id,
+          admin: user.admin
         }
       };
     },
@@ -28,10 +28,6 @@ const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/auth/signin'
-  },
-  session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60,
   },
 };
 
