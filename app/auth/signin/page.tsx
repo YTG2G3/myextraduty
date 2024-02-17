@@ -19,7 +19,6 @@ export default function SignIn() {
         <CardHeader>
           <CardTitle
             className={`${bricolage.className} font-bold text-4xl`}
-            style={{ letterSpacing: '-0.05em' }}
           >
             Welcome Back!
           </CardTitle>

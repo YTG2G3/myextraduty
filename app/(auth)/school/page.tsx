@@ -6,9 +6,6 @@ import getServerSession from '@/lib/get-server-session';
 // TODO - optimize
 export default async function SchoolInit() {
   let session = await getServerSession();
-  if (!session) {
-    redirect('/auth/signin');
-  }
 
   let enrollment = await prisma.enrollment.findFirst({
     where: { userId: session.user.id }

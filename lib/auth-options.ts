@@ -12,24 +12,27 @@ const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    session({ session, user }: { session: any; user: any }) {
+    session: async ({ session, token } : { session: any; token: any }) => {
       return {
         ...session,
         user: {
           ...session.user,
-          id: user.id,
-          admin: user.admin
+          id: token.id,
+          admin: token.admin
         }
       };
-    }
+    },
   },
   theme: {
-    colorScheme: 'light',
-    logo: '/myed_full.png'
+    colorScheme: 'light'
   },
   pages: {
     signIn: '/auth/signin'
-  }
+  },
+  session: {
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60,
+  },
 };
 
 export default authOptions;

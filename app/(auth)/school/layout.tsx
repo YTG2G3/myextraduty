@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation';
 import Nav from './nav';
 import getServerSession from '@/lib/get-server-session';
 import { Suspense } from 'react';
