@@ -61,11 +61,14 @@ export default function Manager({
     e: React.BaseSyntheticEvent
   ) {
     e.preventDefault();
+    const loadingtoast = toast.loading('Updating information...');
 
     let res = await updateSchool(values);
 
-    if (res) router.refresh();
-    else toast.error('Failed to update school.');
+    if (res) {
+      router.refresh();
+      toast.success('School updated.', { id: loadingtoast });
+    } else toast.error('Failed to update school.', { id: loadingtoast });
   }
 
   return (
@@ -75,6 +78,7 @@ export default function Manager({
           <FormField
             control={form.control}
             name="name"
+            disabled={form.formState.isSubmitting}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>School Name</FormLabel>
@@ -91,6 +95,7 @@ export default function Manager({
           <FormField
             control={form.control}
             name="image"
+            disabled={form.formState.isSubmitting}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Logo URL</FormLabel>
@@ -110,6 +115,7 @@ export default function Manager({
           <FormField
             control={form.control}
             name="timezone"
+            disabled={form.formState.isSubmitting}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Timezone</FormLabel>
@@ -131,6 +137,7 @@ export default function Manager({
           <FormField
             control={form.control}
             name="openingAt"
+            disabled={form.formState.isSubmitting}
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Opening At</FormLabel>
@@ -162,6 +169,7 @@ export default function Manager({
           <FormField
             control={form.control}
             name="quota"
+            disabled={form.formState.isSubmitting}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Quota</FormLabel>
@@ -178,6 +186,7 @@ export default function Manager({
           <FormField
             control={form.control}
             name="maxAssigned"
+            disabled={form.formState.isSubmitting}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Max Assigned</FormLabel>
@@ -200,6 +209,7 @@ export default function Manager({
 
                 <FormControl className="!mt-0 ml-3">
                   <Checkbox
+                    disabled={form.formState.isSubmitting}
                     checked={field.value}
                     onCheckedChange={(c: boolean) =>
                       form.setValue('dropEnabled', c)
@@ -212,7 +222,9 @@ export default function Manager({
             )}
           />
 
-          <Button type="submit">Save</Button>
+          <Button type="submit" disabled={form.formState.isSubmitting}>
+            Save
+          </Button>
         </form>
       </Form>
     </HeaderWrapper>

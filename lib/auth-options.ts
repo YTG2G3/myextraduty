@@ -26,6 +26,9 @@ const authOptions: NextAuthOptions = {
   theme: {
     colorScheme: 'light',
     logo: '/myed_full.png'
+  },
+  pages: {
+    signIn: '/auth/signin'
   }
 };
 
