@@ -3,12 +3,11 @@ import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { FormControl } from './form';
 import { Button } from './button';
 import { cn } from '@/lib/utils';
-import { format, parseISO } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from './calendar';
 import { Input } from './input';
 import { Separator } from './separator';
-import buildISOString from '@/lib/build-iso-string';
+import moment from 'moment-timezone';
 
 export default function DateTimePicker({
   timezone,
@@ -19,14 +18,28 @@ export default function DateTimePicker({
   value: string;
   setValue: (d: string) => void;
 }) {
-  let [date, setDate] = useState(new Date());
-  let [time, setTime] = useState(format(new Date(), 'HH:mm'));
+  let [date, setDate] = useState(moment(value).tz(timezone).toDate());
+  let [time, setTime] = useState(moment(value).tz(timezone).format('HH:mm'));
 
-  useEffect(
-    () =>
-      setValue(parseISO(buildISOString(date, time, timezone)).toISOString()),
-    [date, time, setValue, timezone]
-  );
+  useEffect(() => {
+    // setValue(parseISO(buildISOString(date, time, timezone)).toISOString());
+    // setValue(moment(date)))
+    // console.log(buildISOString(date, time, timezone));
+  }, [date, time, setValue, timezone]);
+
+  // Extracts date part after converting local timezone into UTC
+  function getDateString(d: Date) {
+    let iso = moment(d).utc(true).toISOString();
+    return iso.substring(0, iso.indexOf('T'));
+  }
+
+  // Get pure ISO string
+  function getISO(d: Date, t: string) {
+    let m = moment.tz(getDateString(d) + ' ' + t, timezone);
+    console.log(m.toISOString());
+
+    return m.toISOString();
+  }
 
   return (
     <Popover>
@@ -40,9 +53,18 @@ export default function DateTimePicker({
             )}
           >
             {date ? (
-              <p>
-                {format(buildISOString(date, time, timezone), 'PPP hh:mm a')}
-              </p>
+              <div className="flex space-x-2">
+                <p>
+                  {moment(date).format('LL')}{' '}
+                  {moment(time, 'HH:mm').format('hh:mm A')}
+                </p>
+                {Intl.DateTimeFormat().resolvedOptions().timeZone !==
+                timezone ? (
+                  <p className="text-muted-foreground">
+                    ({moment(getISO(date, time)).format('LL hh:mm A')})
+                  </p>
+                ) : undefined}
+              </div>
             ) : (
               <span>Pick a date and time</span>
             )}

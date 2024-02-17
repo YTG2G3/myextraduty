@@ -35,7 +35,7 @@ export default function Advanced() {
   let form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      openingAt: null,
+      openingAt: new Date().toISOString(),
       quota: 4,
       maxAssigned: 10,
       dropEnabled: false

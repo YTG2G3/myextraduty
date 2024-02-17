@@ -3,9 +3,9 @@
 import { bricolage } from '@/app/fonts';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
-import { format } from 'date-fns';
 import { BellElectric } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import moment from 'moment-timezone';
 
 export default function Complete() {
   const router = useRouter();
@@ -43,7 +43,7 @@ export default function Complete() {
             Timezone: <u>{basic.timezone}</u>
           </span>
           <span>
-            Opening At: <u>{format(advanced.openingAt, 'PPP hh:mm a')}</u>
+            Opening At: <u>{moment(advanced.openingAt).format('LLLL')}</u>
           </span>
           <span>
             Quota: <u>{advanced.quota}</u>

@@ -20,7 +20,7 @@ import {
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './hover-card';
 import { Avatar, AvatarFallback, AvatarImage } from './avatar';
 import { CalendarDays, Check, ShieldCheck, X } from 'lucide-react';
-import formatInt from '@/lib/formatInt';
+import moment from 'moment-timezone';
 
 export default function InvitationDialog({
   loadData,
@@ -115,7 +115,8 @@ export default function InvitationDialog({
                           <div className="flex items-center pt-2">
                             <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{' '}
                             <span className="text-xs text-muted-foreground">
-                              Invited {formatInt(invitations[i].createdAt)}
+                              Invited{' '}
+                              {moment(invitations[i].createdAt).format('LL')}
                             </span>
                           </div>
                         </div>

@@ -35,6 +35,10 @@ NEXTAUTH_SECRET: JWT Secret
 NEXTAUTH_URL: Redirection URL
 ```
 
+### Considerations
+
+- **Branches**: `main` is the stable branch, `development` is the development branch.
+
 ## Acknowledgements
 
 - [Taeksoo Kwon](https://github.com/YTG2G3), Class of 2024, the head developer
