@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint && prettier --write .",
+    "lint": "next lint --fix && prettier --write .",
     "postinstall": "prisma generate",
     "prepare": "husky"
   },
@@ -63,5 +63,13 @@
     "prisma": "^5.9.1",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "*": "npm run lint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npx lint-staged"
+    }
   }
 }
