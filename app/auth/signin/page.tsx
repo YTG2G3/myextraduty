@@ -17,9 +17,7 @@ export default function SignIn() {
     <div className="flex items-center justify-center w-screen h-screen">
       <Card className="w-80">
         <CardHeader>
-          <CardTitle
-            className={`${bricolage.className} font-bold text-4xl`}
-          >
+          <CardTitle className={`${bricolage.className} font-bold text-4xl`}>
             Welcome Back!
           </CardTitle>
           <CardDescription>Sign in to access MyED.</CardDescription>

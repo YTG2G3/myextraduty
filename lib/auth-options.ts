@@ -12,7 +12,7 @@ const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    session: async ({ session, user } : { session: any; user: any }) => {
+    session: async ({ session, user }: { session: any; user: any }) => {
       return {
         ...session,
         user: {
@@ -21,14 +21,14 @@ const authOptions: NextAuthOptions = {
           admin: user.admin
         }
       };
-    },
+    }
   },
   theme: {
     colorScheme: 'light'
   },
   pages: {
     signIn: '/auth/signin'
-  },
+  }
 };
 
 export default authOptions;

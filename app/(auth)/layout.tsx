@@ -14,7 +14,7 @@ export default async function AuthLayout({
 }>) {
   let session = await getServerSession();
   if (!session) {
-    toast.error('You have to sign in first.')
+    toast.error('You have to sign in first.');
     redirect('/auth/signin');
   }
 
