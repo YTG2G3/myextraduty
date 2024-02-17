@@ -66,10 +66,5 @@
   },
   "lint-staged": {
     "*": "npm run lint"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npx lint-staged"
-    }
   }
 }
