@@ -3,6 +3,7 @@ import InvitationDialog from '../../components/ui/invitation-dialog';
 import getServerSession from '@/lib/get-server-session';
 import AuthProvider from './auth-provider';
 import { Suspense } from 'react';
+import { redirect } from 'next/navigation';
 
 // TODO - alert feature as sonner
 export default async function AuthLayout({
@@ -11,6 +12,7 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }>) {
   let session = await getServerSession();
+  if (!session) redirect('/auth/signin');
 
   // Check if there are any invitations
   async function loadData() {
