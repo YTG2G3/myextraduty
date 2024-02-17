@@ -19,6 +19,9 @@ import {
 import DateTimePicker from '@/components/ui/date-time-picker';
 import { Checkbox } from '@/components/ui/checkbox';
 import { TimezoneSelector } from '@/components/ui/timezone-selector';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { useRouter } from 'next/router';
 
 const formSchema = z.object({
   timezone: z.string().min(1),
@@ -32,18 +35,14 @@ const formSchema = z.object({
 
 // TODO - settings
 export default function Manager({
-  session,
   school,
-  tasks,
-  invitations,
-  enrollments
+  updateSchool
 }: {
-  session: AuthSession;
   school: School;
-  tasks: Task[];
-  invitations: Invitation[];
-  enrollments: Enrollment[];
+  updateSchool: Function;
 }) {
+  let router = useRouter();
+
   let form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,14 +56,16 @@ export default function Manager({
     }
   });
 
-  function onSubmit(
+  async function onSubmit(
     values: z.infer<typeof formSchema>,
     e: React.BaseSyntheticEvent
   ) {
     e.preventDefault();
 
-    // sessionStorage.setItem('advanced', JSON.stringify(values));
-    // router.push('/school/new/complete');
+    let res = await updateSchool(values);
+
+    if (res) router.reload();
+    else toast.error('Failed to update school.');
   }
 
   return (
@@ -210,6 +211,8 @@ export default function Manager({
               </FormItem>
             )}
           />
+
+          <Button type="submit">Save</Button>
         </form>
       </Form>
     </HeaderWrapper>

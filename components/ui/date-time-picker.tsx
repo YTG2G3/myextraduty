@@ -21,11 +21,7 @@ export default function DateTimePicker({
   let [date, setDate] = useState(moment(value).tz(timezone).toDate());
   let [time, setTime] = useState(moment(value).tz(timezone).format('HH:mm'));
 
-  useEffect(() => {
-    // setValue(parseISO(buildISOString(date, time, timezone)).toISOString());
-    // setValue(moment(date)))
-    // console.log(buildISOString(date, time, timezone));
-  }, [date, time, setValue, timezone]);
+  useEffect(() => setValue(getISO(date, time)), [date, time, setValue, getISO]);
 
   // Extracts date part after converting local timezone into UTC
   function getDateString(d: Date) {
@@ -36,8 +32,6 @@ export default function DateTimePicker({
   // Get pure ISO string
   function getISO(d: Date, t: string) {
     let m = moment.tz(getDateString(d) + ' ' + t, timezone);
-    console.log(m.toISOString());
-
     return m.toISOString();
   }
 

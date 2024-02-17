@@ -6,11 +6,13 @@ import BackButton from '@/components/utils/back-button';
 export default async function RoleRoute({
   id,
   user: User,
-  manager: Manager
+  manager: Manager,
+  ...params
 }: {
   id: string;
   user: any;
   manager: any;
+  [key: string]: any; // TODO - is this dark magic?
 }) {
   let session = await getServerSession();
   let { manager } = await prisma.enrollment.findFirst({
@@ -27,7 +29,7 @@ export default async function RoleRoute({
   let tasks = await prisma.task.findMany({ where: { schoolId: id } });
 
   if ((manager && !Manager) || (!manager && User))
-    return <User {...{ session, school, tasks }} />;
+    return <User {...{ session, school, tasks, ...params }} />;
 
   // TODO - cache
   let invitations = manager
@@ -39,7 +41,9 @@ export default async function RoleRoute({
 
   if (manager)
     return (
-      <Manager {...{ session, school, tasks, invitations, enrollments }} />
+      <Manager
+        {...{ session, school, tasks, invitations, enrollments, ...params }}
+      />
     );
 
   return (
