@@ -8,11 +8,10 @@ import {
   ChevronRight,
   RefreshCw
 } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useContext, useState } from 'react';
 import { FormContext } from './form-ref-provider';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 
 export default function Nav({
   complete: actionComplete

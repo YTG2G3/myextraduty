@@ -19,9 +19,11 @@ import {
 } from '@/components/ui/navigation-menu';
 import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
-import oauthSignIn from '@/lib/oauth-sign-in';
+import { useRouter } from 'next/navigation';
 
 export default function Nav({ authed }: { authed: boolean }) {
+  const router = useRouter();
+
   return (
     <nav
       className="z-20 fixed top-0 grid w-screen px-7 py-4 bg-white bg-opacity-80"
@@ -140,7 +142,7 @@ export default function Nav({ authed }: { authed: boolean }) {
         </div>
       ) : (
         <div className="flex justify-end">
-          <Button onClick={() => oauthSignIn()}>Sign In</Button>
+          <Button onClick={() => router.push('/auth/signin')}>Sign In</Button>
         </div>
       )}
     </nav>

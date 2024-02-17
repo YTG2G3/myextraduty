@@ -9,9 +9,6 @@ export default async function SchoolLayout({
   children: React.ReactNode;
 }>) {
   let session = await getServerSession();
-  if (!session) {
-    redirect('/auth/signin');
-  }
 
   let enrollments = await prisma.enrollment.findMany({
     where: { userId: session.user.id }
