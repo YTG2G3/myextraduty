@@ -28,10 +28,13 @@ export default function DateTimePicker({
   }, []);
 
   // Get pure ISO string
-  const getISO = useCallback((d: Date, t: string) => {
-    let m = moment.tz(getDateString(d) + ' ' + t, timezone);
-    return m.toISOString();
-  }, [timezone, getDateString]);
+  const getISO = useCallback(
+    (d: Date, t: string) => {
+      let m = moment.tz(getDateString(d) + ' ' + t, timezone);
+      return m.toISOString();
+    },
+    [timezone, getDateString]
+  );
 
   useEffect(() => setValue(getISO(date, time)), [date, time, setValue, getISO]);
 
