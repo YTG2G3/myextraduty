@@ -21,7 +21,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { TimezoneSelector } from '@/components/ui/timezone-selector';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   timezone: z.string().min(1),
@@ -64,7 +64,7 @@ export default function Manager({
 
     let res = await updateSchool(values);
 
-    if (res) router.reload();
+    if (res) router.refresh();
     else toast.error('Failed to update school.');
   }
 
