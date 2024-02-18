@@ -12,7 +12,7 @@ const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    session({ session, user }: { session: any; user: any }) {
+    session: async ({ session, user }: { session: any; user: any }) => {
       return {
         ...session,
         user: {
@@ -24,8 +24,10 @@ const authOptions: NextAuthOptions = {
     }
   },
   theme: {
-    colorScheme: 'light',
-    logo: '/myed_full.png'
+    colorScheme: 'light'
+  },
+  pages: {
+    signIn: '/auth/signin'
   }
 };
 

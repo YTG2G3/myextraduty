@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { FormControl } from './form';
 import { Button } from './button';
@@ -21,19 +21,22 @@ export default function DateTimePicker({
   let [date, setDate] = useState(moment(value).tz(timezone).toDate());
   let [time, setTime] = useState(moment(value).tz(timezone).format('HH:mm'));
 
-  useEffect(() => setValue(getISO(date, time)), [date, time, setValue, getISO]);
-
   // Extracts date part after converting local timezone into UTC
-  function getDateString(d: Date) {
+  const getDateString = useCallback((d: Date) => {
     let iso = moment(d).utc(true).toISOString();
     return iso.substring(0, iso.indexOf('T'));
-  }
+  }, []);
 
   // Get pure ISO string
-  function getISO(d: Date, t: string) {
-    let m = moment.tz(getDateString(d) + ' ' + t, timezone);
-    return m.toISOString();
-  }
+  const getISO = useCallback(
+    (d: Date, t: string) => {
+      let m = moment.tz(getDateString(d) + ' ' + t, timezone);
+      return m.toISOString();
+    },
+    [timezone, getDateString]
+  );
+
+  useEffect(() => setValue(getISO(date, time)), [date, time, setValue, getISO]);
 
   return (
     <Popover>

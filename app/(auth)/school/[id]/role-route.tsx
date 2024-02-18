@@ -47,7 +47,7 @@ export default async function RoleRoute({
     );
 
   return (
-    <div className="flex justify-center items-center w-parent h-screen">
+    <div className="flex justify-center items-center w-full h-screen">
       <div className="flex flex-col items-center gap-4">
         <span
           className={`${bricolage.className} text-9xl opacity-40 font-black`}

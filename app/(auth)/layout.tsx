@@ -1,9 +1,10 @@
 import prisma from '@/lib/db';
 import InvitationDialog from '../../components/ui/invitation-dialog';
 import getServerSession from '@/lib/get-server-session';
-import Login from '@/components/utils/login';
 import AuthProvider from './auth-provider';
 import { Suspense } from 'react';
+import { redirect } from 'next/navigation';
+import { toast } from 'sonner';
 
 // TODO - alert feature as sonner
 export default async function AuthLayout({
@@ -12,7 +13,10 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }>) {
   let session = await getServerSession();
-  if (!session) return <Login />;
+  if (!session) {
+    toast.error('You have to sign in first.');
+    redirect('/auth/signin');
+  }
 
   // Check if there are any invitations
   async function loadData() {
