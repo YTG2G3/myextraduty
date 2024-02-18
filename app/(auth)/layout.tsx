@@ -18,6 +18,20 @@ export default async function AuthLayout({
   async function loadData() {
     'use server';
 
+    // TODO - they have to be ordered properly. the commented code below is sample code to do it.
+    // let data = await prisma.invitation.findMany({
+    //   where: { email: session.user.email }
+    // }).then(invitations => {
+    //   return Promise.all(invitations.map(invitation =>
+    //     prisma.school.findUnique({
+    //       where: { id: invitation.schoolId }
+    //     }).then(school =>
+    //       prisma.user.findUnique({
+    //         where: { id: school.ownerId }
+    //       }).then(owner => ({ invitation, school, owner }))
+    //     )
+    //   ));
+    // });
     let invitations = await prisma.invitation.findMany({
       where: { email: session.user.email }
     });
