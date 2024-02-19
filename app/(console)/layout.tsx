@@ -1,5 +1,5 @@
 import prisma from '@/lib/db';
-import InvitationDialog from '@/components/ui/invitation-dialog';
+import InvitationDialog from '@/components/utils/invitation-dialog';
 import getServerSession from '@/lib/get-server-session';
 import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
@@ -65,5 +65,11 @@ export default async function AuthLayout({
   //   prisma.invitation.delete({ where: { id } });
   // }
 
-  return <>{children}</>;
+  return (
+    <>
+      <InvitationDialog />
+
+      {children}
+    </>
+  );
 }

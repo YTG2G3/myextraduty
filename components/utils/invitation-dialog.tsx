@@ -8,21 +8,28 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from './alert-dialog';
+} from '../ui/alert-dialog';
 import { useEffect, useState } from 'react';
-import { Button } from './button';
+import { Button } from '../ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
-} from './tooltip';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from './hover-card';
-import { Avatar, AvatarFallback, AvatarImage } from './avatar';
+} from '../ui/tooltip';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger
+} from '../ui/hover-card';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { CalendarDays, Check, ShieldCheck, X } from 'lucide-react';
 import moment from 'moment-timezone';
+import useClientSession from '@/lib/use-client-session';
+import { toast } from 'sonner';
 
 export default function InvitationDialog() {
+  let session = useClientSession();
   let [isOpen, setIsOpen] = useState(false);
 
   let [invitations, setInvitations] = useState<Invitation[]>(undefined);
@@ -32,14 +39,16 @@ export default function InvitationDialog() {
   let [decided, setDecided] = useState<boolean[]>(undefined);
 
   async function load() {
-    let { invitations, schools, owners } = await loadData();
+    let { invitation, school, owner } = await (
+      await fetch('/invitation/' + session.user.email)
+    ).json();
 
     if (invitations.length > 0) setIsOpen(true);
     else setIsOpen(false);
 
-    setInvitations(invitations);
-    setSchools(schools);
-    setOwners(owners);
+    setInvitations(invitation);
+    setSchools(school);
+    setOwners(owner);
 
     setDecided(invitations.map(() => false));
   }
@@ -49,14 +58,17 @@ export default function InvitationDialog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function clientDecide(index: number, accept: boolean) {
-    setDecided(decided.map((d, i) => (i === index ? true : d)));
-    decide(
-      invitations[index].id,
-      schools[index].id,
-      invitations[index].manager,
-      accept
-    );
+  // TODO - disable the buttons and loading
+  async function clientDecide(index: number, accept: boolean) {
+    let res = await (
+      await fetch('/invitation', {
+        method: 'POST',
+        body: JSON.stringify({ id: invitations[index].id, accept })
+      })
+    ).json();
+
+    if (res.error) toast.error(res.error);
+    else setDecided(decided.map((d, i) => (i === index ? true : d)));
   }
 
   // TODO - loading
