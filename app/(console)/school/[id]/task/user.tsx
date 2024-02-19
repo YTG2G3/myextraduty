@@ -1,7 +1,7 @@
 'use client';
 
 import AuthSession from '@/lib/auth-session';
-import { School, Task } from '@prisma/client';
+import { School, Task } from '@/prisma/client';
 import { useState } from 'react';
 
 export default function User({

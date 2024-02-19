@@ -1,5 +1,5 @@
 import AuthSession from '@/lib/auth-session';
-import { Enrollment, Invitation, School, Task } from '@prisma/client';
+import { Enrollment, Invitation, School, Task } from '@/prisma/client';
 
 // TODO - reports
 export default function Manager({

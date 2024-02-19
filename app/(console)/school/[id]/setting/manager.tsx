@@ -14,8 +14,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { TimezoneSelector } from '@/components/ui/timezone-selector';
+import { School } from '@/prisma/client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { School } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';

@@ -1,7 +1,7 @@
 'use client';
 
 import useClientSession from '@/lib/use-client-session';
-import { Invitation, School, User } from '@prisma/client';
+import { Invitation, School, User } from '@/prisma/client';
 import { CalendarDays, Check, ShieldCheck, X } from 'lucide-react';
 import moment from 'moment-timezone';
 import { useEffect, useState } from 'react';

@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/command';
 import AuthSession from '@/lib/auth-session';
 import { cn } from '@/lib/utils';
-import { Enrollment, Invitation, School, Task } from '@prisma/client';
+import { Enrollment, Invitation, School, Task } from '@/prisma/client';
 import { Check } from 'lucide-react';
 import { useState } from 'react';
 import HeaderWrapper from '../header-wrapper';

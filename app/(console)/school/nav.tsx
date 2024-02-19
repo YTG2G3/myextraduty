@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/select';
 import boardingSteps from '@/lib/boarding-steps';
 import useClientSession from '@/lib/use-client-session';
-import { Enrollment, School } from '@prisma/client';
+import { Enrollment, School } from '@/prisma/client';
 import { Separator } from '@radix-ui/react-separator';
 import Link from 'next/link';
 import { useParams, usePathname, useRouter } from 'next/navigation';

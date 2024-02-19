@@ -1,5 +1,5 @@
 import AuthSession from '@/lib/auth-session';
-import { School, Task } from '@prisma/client';
+import { School, Task } from '@/prisma/client';
 
 // TODO - show upcoming events (calendar view too) and alerts
 export default function User({

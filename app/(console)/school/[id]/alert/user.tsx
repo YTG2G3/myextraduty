@@ -1,5 +1,5 @@
 import AuthSession from '@/lib/auth-session';
-import { School, Task } from '@prisma/client';
+import { School, Task } from '@/prisma/client';
 
 // TODO - stacked alerts
 export default function User({
