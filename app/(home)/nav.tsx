@@ -142,7 +142,7 @@ export default function Nav({ authed }: { authed: boolean }) {
         </div>
       ) : (
         <div className="flex justify-end">
-          <Button onClick={() => router.push('/auth/signin')}>Sign In</Button>
+          <Button onClick={() => router.push('/login')}>Sign In</Button>
         </div>
       )}
     </nav>
