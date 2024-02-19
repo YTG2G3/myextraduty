@@ -18,7 +18,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@prisma": ["./prisma/index"]
     },
     "strictNullChecks": false,
     "noImplicitAny": false

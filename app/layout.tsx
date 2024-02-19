@@ -1,8 +1,8 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { bricolage, inter } from '../lib/fonts';
-import RootProvider from '../components/utils/root-provider';
+import RootProvider from '@/components/utils/root-provider';
+import { bricolage, inter } from '@/lib/fonts';
 import getServerSession from '@/lib/get-server-session';
+import type { Metadata } from 'next';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'MyExtraDuty',
