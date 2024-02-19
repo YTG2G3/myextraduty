@@ -1,10 +1,5 @@
 'use client';
 
-import AuthSession from '@/lib/auth-session';
-import { Enrollment, Invitation, School, Task } from '@prisma/client';
-import HeaderWrapper from '../header-wrapper';
-import { useState } from 'react';
-import { Input } from '@/components/ui/input';
 import {
   Command,
   CommandEmpty,
@@ -12,8 +7,12 @@ import {
   CommandInput,
   CommandItem
 } from '@/components/ui/command';
-import { Check } from 'lucide-react';
+import AuthSession from '@/lib/auth-session';
 import { cn } from '@/lib/utils';
+import { Enrollment, Invitation, School, Task } from '@prisma/client';
+import { Check } from 'lucide-react';
+import { useState } from 'react';
+import HeaderWrapper from '../header-wrapper';
 
 // TODO - manage members
 export default function Manager({

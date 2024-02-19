@@ -16,7 +16,7 @@ import useClientSession from '@/lib/use-client-session';
 import { Enrollment, School } from '@prisma/client';
 import { Separator } from '@radix-ui/react-separator';
 import Link from 'next/link';
-import { useParams, useRouter, usePathname } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 // TODO - prettier margin for navigator and fix avatar weird margin, add a logout button

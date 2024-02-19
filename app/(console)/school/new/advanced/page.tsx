@@ -1,8 +1,7 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { Checkbox } from '@/components/ui/checkbox';
+import DateTimePicker from '@/components/ui/date-time-picker';
 import {
   Form,
   FormControl,
@@ -13,11 +12,12 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useContext, useEffect, useState } from 'react';
-import { FormContext } from '../form-ref-provider';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { Checkbox } from '@/components/ui/checkbox';
-import DateTimePicker from '@/components/ui/date-time-picker';
+import { useContext, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { FormContext } from '../form-ref-provider';
 
 const formSchema = z.object({
   openingAt: z.string().datetime(),

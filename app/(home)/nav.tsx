@@ -1,7 +1,7 @@
 'use client';
 
-import * as React from 'react';
 import Link from 'next/link';
+import * as React from 'react';
 
 // Imported the menu and viewport separately due to a bug with centering (left-0)
 import {
@@ -9,6 +9,7 @@ import {
   NavigationMenuViewport
 } from '@radix-ui/react-navigation-menu';
 
+import { Button } from '@/components/ui/button';
 import {
   NavigationMenuContent,
   NavigationMenuItem,
@@ -17,10 +18,9 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu';
-import { signOut } from 'next-auth/react';
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
 import useClientSession from '@/lib/use-client-session';
+import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function Nav() {
   let authed = !!useClientSession(false);

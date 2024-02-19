@@ -1,6 +1,6 @@
-import Nav from './nav';
 import getServerSession from '@/lib/get-server-session';
 import { Suspense } from 'react';
+import Nav from './nav';
 
 export default async function SchoolLayout({
   children

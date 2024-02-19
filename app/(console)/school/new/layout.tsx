@@ -1,8 +1,8 @@
+import prisma from '@/lib/db';
 import getServerSession from '@/lib/get-server-session';
+import { Suspense } from 'react';
 import FormRefProvider from './form-ref-provider';
 import Nav from './nav';
-import prisma from '@/lib/db';
-import { Suspense } from 'react';
 
 export default async function NewSchoolLayout({
   children

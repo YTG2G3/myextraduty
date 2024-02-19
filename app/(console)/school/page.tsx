@@ -1,7 +1,7 @@
-import Redirect from './redirect';
 import prisma from '@/lib/db';
-import { redirect } from 'next/navigation';
 import getServerSession from '@/lib/get-server-session';
+import { redirect } from 'next/navigation';
+import Redirect from './redirect';
 
 // TODO - optimize
 export default async function SchoolInit() {

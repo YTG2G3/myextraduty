@@ -1,8 +1,5 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import {
   Form,
   FormControl,
@@ -12,10 +9,13 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useContext, useEffect } from 'react';
-import { FormContext } from '../form-ref-provider';
-import { useRouter } from 'next/navigation';
 import { TimezoneSelector } from '@/components/ui/timezone-selector';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useContext, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { FormContext } from '../form-ref-provider';
 
 const formSchema = z.object({
   timezone: z.string().min(1),

@@ -1,7 +1,7 @@
+import { getServerSession as _getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import authOptions from './auth-options';
 import AuthSession from './auth-session';
-import { getServerSession as _getServerSession } from 'next-auth';
 
 export default async function getServerSession(checkAuth = true) {
   let session = await _getServerSession(authOptions);

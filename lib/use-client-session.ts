@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react';
-import AuthSession from './auth-session';
 import { useRouter } from 'next/navigation';
+import AuthSession from './auth-session';
 
 export default function useClientSession(checkAuth = true) {
   let router = useRouter();

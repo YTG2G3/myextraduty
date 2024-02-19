@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import { cn } from '@/lib/utils';
+import moment from 'moment-timezone';
 import { Button } from './button';
 import {
   Command,
@@ -13,7 +14,6 @@ import {
   CommandItem
 } from './command';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
-import moment from 'moment-timezone';
 
 const timezones = moment.tz.names();
 

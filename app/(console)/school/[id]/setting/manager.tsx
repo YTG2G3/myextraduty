@@ -1,12 +1,8 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
-import AuthSession from '@/lib/auth-session';
-import { Enrollment, Invitation, School, Task } from '@prisma/client';
-import HeaderWrapper from '../header-wrapper';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import DateTimePicker from '@/components/ui/date-time-picker';
 import {
   Form,
   FormControl,
@@ -16,12 +12,15 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import DateTimePicker from '@/components/ui/date-time-picker';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { TimezoneSelector } from '@/components/ui/timezone-selector';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { School } from '@prisma/client';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import HeaderWrapper from '../header-wrapper';
 
 const formSchema = z.object({
   timezone: z.string().min(1),

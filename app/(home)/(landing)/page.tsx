@@ -1,5 +1,5 @@
-import Hero from './hero';
 import ContentProduct from './content-product';
+import Hero from './hero';
 
 // TODO
 export default async function Landing() {

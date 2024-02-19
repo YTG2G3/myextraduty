@@ -1,5 +1,5 @@
 import authRoute from '@/lib/auth-route';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 // Get enrollments and schools of user
 export function GET({ id }: { id: string }) {

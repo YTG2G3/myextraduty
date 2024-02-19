@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import AuthSession from './auth-session';
 import getServerSession from './get-server-session';
 

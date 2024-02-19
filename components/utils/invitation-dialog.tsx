@@ -1,6 +1,11 @@
 'use client';
 
+import useClientSession from '@/lib/use-client-session';
 import { Invitation, School, User } from '@prisma/client';
+import { CalendarDays, Check, ShieldCheck, X } from 'lucide-react';
+import moment from 'moment-timezone';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -9,24 +14,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '../ui/alert-dialog';
-import { useEffect, useState } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger
+} from '../ui/hover-card';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
 } from '../ui/tooltip';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger
-} from '../ui/hover-card';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { CalendarDays, Check, ShieldCheck, X } from 'lucide-react';
-import moment from 'moment-timezone';
-import useClientSession from '@/lib/use-client-session';
-import { toast } from 'sonner';
 
 export default function InvitationDialog() {
   let session = useClientSession();

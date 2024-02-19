@@ -1,10 +1,10 @@
 'use client';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useRouter } from 'next/navigation';
 import { BellElectric } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import moment from 'moment-timezone';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function Complete() {
   const router = useRouter();

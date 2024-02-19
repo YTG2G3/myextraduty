@@ -1,6 +1,6 @@
+import BackButton from '@/components/utils/back-button';
 import prisma from '@/lib/db';
 import getServerSession from '@/lib/get-server-session';
-import BackButton from '@/components/utils/back-button';
 
 export default async function RoleRoute({
   id,

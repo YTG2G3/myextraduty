@@ -1,6 +1,6 @@
+import prisma from '@/lib/db';
 import RoleRoute from '../role-route';
 import Manager from './manager';
-import prisma from '@/lib/db';
 
 export default async function Setting({ params }: { params: { id: string } }) {
   async function updateSchool(values) {

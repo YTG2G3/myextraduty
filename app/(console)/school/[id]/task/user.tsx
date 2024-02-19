@@ -1,6 +1,5 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
 import AuthSession from '@/lib/auth-session';
 import { School, Task } from '@prisma/client';
 import { useState } from 'react';

@@ -1,8 +1,5 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import {
   Form,
   FormControl,
@@ -12,9 +9,12 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useContext, useEffect } from 'react';
-import { FormContext } from '../form-ref-provider';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
+import { useContext, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { FormContext } from '../form-ref-provider';
 
 // TODO - this page is for selecting a stripe plan and registering credit card. when developing the stripe part, remove the placeholder
 // Collecte plan, billing address, etc needed to create a stripe customerId and save it in 'plan' session storage

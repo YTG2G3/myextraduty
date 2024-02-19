@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/db';
 import authRoute from '@/lib/auth-route';
+import prisma from '@/lib/db';
+import { NextRequest, NextResponse } from 'next/server';
 
 // Get all invitations for this email
 export default async function GET(
