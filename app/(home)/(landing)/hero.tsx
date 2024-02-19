@@ -2,10 +2,10 @@ import { ChevronsDown, MousePointer } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <div className="w-full h-screen flex justify-center items-center flex-col relative">
+    <div className="relative flex h-screen w-full flex-col items-center justify-center">
       <div className="flex items-center sm:flex-col md:flex-col lg:flex-row ">
         <p
-          className={`font-extrabold text-7xl mb-3 text-center mr-3 font-grotesque`}
+          className={`mb-3 mr-3 text-center font-grotesque text-7xl font-extrabold`}
         >
           As simple as clicking a button
         </p>

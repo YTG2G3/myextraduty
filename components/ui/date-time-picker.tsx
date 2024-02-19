@@ -87,7 +87,7 @@ export default function DateTimePicker({
 
         <Input
           type="time"
-          className="bg-transparent border-0 focus-visible:ring-offset-0 focus-visible:ring-0"
+          className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
           value={time}
           onChange={(e: any) => setTime(e.target.value)}
         />

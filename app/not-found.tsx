@@ -7,10 +7,10 @@ import { useRouter } from 'next/navigation';
 export default function FourOFour() {
   const router = useRouter();
   return (
-    <div className="flex justify-center items-center w-screen h-screen">
+    <div className="flex h-screen w-screen items-center justify-center">
       <div className="flex flex-col items-center gap-4">
         <span
-          className={`${bricolage.className} text-9xl opacity-40 font-black`}
+          className={`${bricolage.className} text-9xl font-black opacity-40`}
         >
           404
         </span>

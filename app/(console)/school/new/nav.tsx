@@ -65,14 +65,14 @@ export default function Nav({
 
   if (index === 0)
     return (
-      <nav className="flex justify-end mt-8">
+      <nav className="mt-8 flex justify-end">
         <NextBtn next={next} />
       </nav>
     );
 
   if (index < boardingSteps.length - 1)
     return (
-      <nav className="flex justify-between mt-8">
+      <nav className="mt-8 flex justify-between">
         <PrevBtn previous={previous} />
         <NextBtn next={next} />
       </nav>
@@ -80,7 +80,7 @@ export default function Nav({
 
   if (index === boardingSteps.length - 1)
     return (
-      <nav className="flex justify-center mt-8">
+      <nav className="mt-8 flex justify-center">
         <CompBtn loading={loading} complete={complete} />
       </nav>
     );

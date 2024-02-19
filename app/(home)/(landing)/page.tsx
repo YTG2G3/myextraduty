@@ -4,7 +4,7 @@ import ContentProduct from './content-product';
 // TODO
 export default async function Landing() {
   return (
-    <main className="no-scrollbar overflow-y-auto w-screen h-screen">
+    <main className="no-scrollbar h-screen w-screen overflow-y-auto">
       <Hero />
 
       <ContentProduct />

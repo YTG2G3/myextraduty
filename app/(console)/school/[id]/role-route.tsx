@@ -47,10 +47,10 @@ export default async function RoleRoute({
     );
 
   return (
-    <div className="flex justify-center items-center w-full h-screen">
+    <div className="flex h-screen w-full items-center justify-center">
       <div className="flex flex-col items-center gap-4">
         <span
-          className={`${bricolage.className} text-9xl opacity-40 font-black`}
+          className={`${bricolage.className} text-9xl font-black opacity-40`}
         >
           Unauthorized
         </span>

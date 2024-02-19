@@ -44,7 +44,7 @@ export default function Nav({
 
   return (
     <nav
-      className="w-72 grid bg-gray-800 h-screen p-6 gap-2"
+      className="grid h-screen w-72 gap-2 bg-gray-800 p-6"
       style={{ gridTemplateRows: 'auto auto 1fr auto' }}
     >
       <Select value={selectValue} onValueChange={update}>
@@ -113,8 +113,8 @@ export default function Nav({
 
           {enrollments.find((e) => e.schoolId === params.id).manager ? (
             <>
-              <Separator className="bg-white h-[2px] opacity-15" />
-              <p className="text-center text-muted-foreground text-sm mt-2 mb-4">
+              <Separator className="h-[2px] bg-white opacity-15" />
+              <p className="mb-4 mt-2 text-center text-sm text-muted-foreground">
                 Manager Only
               </p>
 
@@ -134,15 +134,15 @@ export default function Nav({
         </div>
       )}
 
-      <div className="flex justify-center items-center overflow-hidden">
+      <div className="flex items-center justify-center overflow-hidden">
         <Avatar>
           <AvatarImage src={session.user.image} />
           <AvatarFallback>{session.user.name}</AvatarFallback>
         </Avatar>
 
-        <div className="text-white ml-3 overflow-hidden">
+        <div className="ml-3 overflow-hidden text-white">
           <p className="truncate">{session.user.name}</p>
-          <p className="truncate text-muted-foreground text-sm">
+          <p className="truncate text-sm text-muted-foreground">
             {session.user.email}
           </p>
         </div>
@@ -162,7 +162,7 @@ function NavItem({ to, children }: { to: string; children: React.ReactNode }) {
     <Button
       asChild
       variant="ghost"
-      className={`text-white mb-3 ${path === to ? 'bg-white text-foreground font-bold' : 'font-normal'}`}
+      className={`mb-3 text-white ${path === to ? 'bg-white font-bold text-foreground' : 'font-normal'}`}
     >
       <Link href={`${pathway}/${to}`}>{children}</Link>
     </Button>
@@ -182,7 +182,7 @@ function StepItem({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center">
       <p
-        className={`select-none text-lg flex justify-center items-center border-2 w-8 h-8 rounded-full ${index_path >= index_to ? 'text-white border-solid border-white' : 'text-muted-foreground border-dotted border-muted-foreground'}`}
+        className={`flex h-8 w-8 select-none items-center justify-center rounded-full border-2 text-lg ${index_path >= index_to ? 'border-solid border-white text-white' : 'border-dotted border-muted-foreground text-muted-foreground'}`}
       >
         {index_to}
       </p>

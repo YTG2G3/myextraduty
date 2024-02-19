@@ -18,9 +18,9 @@ export default async function SchoolLayout({
   });
 
   return (
-    <div className="w-screen h-screen flex">
+    <div className="flex h-screen w-screen">
       <Nav schools={schools} enrollments={enrollments} />
-      <main className="w-[calc(100%-288px)] h-full">
+      <main className="h-full w-[calc(100%-288px)]">
         <Suspense>{children}</Suspense>
       </main>
     </div>

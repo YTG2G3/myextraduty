@@ -102,7 +102,7 @@ export default function InvitationDialog({
                         </Avatar>
 
                         <div className="space-y-1">
-                          <h4 className="text-sm w-36 font-semibold overflow-hidden truncate">
+                          <h4 className="w-36 overflow-hidden truncate text-sm font-semibold">
                             {school.name}
                           </h4>
 

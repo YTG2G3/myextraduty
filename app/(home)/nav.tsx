@@ -26,19 +26,19 @@ export default function Nav({ authed }: { authed: boolean }) {
 
   return (
     <nav
-      className="z-20 fixed top-0 grid w-screen px-7 py-4 bg-white bg-opacity-80"
+      className="fixed top-0 z-20 grid w-screen bg-white bg-opacity-80 px-7 py-4"
       style={{ gridTemplateColumns: ' 1fr 1fr 1fr' }}
     >
       <Link href="/">
         <p
           style={{ letterSpacing: '-0.05em' }}
-          className="select-none font-grotesque font-extrabold text-4xl"
+          className="select-none font-grotesque text-4xl font-extrabold"
         >
           MyED
         </p>
       </Link>
 
-      <NavigationMenu className="relative z-10 flex max-w-screen flex-1 items-center justify-center">
+      <NavigationMenu className="max-w-screen relative z-10 flex flex-1 items-center justify-center">
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuTrigger className="!bg-transparent">
@@ -52,7 +52,7 @@ export default function Nav({ authed }: { authed: boolean }) {
                       className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                       href="/"
                     >
-                      <div className="select-none mb-2 mt-4 text-lg font-grotesque font-extrabold">
+                      <div className="mb-2 mt-4 select-none font-grotesque text-lg font-extrabold">
                         MyED
                       </div>
                       <p className="text-sm leading-tight text-muted-foreground">

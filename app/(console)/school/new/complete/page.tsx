@@ -30,14 +30,14 @@ export default function Complete() {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="text-3xl flex space-x-2 items-center">
+      <div className="flex items-center space-x-2 text-3xl">
         <p>Review</p>
         <b className={`${bricolage.className}`}>{basic.name}</b>
         <p>before completion</p>
-        <BellElectric className="w-8 h-8" />
+        <BellElectric className="h-8 w-8" />
       </div>
 
-      <div className="flex space-x-8 items-center mt-8">
+      <div className="mt-8 flex items-center space-x-8">
         <div className="flex flex-col leading-loose">
           <span>
             Timezone: <u>{basic.timezone}</u>
@@ -59,7 +59,7 @@ export default function Complete() {
           </span>
         </div>
 
-        <Avatar className="w-36 h-36 border">
+        <Avatar className="h-36 w-36 border">
           <AvatarImage src={basic.image} />
           <AvatarFallback>
             <div className="text-center">Avatar not available</div>

@@ -8,14 +8,14 @@ export default function Hero({
   description: string;
 }) {
   return (
-    <div className="w-full flex justify-center items-center flex-col mt-36">
-      <p className={`font-extrabold text-5xl mb-3 text-center font-grotesque`}>
+    <div className="mt-36 flex w-full flex-col items-center justify-center">
+      <p className={`mb-3 text-center font-grotesque text-5xl font-extrabold`}>
         {title}
       </p>
 
       <p className="text-2xl">{description}</p>
 
-      <Separator className="bg-foreground w-4/5 my-20" />
+      <Separator className="my-20 w-4/5 bg-foreground" />
     </div>
   );
 }

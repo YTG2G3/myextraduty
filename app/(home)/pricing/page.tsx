@@ -3,7 +3,7 @@ import Hero from '@/app/(home)/hero';
 // TODO
 export default function Pricing() {
   return (
-    <main className="no-scrollbar overflow-y-auto w-screen h-screen">
+    <main className="no-scrollbar h-screen w-screen overflow-y-auto">
       <Hero title="Pricing" description="Totally worth it." />
     </main>
   );

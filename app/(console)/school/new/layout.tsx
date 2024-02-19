@@ -55,8 +55,8 @@ export default async function NewSchoolLayout({
 
   return (
     <FormRefProvider>
-      <div className="flex w-full h-full justify-center items-center">
-        <div className="min-w-[40%] flex flex-col">
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="flex min-w-[40%] flex-col">
           <Suspense>{children}</Suspense>
 
           <Nav complete={complete} />
