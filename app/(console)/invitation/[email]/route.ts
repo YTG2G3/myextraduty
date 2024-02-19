@@ -3,7 +3,7 @@ import prisma from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 // Get all invitations for this email
-export default async function GET(
+export async function GET(
   request: NextRequest,
   { params }: { params: { email: string } }
 ) {
