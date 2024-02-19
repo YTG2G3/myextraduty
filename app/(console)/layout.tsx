@@ -65,11 +65,5 @@ export default async function AuthLayout({
   //   prisma.invitation.delete({ where: { id } });
   // }
 
-  return (
-    <>
-      <InvitationDialog />
-
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }
