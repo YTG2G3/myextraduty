@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent
-} from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { bricolage } from '@/app/fonts';
 import { Button } from '@/components/ui/button';
 import { signIn } from 'next-auth/react';
@@ -14,25 +8,28 @@ import GoogleIcon from '@/components/svg/google';
 
 export default function SignIn() {
   return (
-    <div className="flex items-center justify-center w-screen h-screen">
-      <Card className="w-80">
-        <CardHeader>
-          <CardTitle className={`${bricolage.className} font-bold text-4xl`}>
-            Welcome Back!
-          </CardTitle>
-          <CardDescription>Sign in to access MyED.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button
-            onClick={() => signIn('google', { callbackUrl: '/school' })}
-            className="w-full"
-            variant="outline"
-          >
-            <GoogleIcon />
-            Sign in with Google
-          </Button>
-        </CardContent>
+    <div className="flex h-screen w-screen flex-col items-center justify-around">
+      <div className="flex flex-col items-center">
+        <h1 className={`${bricolage.className} text-center text-9xl font-bold`}>
+          Welcome Back!
+        </h1>
+        <span className="text-lg text-muted-foreground">
+          Sign in to access MyED.
+        </span>
+      </div>
+      <Card className="mb-32 flex flex-col gap-2 p-4">
+        <Button
+          onClick={() => signIn('google', { callbackUrl: '/school' })}
+          className="w-full"
+          variant="outline"
+        >
+          <GoogleIcon />
+          Sign in with Google
+        </Button>
       </Card>
+      <span className="text-sm text-muted-foreground">
+        By signing in, you agree to our Terms of Service and Privacy Policy
+      </span>
     </div>
   );
 }
