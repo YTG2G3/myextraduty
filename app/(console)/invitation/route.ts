@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Decide whether to accept or decline the invitation
 export async function POST(request: NextRequest) {
-  authRoute(async (session) => {
+  return authRoute(async (session) => {
     let { id, accept } = await request.json();
     let invitation = await prisma.invitation.findUnique({ where: { id } });
 

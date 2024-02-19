@@ -1,9 +1,11 @@
 'use client';
 
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function Redirect({ id }: { id: string }) {
+  let router = useRouter();
+
   useEffect(() => {
     // Load school id from local storage
     let school = localStorage.getItem('school');
@@ -11,11 +13,11 @@ export default function Redirect({ id }: { id: string }) {
     // If not set, redirect to id
     if (!school) {
       localStorage.setItem('school', id);
-      redirect(`/school/${id}/dashboard`);
+      router.push(`/school/${id}/dashboard`);
     } else {
-      redirect(`/school/${school}/dashboard`);
+      router.push(`/school/${school}/dashboard`);
     }
-  }, [id]);
+  }, [id, router]);
 
   return <></>;
 }

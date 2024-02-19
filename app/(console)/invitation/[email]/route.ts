@@ -5,15 +5,15 @@ import authRoute from '@/lib/auth-route';
 // Get all invitations for this email
 export default async function GET(
   request: NextRequest,
-  { email }: { email: string }
+  { params }: { params: { email: string } }
 ) {
   authRoute(async (session) => {
-    if (session.user.email !== email)
+    if (session.user.email !== params.email)
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     let data = await prisma.invitation
       .findMany({
-        where: { email }
+        where: { email: params.email }
       })
       .then((invitations) => {
         return Promise.all(

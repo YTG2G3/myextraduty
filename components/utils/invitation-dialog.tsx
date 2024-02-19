@@ -38,25 +38,23 @@ export default function InvitationDialog() {
 
   let [decided, setDecided] = useState<boolean[]>(undefined);
 
-  async function load() {
-    let { invitation, school, owner } = await (
-      await fetch('/invitation/' + session.user.email)
-    ).json();
-
-    if (invitations.length > 0) setIsOpen(true);
-    else setIsOpen(false);
-
-    setInvitations(invitation);
-    setSchools(school);
-    setOwners(owner);
-
-    setDecided(invitations.map(() => false));
-  }
-
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  async function load() {
+    let data = await (await fetch(`/invitation/${session.user.email}`)).json();
+
+    if (invitations.length > 0) setIsOpen(true);
+    else setIsOpen(false);
+
+    setInvitations(data.map((v) => v.invitation));
+    setSchools(data.map((v) => v.school));
+    setOwners(data.map((v) => v.owner));
+
+    setDecided(invitations.map(() => false));
+  }
 
   // TODO - disable the buttons and loading
   async function clientDecide(index: number, accept: boolean) {
