@@ -20,9 +20,11 @@ import {
 import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import useClientSession from '@/lib/use-client-session';
 
-export default function Nav({ authed }: { authed: boolean }) {
-  const router = useRouter();
+export default function Nav() {
+  let authed = !!useClientSession(false);
+  let router = useRouter();
 
   return (
     <nav

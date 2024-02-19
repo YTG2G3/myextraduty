@@ -1,6 +1,5 @@
 'use client';
 
-import { bricolage } from '@/app/fonts';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
 import { BellElectric } from 'lucide-react';
@@ -32,7 +31,7 @@ export default function Complete() {
     <div className="flex flex-col items-center">
       <div className="text-3xl flex space-x-2 items-center">
         <p>Review</p>
-        <b className={`${bricolage.className}`}>{basic.name}</b>
+        <b className="font-grotesque">{basic.name}</b>
         <p>before completion</p>
         <BellElectric className="w-8 h-8" />
       </div>
