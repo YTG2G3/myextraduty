@@ -1,7 +1,6 @@
 'use client';
 
 import { Card } from '@/components/ui/card';
-import { bricolage } from '@/app/fonts';
 import { Button } from '@/components/ui/button';
 import { signIn } from 'next-auth/react';
 import GoogleIcon from '@/components/svg/google';
@@ -10,7 +9,7 @@ export default function SignIn() {
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-around">
       <div className="flex flex-col items-center">
-        <h1 className={`${bricolage.className} text-center text-9xl font-bold`}>
+        <h1 className={`text-center font-grotesque text-9xl font-bold`}>
           Welcome Back!
         </h1>
         <span className="text-lg text-muted-foreground">

@@ -1,6 +1,5 @@
 import prisma from '@/lib/db';
 import getServerSession from '@/lib/get-server-session';
-import { bricolage } from '@/app/fonts';
 import BackButton from '@/components/utils/back-button';
 
 export default async function RoleRoute({
@@ -49,9 +48,7 @@ export default async function RoleRoute({
   return (
     <div className="flex h-screen w-full items-center justify-center">
       <div className="flex flex-col items-center gap-4">
-        <span
-          className={`${bricolage.className} text-9xl font-black opacity-40`}
-        >
+        <span className={`font-grotesque text-9xl font-black opacity-40`}>
           Unauthorized
         </span>
         <span>You don&apos;t have permissions to access this content.</span>

@@ -22,13 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './avatar';
 import { CalendarDays, Check, ShieldCheck, X } from 'lucide-react';
 import moment from 'moment-timezone';
 
-export default function InvitationDialog({
-  loadData,
-  decide
-}: {
-  loadData: Function;
-  decide: Function;
-}) {
+export default function InvitationDialog() {
   let [isOpen, setIsOpen] = useState(false);
 
   let [invitations, setInvitations] = useState<Invitation[]>(undefined);
