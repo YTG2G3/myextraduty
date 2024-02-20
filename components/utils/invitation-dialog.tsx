@@ -5,7 +5,6 @@ import { Invitation, School, User } from '@/prisma/client';
 import { CalendarDays, Check, ShieldCheck, X } from 'lucide-react';
 import moment from 'moment-timezone';
 import { useEffect, useState } from 'react';
-import { Eclipse } from 'react-svg-spinners';
 import { toast } from 'sonner';
 import {
   AlertDialog,
@@ -30,14 +29,16 @@ import {
 } from '../ui/tooltip';
 
 export default function InvitationDialog() {
-  let session = useClientSession();
-  let [isOpen, setIsOpen] = useState(false);
+  const session = useClientSession();
+  const [isOpen, setIsOpen] = useState(false);
 
-  let [invitations, setInvitations] = useState<Invitation[]>(undefined);
-  let [schools, setSchools] = useState<School[]>(undefined);
-  let [owners, setOwners] = useState<User[]>(undefined);
+  const [invitations, setInvitations] = useState<Invitation[]>(undefined);
+  const [schools, setSchools] = useState<School[]>(undefined);
+  const [owners, setOwners] = useState<User[]>(undefined);
 
-  let [decided, setDecided] = useState<boolean[]>(undefined);
+  const [decided, setDecided] = useState<boolean[]>(undefined);
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     load();
@@ -59,6 +60,7 @@ export default function InvitationDialog() {
 
   // TODO - disable the buttons and loading
   async function clientDecide(index: number, accept: boolean) {
+    setLoading(true);
     let res = await (
       await fetch('/invitation', {
         method: 'POST',
@@ -68,15 +70,11 @@ export default function InvitationDialog() {
 
     if (res.error) toast.error(res.error);
     else setDecided(decided.map((d, i) => (i === index ? true : d)));
+
+    setLoading(false);
   }
 
-  // TODO - loading
-  if (!invitations || !schools || !owners || !decided)
-    return (
-      <div className="flex h-full items-center justify-center">
-        <Eclipse className="h-16 w-16" />
-      </div>
-    );
+  if (!invitations || !schools || !owners || !decided) return undefined;
 
   return (
     <TooltipProvider>
@@ -141,6 +139,7 @@ export default function InvitationDialog() {
                           variant="outline"
                           size="icon"
                           onClick={() => clientDecide(i, true)}
+                          disabled={loading}
                         >
                           {invitations[i].manager ? (
                             <ShieldCheck className="h-4 w-4" />
@@ -163,6 +162,7 @@ export default function InvitationDialog() {
                           variant="outline"
                           size="icon"
                           onClick={() => clientDecide(i, false)}
+                          disabled={loading}
                         >
                           <X className="h-4 w-4" />
                         </Button>

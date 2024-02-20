@@ -27,7 +27,8 @@ const authOptions: NextAuthOptions = {
     colorScheme: 'light'
   },
   pages: {
-    signIn: '/login'
+    signIn: '/login',
+    error: '/auth/error'
   }
 };
 
