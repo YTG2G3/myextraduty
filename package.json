@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --fix && prettier --write .",
-    "prisma:generate": "prisma generate",
+    "postinstall": "prisma generate",
     "prepare": "husky && husky install"
   },
   "dependencies": {
@@ -69,7 +69,6 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "*": "yarn run lint"
-  },
-  "packageManager": "yarn@4.1.0"
+    "*": "npm run lint"
+  }
 }
