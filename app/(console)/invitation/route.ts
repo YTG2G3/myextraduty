@@ -22,6 +22,6 @@ export async function POST(request: NextRequest) {
       });
     else prisma.invitation.delete({ where: { id } });
 
-    return NextResponse.json({ error: null });
+    return NextResponse.json({ error: null }, { status: 500 });
   });
 }

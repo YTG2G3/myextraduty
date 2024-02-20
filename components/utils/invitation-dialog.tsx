@@ -54,7 +54,19 @@ export default function InvitationDialog() {
   }, [decision]);
 
   async function load() {
-    let data = await (await fetch(`/invitation/${session.user.email}`)).json();
+    let data;
+    try {
+      data = await fetch(`/invitation/${session.user.email}`);
+    } catch {
+      toast.error('An error occurred while fetching invitations.');
+      return;
+    } finally {
+      if (data.status !== 200) {
+        toast.error('An error occurred while fetching invitations.');
+        return;
+      }
+      data = await data.json();
+    }
 
     if (data.length > 0) setIsOpen(true);
     else setIsOpen(false);
@@ -76,14 +88,13 @@ export default function InvitationDialog() {
       })
     ).json();
 
-    if (res.error) toast.error(res.error);
+    if (res.status !== 200) toast.error('An error occurred. Please try again.');
     else {
       const newDecision = [...decision];
       newDecision[index] = accept;
       setDecision(newDecision);
       console.log(newDecision);
     }
-
     setLoading(false);
   }
 
