@@ -5,6 +5,7 @@ import { Invitation, School, User } from '@/prisma/client';
 import { CalendarDays, Check, ShieldCheck, X } from 'lucide-react';
 import moment from 'moment-timezone';
 import { useEffect, useState } from 'react';
+import { Eclipse } from 'react-svg-spinners';
 import { toast } from 'sonner';
 import {
   AlertDialog,
@@ -70,7 +71,12 @@ export default function InvitationDialog() {
   }
 
   // TODO - loading
-  if (!invitations || !schools || !owners || !decided) return <></>;
+  if (!invitations || !schools || !owners || !decided)
+    return (
+      <div className="flex h-full items-center justify-center">
+        <Eclipse className="h-16 w-16" />
+      </div>
+    );
 
   return (
     <TooltipProvider>
