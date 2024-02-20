@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --fix && prettier --write .",
-    "prisma:generate": "yarn pnpify prisma generate",
+    "prisma:generate": "prisma generate",
     "prepare": "husky && husky install"
   },
   "dependencies": {
