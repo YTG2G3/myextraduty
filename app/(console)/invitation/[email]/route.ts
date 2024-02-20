@@ -7,7 +7,7 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { email: string } }
 ) {
-  authRoute(async (session) => {
+  return authRoute(async (session) => {
     if (session.user.email !== params.email)
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
@@ -32,8 +32,6 @@ export async function GET(
           )
         );
       });
-
-    if (!data) return NextResponse.json({});
 
     return NextResponse.json(data);
   });
