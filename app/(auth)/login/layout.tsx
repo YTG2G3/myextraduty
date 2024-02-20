@@ -6,8 +6,8 @@ export default async function LoginLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  let session = getServerSession(false);
+  let session = await getServerSession(false);
   if (session) redirect('/school');
 
-  return { children };
+  return <>{children}</>;
 }
