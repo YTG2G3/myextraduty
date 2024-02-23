@@ -78,9 +78,9 @@ export default function InvitationDialog() {
     setDecision(data.map(() => undefined));
   }
 
-  // TODO - disable the buttons and loading
   async function clientDecide(index: number, accept: boolean) {
     setLoading(true);
+
     let res = await (
       await fetch('/invitation', {
         method: 'POST',

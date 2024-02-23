@@ -16,6 +16,14 @@ export default async function SchoolInit() {
     where: { id: enrollment.schoolId }
   });
 
+  async function checkEnrollment(school_id: string) {
+    'use server';
+    let enrollment = await prisma.enrollment.findFirst({
+      where: { userId: session.user.id, schoolId: school_id }
+    });
+    return !!enrollment;
+  }
+
   // Just in case localstorage has a previous record, client component is used
-  return <Redirect id={school.id} />;
+  return <Redirect id={school.id} check={checkEnrollment} />;
 }
