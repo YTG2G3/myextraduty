@@ -8,7 +8,9 @@ export default function FourOFour() {
   return (
     <div className="flex h-screen w-screen items-center justify-center">
       <div className="flex flex-col items-center gap-4">
-        <span className={`font-grotesque text-9xl font-black opacity-40`}>
+        <span
+          className={`font-grotesque text-9xl font-black opacity-40 select-none`}
+        >
           404
         </span>
         <span>The requested page could not be found.</span>
