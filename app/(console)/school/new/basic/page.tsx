@@ -74,7 +74,7 @@ export default function Basic() {
               <FormLabel>School Name</FormLabel>
 
               <FormControl>
-                <Input placeholder="ex. Centennial High School" {...field} />
+                <Input placeholder="Centennial High School" {...field} />
               </FormControl>
 
               <FormMessage />
