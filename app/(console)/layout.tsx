@@ -31,9 +31,33 @@ export default async function AuthLayout({
       );
     });
 
+  async function decide(index: number, accept: boolean) {
+    'use server';
+
+    try {
+      await prisma.invitation.delete({
+        where: { id: data[index].invitation.id }
+      });
+
+      if (accept) {
+        await prisma.enrollment.create({
+          data: {
+            userId: session.user.id,
+            schoolId: data[index].invitation.schoolId,
+            manager: data[index].invitation.manager // invited role
+          }
+        });
+      }
+    } catch (error) {
+      return false;
+    }
+
+    return true;
+  }
+
   return (
     <>
-      {data.length > 0 ?? <InvitationDialog data={data} />}
+      {data.length > 0 ?? <InvitationDialog data={data} decide={decide} />}
 
       {children}
     </>
