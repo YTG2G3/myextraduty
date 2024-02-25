@@ -21,21 +21,23 @@ import { useEffect, useState } from 'react';
 
 // TODO - prettier margin for navigator and fix avatar weird margin, add a logout button
 export default function Nav({
-  schools,
-  enrollments
+  data
 }: {
-  schools: School[];
-  enrollments: Enrollment[];
+  data: { enrollment: Enrollment; school: School }[];
 }) {
   let session = useClientSession();
   let params = useParams<{ id: string }>();
   let [selectValue, setSelectValue] = useState('new');
   const router = useRouter();
 
-  useEffect(
-    () => (params?.id ? setSelectValue(params.id) : undefined),
-    [params]
-  );
+  useEffect(() => {
+    // if no id, redirect to the first school
+    if (params?.id) setSelectValue(params.id);
+    else
+      router.replace(
+        `/school/${data.length > 0 ? data[0].school.id + '/dashboard' : 'new'}`
+      );
+  }, [params, data, router]);
 
   function update(v: string) {
     setSelectValue(v);
@@ -55,47 +57,49 @@ export default function Nav({
         <SelectContent>
           <SelectItem value="new">Create a new school</SelectItem>
 
-          {schools.find((s) => s.ownerId === session.user.id) && (
+          {data.find((d) => d.school.ownerId === session.user.id) && (
             <SelectGroup>
               <SelectLabel>Owner</SelectLabel>
 
-              {schools
-                .filter((s) => s.ownerId === session.user.id)
-                .map((s, i) => (
-                  <SelectItem key={i} value={s.id}>
-                    {s.name}
+              {data
+                .filter((d) => d.school.ownerId === session.user.id)
+                .map((d, i) => (
+                  <SelectItem key={i} value={d.school.id}>
+                    {d.school.name}
                   </SelectItem>
                 ))}
             </SelectGroup>
           )}
 
-          {enrollments.find(
-            (e, i) => e.manager && schools[i].ownerId !== session.user.id
+          {data.find(
+            (d, i) =>
+              d.enrollment.manager && d.school.ownerId !== session.user.id
           ) && (
             <SelectGroup>
               <SelectLabel>Manager</SelectLabel>
 
-              {enrollments
+              {data
                 .filter(
-                  (e, i) => e.manager && schools[i].ownerId !== session.user.id
+                  (d, i) =>
+                    d.enrollment.manager && d.school.ownerId !== session.user.id
                 )
-                .map((_, i) => (
-                  <SelectItem key={i} value={schools[i].id}>
-                    {schools[i].name}
+                .map((d, i) => (
+                  <SelectItem key={i} value={d.school.id}>
+                    {d.school.name}
                   </SelectItem>
                 ))}
             </SelectGroup>
           )}
 
-          {enrollments.find((e) => !e.manager) && (
+          {data.find((d) => !d.enrollment.manager) && (
             <SelectGroup>
               <SelectLabel>Member</SelectLabel>
 
-              {enrollments
-                .filter((e) => !e.manager)
-                .map((_, i) => (
-                  <SelectItem key={i} value={schools[i].id}>
-                    {schools[i].name}
+              {data
+                .filter((d) => !d.enrollment.manager)
+                .map((d, i) => (
+                  <SelectItem key={i} value={d.school.id}>
+                    {d.school.name}
                   </SelectItem>
                 ))}
             </SelectGroup>
@@ -111,7 +115,7 @@ export default function Nav({
           <NavItem to="task">Tasks</NavItem>
           <NavItem to="alert">Alerts</NavItem>
 
-          {enrollments.find((e) => e.schoolId === params.id).manager ? (
+          {data.find((d) => d.school.id === params.id).enrollment.manager ? (
             <>
               <Separator className="h-[2px] bg-white opacity-15" />
               <p className="mb-4 mt-2 text-center text-sm text-muted-foreground">

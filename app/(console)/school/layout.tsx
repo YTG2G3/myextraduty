@@ -9,17 +9,28 @@ export default async function SchoolLayout({
 }>) {
   let session = await getServerSession();
 
-  let enrollments = await prisma.enrollment.findMany({
-    where: { userId: session.user.id }
-  });
-
-  let schools = await prisma.school.findMany({
-    where: { id: { in: enrollments.map((enrollment) => enrollment.schoolId) } }
-  });
+  let data = await prisma.enrollment
+    .findMany({
+      where: { userId: session.user.id }
+    })
+    .then((enrollments) => {
+      return Promise.all(
+        enrollments.map((enrollment) =>
+          prisma.school
+            .findUnique({
+              where: { id: enrollment.schoolId }
+            })
+            .then((school) => ({
+              enrollment,
+              school
+            }))
+        )
+      );
+    });
 
   return (
     <div className="flex h-screen w-screen">
-      <Nav schools={schools} enrollments={enrollments} />
+      <Nav data={data} />
       <main className="h-full w-[calc(100%-288px)]">
         <Suspense>{children}</Suspense>
       </main>

@@ -1,6 +1,5 @@
 'use client';
 
-import useClientSession from '@/lib/use-client-session';
 import { Invitation, School, User } from '@/prisma/client';
 import { CalendarDays, Check, ShieldCheck, X } from 'lucide-react';
 import moment from 'moment-timezone';
@@ -28,77 +27,34 @@ import {
   TooltipTrigger
 } from '../ui/tooltip';
 
-export default function InvitationDialog() {
-  const session = useClientSession();
+export default function InvitationDialog({
+  data,
+  decide
+}: {
+  data: { invitation: Invitation; school: School; owner: User }[];
+  decide: (index: number, accept: boolean) => Promise<boolean>;
+}) {
   const [isOpen, setIsOpen] = useState(false);
-
-  const [invitations, setInvitations] = useState<Invitation[]>(undefined);
-  const [schools, setSchools] = useState<School[]>(undefined);
-  const [owners, setOwners] = useState<User[]>(undefined);
-
-  const [decision, setDecision] = useState<boolean[]>(undefined);
-
+  const [decision, setDecision] = useState<boolean[]>(data.map(() => false)); // decided: true, undecided: false
   const [loading, setLoading] = useState(false);
 
+  // Close the dialog if there are no invitations left to decide
   useEffect(() => {
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (decision && decision.every((d) => d !== undefined)) {
+    if (decision.every((d) => d)) {
       setTimeout(() => {
         setIsOpen(false);
       }, 700);
     }
   }, [decision]);
 
-  async function load() {
-    let data;
-    try {
-      data = await fetch(`/invitation/${session.user.email}`);
-    } catch {
-      toast.error('An error occurred while fetching invitations.');
-      return;
-    } finally {
-      if (data.status !== 200) {
-        toast.error('An error occurred while fetching invitations.');
-        return;
-      }
-      data = await data.json();
-    }
-
-    if (data.length > 0) setIsOpen(true);
-    else setIsOpen(false);
-
-    setInvitations(data.map((v) => v.invitation));
-    setSchools(data.map((v) => v.school));
-    setOwners(data.map((v) => v.owner));
-
-    setDecision(data.map(() => undefined));
-  }
-
   async function clientDecide(index: number, accept: boolean) {
     setLoading(true);
+    let res = await decide(index, accept);
+    if (!res) return toast.error('An error occurred. Please try again.');
 
-    let res = await (
-      await fetch('/invitation', {
-        method: 'POST',
-        body: JSON.stringify({ id: invitations[index].id, accept })
-      })
-    ).json();
-
-    if (res.status !== 200) toast.error('An error occurred. Please try again.');
-    else {
-      const newDecision = [...decision];
-      newDecision[index] = accept;
-      setDecision(newDecision);
-      console.log(newDecision);
-    }
+    setDecision(decision.map((d, i) => (i === index ? true : d)));
     setLoading(false);
   }
-
-  if (!invitations || !schools || !owners || !decision) return undefined;
 
   return (
     <TooltipProvider>
@@ -108,13 +64,13 @@ export default function InvitationDialog() {
             <AlertDialogTitle>You have been invited!</AlertDialogTitle>
 
             <AlertDialogDescription>
-              {invitations.length} school(s) invited you to join them. You can
-              accept or decline the invitation by selecting an option below.
+              {data.length} school(s) invited you to join them. You can accept
+              or decline the invitation by selecting an option below.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
           <AlertDialogFooter className="flex !flex-col">
-            {schools.map((school, i) => (
+            {data.map((d, i) => (
               <div
                 key={i}
                 className="grid items-center !mb-0 !ml-0 !mr-0 !mt-2"
@@ -122,32 +78,32 @@ export default function InvitationDialog() {
               >
                 <HoverCard openDelay={200}>
                   <HoverCardTrigger className="overflow-hidden">
-                    <p className="cursor-pointer truncate">{school.name}</p>
+                    <p className="cursor-pointer truncate">{d.school.name}</p>
                   </HoverCardTrigger>
 
                   <HoverCardContent align="start" className="w-80">
                     <div className="flex justify-between space-x-4">
                       <Avatar>
-                        <AvatarImage src={school.image} />
+                        <AvatarImage src={d.school.image} />
                         <AvatarFallback>VC</AvatarFallback>
                       </Avatar>
 
                       <div className="space-y-1">
                         <h4 className="w-36 overflow-hidden truncate text-sm font-semibold">
-                          {school.name}
+                          {d.school.name}
                         </h4>
 
                         <p className="text-sm">
                           Invited as a{' '}
-                          {invitations[i].manager ? 'manager' : 'member'}. Owned
-                          by {owners[i].name}.
+                          {d.invitation.manager ? 'manager' : 'member'}. Owned
+                          by {d.owner.name}.
                         </p>
 
                         <div className="flex items-center pt-2">
                           <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{' '}
                           <span className="text-xs text-muted-foreground">
                             Invited{' '}
-                            {moment(invitations[i].createdAt).format('LL')}
+                            {moment(d.invitation.createdAt).format('LL')}
                           </span>
                         </div>
                       </div>
@@ -165,7 +121,7 @@ export default function InvitationDialog() {
                           onClick={() => clientDecide(i, true)}
                           disabled={loading}
                         >
-                          {invitations[i].manager ? (
+                          {d.invitation.manager ? (
                             <ShieldCheck className="h-4 w-4" />
                           ) : (
                             <Check className="h-4 w-4" />
@@ -174,9 +130,7 @@ export default function InvitationDialog() {
                       </TooltipTrigger>
 
                       <TooltipContent>
-                        {invitations[i].manager
-                          ? 'Accept as Manager'
-                          : 'Accept'}
+                        {d.invitation.manager ? 'Accept as Manager' : 'Accept'}
                       </TooltipContent>
                     </Tooltip>
 
