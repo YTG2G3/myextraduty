@@ -1,163 +1,181 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import Link from 'next/link';
+import * as React from 'react';
+
+// Imported the menu and viewport separately due to a bug with centering (left-0)
+import {
+  NavigationMenu,
+  NavigationMenuViewport
+} from '@radix-ui/react-navigation-menu';
+
 import { Button } from '@/components/ui/button';
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle
+} from '@/components/ui/navigation-menu';
 import useClientSession from '@/lib/use-client-session';
-import { Enrollment, School } from '@/prisma/client';
-import { Separator } from '@radix-ui/react-separator';
-import Link from 'next/link';
-import { useParams, usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { School } from '@/prisma/client';
+import { ChevronDown } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 
-export default function Nav({
-  data
-}: {
-  data: { enrollment: Enrollment; school: School }[];
-}) {
-  let session = useClientSession();
-  let params = useParams<{ id: string }>();
-  let [selectValue, setSelectValue] = useState(undefined);
-  const router = useRouter();
+export default function SchoolNav({ schoolData }: { schoolData: School }) {
+  const session = useClientSession();
+  const pathname = usePathname();
 
-  useEffect(() => {
-    // if no id, redirect to the first school or boarding
-    if (params?.id) setSelectValue(params.id);
-    else if (data.length === 0) router.replace('/boarding');
-    else {
-      setSelectValue(data[0].school.id);
-      router.replace(`/school/${data[0].school.id}/dashboard`);
-    }
-  }, [params, data, router]);
-
-  function update(v: string) {
-    setSelectValue(v);
-    router.push(v === 'new' ? '/boarding' : `/school/${v}/dashboard`);
-  }
+  if (pathname === '/school') return null;
 
   return (
     <nav
-      className="grid h-screen w-72 gap-2 bg-gray-800 p-6"
-      style={{ gridTemplateRows: 'auto auto 1fr auto' }}
+      className="grid w-screen bg-white bg-opacity-80 px-7 py-4"
+      style={{ gridTemplateColumns: ' 1fr 1fr 1fr' }}
     >
-      <Select value={selectValue} onValueChange={update}>
-        <SelectTrigger>
-          <SelectValue />
-        </SelectTrigger>
+      <Link href="/school">
+        <p className="select-none font-grotesque text-4xl font-extrabold">
+          {schoolData.name}
+        </p>
+        <ChevronDown className="w-6 h-6" />
+      </Link>
 
-        <SelectContent>
-          <SelectItem value="new">Create a new school</SelectItem>
+      <NavigationMenu className="max-w-screen relative z-10 flex flex-1 items-center justify-center">
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger className="!bg-transparent">
+              About Us
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                <li className="row-span-3">
+                  <NavigationMenuLink asChild>
+                    <Link
+                      className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                      href="/"
+                    >
+                      <div className="mb-2 mt-4 select-none font-grotesque text-lg font-extrabold">
+                        MyED
+                      </div>
+                      <p className="text-sm leading-tight text-muted-foreground">
+                        Simplify extra duty organization. Streamline your
+                        processes and speed up task allocation with
+                        user-friendly platform.
+                      </p>
+                    </Link>
+                  </NavigationMenuLink>
+                </li>
 
-          {data.find((d) => d.school.ownerId === session.user.id) && (
-            <SelectGroup>
-              <SelectLabel>Owner</SelectLabel>
+                <ListItem href="/partner" title="Partners">
+                  Companies, organizations, and schools that we work with.
+                </ListItem>
 
-              {data
-                .filter((d) => d.school.ownerId === session.user.id)
-                .map((d, i) => (
-                  <SelectItem key={i} value={d.school.id}>
-                    {d.school.name}
-                  </SelectItem>
-                ))}
-            </SelectGroup>
-          )}
+                <ListItem href="/policy" title="Policies">
+                  Read our terms of service and privacy policy.
+                </ListItem>
 
-          {data.find(
-            (d, i) =>
-              d.enrollment.manager && d.school.ownerId !== session.user.id
-          ) && (
-            <SelectGroup>
-              <SelectLabel>Manager</SelectLabel>
+                <ListItem href="/contact" title="Contact">
+                  Get in touch with us for any questions or feedback.
+                </ListItem>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
 
-              {data
-                .filter(
-                  (d, i) =>
-                    d.enrollment.manager && d.school.ownerId !== session.user.id
-                )
-                .map((d, i) => (
-                  <SelectItem key={i} value={d.school.id}>
-                    {d.school.name}
-                  </SelectItem>
-                ))}
-            </SelectGroup>
-          )}
+          <NavigationMenuItem>
+            <NavigationMenuTrigger className="!bg-transparent">
+              Pricing
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[300px] gap-3 p-4 md:grid-cols-1">
+                <ListItem href="/pricing" title="Pricing Plans">
+                  Choose a plan that fits your organization&apos;s needs.
+                </ListItem>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
 
-          {data.find((d) => !d.enrollment.manager) && (
-            <SelectGroup>
-              <SelectLabel>Member</SelectLabel>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger className="!bg-transparent">
+              Developers
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                <ListItem
+                  href="https://github.com/YTG2G3/myextraduty"
+                  title="GitHub"
+                >
+                  Source code and issue tracking. Only Algorix employees have
+                  access.
+                </ListItem>
 
-              {data
-                .filter((d) => !d.enrollment.manager)
-                .map((d, i) => (
-                  <SelectItem key={i} value={d.school.id}>
-                    {d.school.name}
-                  </SelectItem>
-                ))}
-            </SelectGroup>
-          )}
-        </SelectContent>
-      </Select>
+                <ListItem
+                  href="https://www.erdcloud.com/d/RKYWgfFhHoGsDDfn8"
+                  title="Schema"
+                >
+                  Database schema on ERDCloud. Only Algorix employees have
+                  access.
+                </ListItem>
 
-      <Separator className="display-none" />
+                <ListItem
+                  href="https://discord.com/invite/Qrspk6GqwJ"
+                  title="Discord Server"
+                >
+                  Official Discord server of G2G3 for MyED developers.
+                </ListItem>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        </NavigationMenuList>
 
-      <div className="flex flex-col">
-        <NavItem to="dashboard">Dashboard</NavItem>
-        <NavItem to="task">Tasks</NavItem>
-        <NavItem to="alert">Alerts</NavItem>
-
-        {data.find((d) => d.school.id === params.id).enrollment.manager ? (
-          <>
-            <Separator className="h-[2px] bg-white opacity-15" />
-            <p className="mb-4 mt-2 text-center text-sm text-muted-foreground">
-              Manager Only
-            </p>
-
-            <NavItem to="member">Members</NavItem>
-            <NavItem to="report">Reports</NavItem>
-            <NavItem to="setting">Settings</NavItem>
-          </>
-        ) : undefined}
-      </div>
-
-      <div className="flex items-center justify-center overflow-hidden">
-        <Avatar>
-          <AvatarImage src={session.user.image} />
-          <AvatarFallback>{session.user.name}</AvatarFallback>
-        </Avatar>
-
-        <div className="ml-3 overflow-hidden text-white">
-          <p className="truncate">{session.user.name}</p>
-          <p className="truncate text-sm text-muted-foreground">
-            {session.user.email}
-          </p>
+        <div className="absolute top-full flex justify-center">
+          <NavigationMenuViewport className="origin-top-center relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 md:w-[var(--radix-navigation-menu-viewport-width)]" />
         </div>
-      </div>
+      </NavigationMenu>
+
+      {authed ? (
+        <div className="flex justify-end">
+          <Link href="/school" className={navigationMenuTriggerStyle()}>
+            Console
+          </Link>
+
+          <Button onClick={() => signOut()} className="ml-3">
+            Sign Out
+          </Button>
+        </div>
+      ) : (
+        <div className="flex justify-end">
+          <Button onClick={() => router.push('/login')}>Sign In</Button>
+        </div>
+      )}
     </nav>
   );
 }
 
-function NavItem({ to, children }: { to: string; children: React.ReactNode }) {
-  let pathname = usePathname();
-  if (!pathname) return <></>;
-
-  let path = pathname.substring(pathname.lastIndexOf('/') + 1);
-  let pathway = pathname.substring(0, pathname.lastIndexOf('/'));
-
+function ListItem({
+  title,
+  children,
+  href
+}: {
+  className?: string;
+  title: string;
+  children: React.ReactNode;
+  href: string;
+}) {
   return (
-    <Button
-      asChild
-      variant="ghost"
-      className={`mb-3 text-white ${path === to ? 'bg-white font-bold text-foreground' : 'font-normal'}`}
-    >
-      <Link href={`${pathway}/${to}`}>{children}</Link>
-    </Button>
+    <li>
+      <NavigationMenuLink asChild>
+        <Link
+          href={href}
+          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </Link>
+      </NavigationMenuLink>
+    </li>
   );
 }
