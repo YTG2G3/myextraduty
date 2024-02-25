@@ -1,30 +1,38 @@
 import getServerSession from '@/lib/get-server-session';
-import { School } from '@/prisma/client';
 import { Suspense } from 'react';
-import SchoolNav from './nav';
-
-interface SchoolLayoutProps {
-  children: React.ReactNode;
-  params: { id: string };
-}
+import Nav from './nav';
 
 export default async function SchoolLayout({
-  children,
-  params
-}: SchoolLayoutProps) {
+  children
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   let session = await getServerSession();
 
-  let schooldata: School = undefined;
-  if (params?.id) {
-    schooldata = await prisma.school.findUnique({
-      where: { id: params.id }
+  // TODO - cache
+  let data = await prisma.enrollment
+    .findMany({
+      where: { userId: session.user.id }
+    })
+    .then((enrollments) => {
+      return Promise.all(
+        enrollments.map((enrollment) =>
+          prisma.school
+            .findUnique({
+              where: { id: enrollment.schoolId }
+            })
+            .then((school) => ({
+              enrollment,
+              school
+            }))
+        )
+      );
     });
-  }
 
   return (
     <div className="flex h-screen w-screen">
-      <SchoolNav schoolData={schooldata} />
-      <main className="w-screen">
+      <Nav data={data} />
+      <main className="h-full w-[calc(100%-288px)]">
         <Suspense>{children}</Suspense>
       </main>
     </div>
