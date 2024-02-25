@@ -81,7 +81,7 @@ export default function SchoolNav() {
                 Managers
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid w-[300px] gap-3 p-4 md:grid-3">
+                <ul className="grid w-[500px] gap-3 p-4 md:grid-3">
                   <ListItem
                     href={`/school/${schoolData?.id}/member`}
                     title="Member"
