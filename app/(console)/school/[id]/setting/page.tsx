@@ -1,4 +1,5 @@
 import prisma from '@/lib/db';
+import HeaderWrapper from '../header-wrapper';
 import RoleRoute from '../role-route';
 import Manager from './manager';
 
@@ -18,11 +19,13 @@ export default async function Setting({ params }: { params: { id: string } }) {
   }
 
   return (
-    <RoleRoute
-      id={params.id}
-      user={null}
-      manager={Manager}
-      updateSchool={updateSchool}
-    />
+    <HeaderWrapper title="Settings">
+      <RoleRoute
+        id={params.id}
+        user={null}
+        manager={Manager}
+        updateSchool={updateSchool}
+      />
+    </HeaderWrapper>
   );
 }

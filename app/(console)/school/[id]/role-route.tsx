@@ -1,6 +1,6 @@
-import BackButton from '@/components/utils/back-button';
 import prisma from '@/lib/db';
 import getServerSession from '@/lib/get-server-session';
+import { redirect } from 'next/navigation';
 
 export default async function RoleRoute({
   id,
@@ -11,17 +11,24 @@ export default async function RoleRoute({
   id: string;
   user: any;
   manager: any;
-  [key: string]: any; // TODO - is this dark magic?
+  [key: string]: any; // TODO - is this dark magic? for receiving any other props
 }) {
   let session = await getServerSession();
-  let { manager } = await prisma.enrollment.findFirst({
+
+  // Check if user is associated with the school
+  let enrollment = await prisma.enrollment.findFirst({
     where: { userId: session.user.id, schoolId: id },
     select: { manager: true }
   });
+
+  if (!enrollment) redirect('/school');
+
   const owner = await prisma.school.findUnique({
     where: { id: id, ownerId: session.user.id }
   });
-  if (owner) manager = true;
+
+  // User is a manager if they are the owner or have been assigned as a manager
+  let manager = enrollment.manager || owner.id === session.user.id;
 
   // TODO - cache
   let school = await prisma.school.findUnique({ where: { id: id } });
@@ -45,15 +52,5 @@ export default async function RoleRoute({
       />
     );
 
-  return (
-    <div className="flex h-screen w-full items-center justify-center">
-      <div className="flex flex-col items-center gap-4">
-        <span className={`font-grotesque text-9xl font-black opacity-40`}>
-          Unauthorized
-        </span>
-        <span>You don&apos;t have permissions to access this content.</span>
-        <BackButton />
-      </div>
-    </div>
-  );
+  redirect('/school');
 }

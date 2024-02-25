@@ -1,5 +1,9 @@
+'use client';
+
 import AuthSession from '@/lib/auth-session';
 import { Enrollment, Invitation, School, Task } from '@/prisma/client';
+import { useState } from 'react';
+import SearchBar from './search-bar';
 
 // TODO - manage tasks
 export default function Manager({
@@ -15,9 +19,11 @@ export default function Manager({
   invitations: Invitation[];
   enrollments: Enrollment[];
 }) {
+  let [search, setSearch] = useState('');
+
   return (
     <div>
-      <h1>Manage tasks</h1>
+      <SearchBar search={search} setSearch={setSearch} />
     </div>
   );
 }
