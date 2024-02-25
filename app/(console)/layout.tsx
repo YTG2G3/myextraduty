@@ -8,6 +8,7 @@ export default async function AuthLayout({
 }>) {
   let session = await getServerSession();
 
+  // TODO - cache
   let data = await prisma.invitation
     .findMany({
       where: { email: session.user.email }

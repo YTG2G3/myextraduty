@@ -9,6 +9,7 @@ export default async function SchoolLayout({
 }>) {
   let session = await getServerSession();
 
+  // TODO - cache
   let data = await prisma.enrollment
     .findMany({
       where: { userId: session.user.id }
