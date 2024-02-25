@@ -2,15 +2,13 @@
 
 import Link from 'next/link';
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 
 // Imported the menu and viewport separately due to a bug with centering (left-0)
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   NavigationMenu,
-  NavigationMenuViewport
-} from '@radix-ui/react-navigation-menu';
-
-import { Button } from '@/components/ui/button';
-import {
   NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
@@ -18,137 +16,116 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu';
+import { getSchoolData } from '@/lib/get-school-data';
 import useClientSession from '@/lib/use-client-session';
-import { School } from '@/prisma/client';
-import { ChevronDown } from 'lucide-react';
-import { signOut } from 'next-auth/react';
+import { Bell, ChevronLeft } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
-export default function SchoolNav({ schoolData }: { schoolData: School }) {
+export interface SchoolNavData {
+  id: string;
+  name: string;
+  image: string;
+  manager: boolean;
+}
+
+export default function SchoolNav() {
   const session = useClientSession();
   const pathname = usePathname();
+  const [schoolData, setSchoolData] = useState<SchoolNavData>();
+
+  useEffect(() => {
+    if (pathname === '/school') return;
+    const id = pathname.split('/')[2];
+    getSchoolData(id).then((data) => setSchoolData(data));
+  }, [pathname]);
 
   if (pathname === '/school') return null;
 
   return (
     <nav
-      className="grid w-screen bg-white bg-opacity-80 px-7 py-4"
+      className="grid w-screen bg-white bg-opacity-80 pl-5 pr-7 py-4"
       style={{ gridTemplateColumns: ' 1fr 1fr 1fr' }}
     >
-      <Link href="/school">
-        <p className="select-none font-grotesque text-4xl font-extrabold">
-          {schoolData.name}
+      <Link
+        href="/school"
+        className={navigationMenuTriggerStyle() + 'py-4 pr-3 pl-[8px]'}
+      >
+        <ChevronLeft className="w-4 h-4 mr-2" />
+        <p className="select-none font-grotesque text-3xl font-extrabold">
+          {schoolData?.name}
         </p>
-        <ChevronDown className="w-6 h-6" />
       </Link>
 
       <NavigationMenu className="max-w-screen relative z-10 flex flex-1 items-center justify-center">
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="!bg-transparent">
-              About Us
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                <li className="row-span-3">
-                  <NavigationMenuLink asChild>
-                    <Link
-                      className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                      href="/"
-                    >
-                      <div className="mb-2 mt-4 select-none font-grotesque text-lg font-extrabold">
-                        MyED
-                      </div>
-                      <p className="text-sm leading-tight text-muted-foreground">
-                        Simplify extra duty organization. Streamline your
-                        processes and speed up task allocation with
-                        user-friendly platform.
-                      </p>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-
-                <ListItem href="/partner" title="Partners">
-                  Companies, organizations, and schools that we work with.
-                </ListItem>
-
-                <ListItem href="/policy" title="Policies">
-                  Read our terms of service and privacy policy.
-                </ListItem>
-
-                <ListItem href="/contact" title="Contact">
-                  Get in touch with us for any questions or feedback.
-                </ListItem>
-              </ul>
-            </NavigationMenuContent>
+            <NavigationMenuLink
+              href={`/school/${schoolData?.id}/dashboard`}
+              className={navigationMenuTriggerStyle()}
+            >
+              Dashboard
+            </NavigationMenuLink>
           </NavigationMenuItem>
 
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="!bg-transparent">
-              Pricing
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-[300px] gap-3 p-4 md:grid-cols-1">
-                <ListItem href="/pricing" title="Pricing Plans">
-                  Choose a plan that fits your organization&apos;s needs.
-                </ListItem>
-              </ul>
-            </NavigationMenuContent>
+            <NavigationMenuLink
+              href={`/school/${schoolData?.id}/dashboard`}
+              className={navigationMenuTriggerStyle()}
+            >
+              Tasks
+            </NavigationMenuLink>
           </NavigationMenuItem>
+          {schoolData?.manager && (
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="!bg-transparent">
+                Managers
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[300px] gap-3 p-4 md:grid-3">
+                  <ListItem
+                    href={`/school/${schoolData?.id}/member`}
+                    title="Member"
+                  >
+                    Easily manage {schoolData?.name}&apos;s members.
+                  </ListItem>
 
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className="!bg-transparent">
-              Developers
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                <ListItem
-                  href="https://github.com/YTG2G3/myextraduty"
-                  title="GitHub"
-                >
-                  Source code and issue tracking. Only Algorix employees have
-                  access.
-                </ListItem>
+                  <ListItem
+                    href={`/school/${schoolData?.id}/report`}
+                    title="Report"
+                  >
+                    View and download reports for {schoolData?.name}.
+                  </ListItem>
 
-                <ListItem
-                  href="https://www.erdcloud.com/d/RKYWgfFhHoGsDDfn8"
-                  title="Schema"
-                >
-                  Database schema on ERDCloud. Only Algorix employees have
-                  access.
-                </ListItem>
-
-                <ListItem
-                  href="https://discord.com/invite/Qrspk6GqwJ"
-                  title="Discord Server"
-                >
-                  Official Discord server of G2G3 for MyED developers.
-                </ListItem>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
+                  <ListItem
+                    href={`/school/${schoolData?.id}/setting`}
+                    title="Setting"
+                  >
+                    Manage {schoolData?.name}&apos;s settings.
+                  </ListItem>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          )}
         </NavigationMenuList>
-
-        <div className="absolute top-full flex justify-center">
-          <NavigationMenuViewport className="origin-top-center relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 md:w-[var(--radix-navigation-menu-viewport-width)]" />
-        </div>
       </NavigationMenu>
 
-      {authed ? (
-        <div className="flex justify-end">
-          <Link href="/school" className={navigationMenuTriggerStyle()}>
-            Console
-          </Link>
-
-          <Button onClick={() => signOut()} className="ml-3">
-            Sign Out
-          </Button>
+      <div className="flex items-center justify-end gap-1">
+        <Bell
+          className="w-8 h-8 p-2 rounded-full
+                    hover:bg-accent hover:text-accent-foreground
+                    focus:bg-accent focus:text-accent-foreground
+                    focus:outline-none"
+        />
+        <div className="px-2">
+          <Avatar>
+            <AvatarImage src={session.user.image} />
+            <AvatarFallback>
+              <div className="bg-gray-300"></div>
+            </AvatarFallback>
+          </Avatar>
         </div>
-      ) : (
-        <div className="flex justify-end">
-          <Button onClick={() => router.push('/login')}>Sign In</Button>
-        </div>
-      )}
+        <span className="text-sm">{session.user.name}</span>
+      </div>
     </nav>
   );
 }

@@ -1,19 +1,28 @@
 'use client';
 
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
-import { School } from '@/prisma/client';
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function SchoolSelector({ data }: { data: School[] }) {
+interface SchoolSelectorProps {
+  id: string;
+  name: string;
+  image: string;
+}
+
+export default function SchoolSelector({
+  data
+}: {
+  data: SchoolSelectorProps[];
+}) {
   return (
     <div className="flex flex-col justify-around items-center h-screen">
       <div className="font-grotesque text-3xl font-semibold">
         Select school to continue
       </div>
       {data.length > 0 ? (
-        <div className="flex gap-4">
+        <div className="flex gap-6">
           {data.map((school) => (
             <div
               key={school.id}
@@ -21,7 +30,7 @@ export default function SchoolSelector({ data }: { data: School[] }) {
             >
               <Link
                 href={`/school/${school.id}/dashboard`}
-                className="rounded-md p-4 shadow-sm hover:shadow-lg cursor-pointer duration-300"
+                className="rounded-lg p-4 shadow-sm hover:shadow-lg cursor-pointer duration-300"
               >
                 <Image
                   src={school.image}

@@ -1,5 +1,6 @@
 'use client';
 
+import { decide } from '@/lib/decide-invite';
 import { Invitation, School, User } from '@/prisma/client';
 import { CalendarDays, Check, ShieldCheck, X } from 'lucide-react';
 import moment from 'moment-timezone';
@@ -28,11 +29,9 @@ import {
 } from '../ui/tooltip';
 
 export default function InvitationDialog({
-  data,
-  decide
+  data
 }: {
   data: { invitation: Invitation; school: School; owner: User }[];
-  decide: (index: number, accept: boolean) => Promise<boolean>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [decision, setDecision] = useState<boolean[]>(data.map(() => false)); // decided: true, undecided: false
@@ -49,7 +48,7 @@ export default function InvitationDialog({
 
   async function clientDecide(index: number, accept: boolean) {
     setLoading(true);
-    let res = await decide(index, accept);
+    let res = await decide(data, index, accept);
     if (!res) return toast.error('An error occurred. Please try again.');
 
     setDecision(decision.map((d, i) => (i === index ? true : d)));
