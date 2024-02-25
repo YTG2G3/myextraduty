@@ -33,8 +33,8 @@ export default function Nav({
     if (params?.id) setSelectValue(params.id);
     else if (data.length === 0) router.replace('/boarding');
     else {
-      router.replace(`/school/${data[0].school.id}/dashboard`);
       setSelectValue(data[0].school.id);
+      router.replace(`/school/${data[0].school.id}/dashboard`);
     }
   }, [params, data, router]);
 
