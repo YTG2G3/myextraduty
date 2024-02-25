@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import boardingSteps from '@/lib/boarding-steps';
 import useClientSession from '@/lib/use-client-session';
 import { Enrollment, School } from '@/prisma/client';
 import { Separator } from '@radix-ui/react-separator';
@@ -19,7 +18,6 @@ import Link from 'next/link';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-// TODO - prettier margin for navigator and fix avatar weird margin, add a logout button
 export default function Nav({
   data
 }: {
@@ -27,21 +25,22 @@ export default function Nav({
 }) {
   let session = useClientSession();
   let params = useParams<{ id: string }>();
-  let [selectValue, setSelectValue] = useState('new');
+  let [selectValue, setSelectValue] = useState(undefined);
   const router = useRouter();
 
   useEffect(() => {
-    // if no id, redirect to the first school
+    // if no id, redirect to the first school or boarding
     if (params?.id) setSelectValue(params.id);
-    else
-      router.replace(
-        `/school/${data.length > 0 ? data[0].school.id + '/dashboard' : 'new'}`
-      );
+    else if (data.length === 0) router.replace('/boarding');
+    else {
+      router.replace(`/school/${data[0].school.id}/dashboard`);
+      setSelectValue(data[0].school.id);
+    }
   }, [params, data, router]);
 
   function update(v: string) {
     setSelectValue(v);
-    router.push(v === 'new' ? '/school/new' : `/school/${v}/dashboard`);
+    router.push(v === 'new' ? '/boarding' : `/school/${v}/dashboard`);
   }
 
   return (
@@ -109,34 +108,24 @@ export default function Nav({
 
       <Separator className="display-none" />
 
-      {params.id ? (
-        <div className="flex flex-col">
-          <NavItem to="dashboard">Dashboard</NavItem>
-          <NavItem to="task">Tasks</NavItem>
-          <NavItem to="alert">Alerts</NavItem>
+      <div className="flex flex-col">
+        <NavItem to="dashboard">Dashboard</NavItem>
+        <NavItem to="task">Tasks</NavItem>
+        <NavItem to="alert">Alerts</NavItem>
 
-          {data.find((d) => d.school.id === params.id).enrollment.manager ? (
-            <>
-              <Separator className="h-[2px] bg-white opacity-15" />
-              <p className="mb-4 mt-2 text-center text-sm text-muted-foreground">
-                Manager Only
-              </p>
+        {data.find((d) => d.school.id === params.id).enrollment.manager ? (
+          <>
+            <Separator className="h-[2px] bg-white opacity-15" />
+            <p className="mb-4 mt-2 text-center text-sm text-muted-foreground">
+              Manager Only
+            </p>
 
-              <NavItem to="member">Members</NavItem>
-              <NavItem to="report">Reports</NavItem>
-              <NavItem to="setting">Settings</NavItem>
-            </>
-          ) : undefined}
-        </div>
-      ) : (
-        <div className="flex flex-col justify-center">
-          {boardingSteps.map((s, i) => (
-            <StepItem key={i} to={s.to}>
-              {s.name}
-            </StepItem>
-          ))}
-        </div>
-      )}
+            <NavItem to="member">Members</NavItem>
+            <NavItem to="report">Reports</NavItem>
+            <NavItem to="setting">Settings</NavItem>
+          </>
+        ) : undefined}
+      </div>
 
       <div className="flex items-center justify-center overflow-hidden">
         <Avatar>
@@ -170,34 +159,5 @@ function NavItem({ to, children }: { to: string; children: React.ReactNode }) {
     >
       <Link href={`${pathway}/${to}`}>{children}</Link>
     </Button>
-  );
-}
-
-function StepItem({ to, children }: { to: string; children: React.ReactNode }) {
-  let pathname = usePathname();
-  if (!pathname) return <></>;
-
-  // TODO - enable the one that is already complete using sessionStorage (ex. if saved 2, come back to 1, then 2 should still be clickable)
-
-  let path = pathname.substring(pathname.lastIndexOf('/') + 1);
-  let index_path = boardingSteps.findIndex((s) => s.to === path);
-  let index_to = boardingSteps.findIndex((s) => s.to === to);
-
-  return (
-    <div className="flex items-center">
-      <p
-        className={`flex h-8 w-8 select-none items-center justify-center rounded-full border-2 text-lg ${index_path >= index_to ? 'border-solid border-white text-white' : 'border-dotted border-muted-foreground text-muted-foreground'}`}
-      >
-        {index_to}
-      </p>
-
-      <Button
-        asChild
-        variant="link"
-        className={`text-white ${index_path < index_to ? 'pointer-events-none text-muted-foreground' : ''} font-normal`}
-      >
-        <Link href={`/school/new/${to}`}>{children}</Link>
-      </Button>
-    </div>
   );
 }
