@@ -1,5 +1,4 @@
 import getServerSession from '@/lib/get-server-session';
-import { Suspense } from 'react';
 import SchoolNav from './nav';
 
 interface SchoolLayoutProps {
@@ -16,9 +15,7 @@ export default async function SchoolLayout({
   return (
     <div className="h-screen w-screen">
       <SchoolNav />
-      <main className="w-screen">
-        <Suspense>{children}</Suspense>
-      </main>
+      <main className="w-screen">{/* <Suspense>{children}</Suspense> */}</main>
     </div>
   );
 }
