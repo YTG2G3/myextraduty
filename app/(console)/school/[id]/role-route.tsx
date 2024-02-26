@@ -28,7 +28,7 @@ export default async function RoleRoute({
   });
 
   // User is a manager if they are the owner or have been assigned as a manager
-  let manager = enrollment.manager || owner.id === session.user.id;
+  let manager = enrollment.manager || owner?.id === session.user.id;
 
   // TODO - cache
   let school = await prisma.school.findUnique({ where: { id: id } });
