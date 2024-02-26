@@ -21,10 +21,24 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+const MAX_FILE_SIZE = 5000000;
+const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp'
+];
+
 const formSchema = z.object({
   timezone: z.string().min(1),
   name: z.string().min(1),
-  image: z.string().url(),
+  image: z
+    .any()
+    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    .refine(
+      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+      'Only .jpg, .jpeg, .png and .webp formats are supported.'
+    ),
   openingAt: z.string().datetime(),
   quota: z.number().int().nonnegative(),
   maxAssigned: z.number().int().positive(),
@@ -46,7 +60,7 @@ export default function Manager({
     defaultValues: {
       timezone: school.timezone,
       name: school.name,
-      image: school.image,
+      image: '',
       openingAt: school.openingAt.toISOString(),
       quota: school.quota,
       maxAssigned: school.maxAssigned,
@@ -99,7 +113,8 @@ export default function Manager({
 
               <FormControl>
                 <Input
-                  placeholder="Public available link of image"
+                  type="file"
+                  placeholder="Select image of logo"
                   {...field}
                 />
               </FormControl>
@@ -147,13 +162,13 @@ export default function Manager({
 
               <FormDescription>
                 <div className="flex space-x-1">
-                  <p>Displayed in {school.timezone}</p>
+                  <span>Displayed in {school.timezone}</span>
                   {Intl.DateTimeFormat().resolvedOptions().timeZone !==
                   school.timezone ? (
-                    <p>
+                    <div>
                       (local: {Intl.DateTimeFormat().resolvedOptions().timeZone}
                       )
-                    </p>
+                    </div>
                   ) : undefined}
                 </div>
               </FormDescription>
