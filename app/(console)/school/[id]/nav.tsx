@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useParams, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 export default function NavClient({
   data
@@ -23,7 +23,6 @@ export default function NavClient({
   data: { enrollment: Enrollment; school: School };
 }) {
   let session = useClientSession();
-  let params = useParams<{ id: string }>();
 
   return (
     <nav
