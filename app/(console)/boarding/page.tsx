@@ -86,6 +86,7 @@ export default function Boarding() {
         id: 'create-school'
       });
       setTimeout(() => {
+        setSubmitting(false);
         router.push(`/school/${school}/dashboard`);
       }, 600);
     } catch {

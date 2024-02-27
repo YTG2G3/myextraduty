@@ -35,7 +35,7 @@ export default function SchoolSelector({
         </div>
         <div className="flex flex-col justify-center items-center gap-2">
           {data.length > 0 ? (
-            <div className="flex gap-4">
+            <div className="flex gap-4 flex-wrap items-center justify-center px-8">
               {data.map((enrollment) => (
                 <div
                   key={enrollment.school.id}
