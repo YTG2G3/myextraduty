@@ -431,14 +431,14 @@ function StepNavigator({ step }: { step: number }) {
       </div>
       <div>
         {step === 4 ? (
-          <Button disabled={submitting}>
+          <Button type="submit" disabled={submitting}>
             <span className={'flex gap-2 items-center justify-end'}>
               <Check />
               Complete
             </span>
           </Button>
         ) : (
-          <Button disabled={submitting}>
+          <Button type="button" disabled={submitting}>
             <Link
               className={'flex gap-2 items-center justify-end'}
               href={`#${steps[step].toLowerCase()}`}
