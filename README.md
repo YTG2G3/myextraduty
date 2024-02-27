@@ -41,6 +41,14 @@ NEXTAUTH_URL: Redirection URL
 CRON_SECRET: Secret for Cron Jobs
 ```
 
+#### AWS
+
+```
+AWS_ACCESS_KEY: AWS Access Key
+AWS_SECRET: AWS Secret
+AWS_BUCKET_NAME: AWS Bucket Name
+```
+
 ### Considerations
 
 - **Branches**: `main` is the stable branch, `development` is the development branch.
