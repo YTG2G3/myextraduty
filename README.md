@@ -44,7 +44,7 @@ CRON_SECRET: Secret for Cron Jobs
 #### AWS
 
 ```
-AWS_ACCESS_KEY: AWS Access Key
+AWS_ACCESS_TOKEN: AWS Access Key
 AWS_SECRET: AWS Secret
 AWS_BUCKET_NAME: AWS Bucket Name
 ```
