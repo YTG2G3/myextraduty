@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/school/cron",
+      "schedule": "0 7 * * *"
+    }
+  ]
+}
