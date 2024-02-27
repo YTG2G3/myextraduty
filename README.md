@@ -35,6 +35,12 @@ NEXTAUTH_SECRET: JWT Secret
 NEXTAUTH_URL: Redirection URL
 ```
 
+#### Cron Jobs
+
+```
+CRON_SECRET: Secret for Cron Jobs
+```
+
 ### Considerations
 
 - **Branches**: `main` is the stable branch, `development` is the development branch.
