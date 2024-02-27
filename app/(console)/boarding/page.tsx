@@ -82,6 +82,7 @@ export default function Boarding() {
     toast.loading('Creating your school...', { id: 'create-school' });
     try {
       const school = await createSchool(values);
+      if (!school) throw new Error();
       toast.success('School created. Redirecting you shortly.', {
         id: 'create-school'
       });
