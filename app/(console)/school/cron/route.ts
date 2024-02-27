@@ -2,6 +2,12 @@ import moment from 'moment-timezone';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
+  if (
+    req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`
+  ) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   // TODO - cache
   // TODO - make sure the date is in correct timezone
   let tasks = await prisma.task.findMany({
