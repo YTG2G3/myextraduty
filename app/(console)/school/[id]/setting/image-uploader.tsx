@@ -41,6 +41,13 @@ export default function ImageUploader({
       setFilename(e.target.files[0].name);
 
       toast.loading('Uploading image...', { id: 'uploading' });
+
+      if (e.target.files[0].size > 5000000) {
+        toast.error('Image size must be less than 5MB', { id: 'uploading' });
+        setDisabled(false);
+        return;
+      }
+
       await RemoveImage(image);
       try {
         const new_image = await getBase64(e.target.files[0]);
