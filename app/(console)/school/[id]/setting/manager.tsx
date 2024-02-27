@@ -13,6 +13,7 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
 import { TimezoneSelector } from '@/components/ui/timezone-selector';
 import { School } from '@/prisma/client';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,25 +21,11 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-
-const MAX_FILE_SIZE = 5000000;
-const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp'
-];
+import ImageUploader from './image-uploader';
 
 const formSchema = z.object({
   timezone: z.string().min(1),
   name: z.string().min(1),
-  image: z
-    .any()
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
-    .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-      'Only .jpg, .jpeg, .png and .webp formats are supported.'
-    ),
   openingAt: z.string().datetime(),
   quota: z.number().int().nonnegative(),
   maxAssigned: z.number().int().positive(),
@@ -60,7 +47,6 @@ export default function Manager({
     defaultValues: {
       timezone: school.timezone,
       name: school.name,
-      image: '',
       openingAt: school.openingAt.toISOString(),
       quota: school.quota,
       maxAssigned: school.maxAssigned,
@@ -84,160 +70,145 @@ export default function Manager({
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="name"
-          disabled={form.formState.isSubmitting}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>School Name</FormLabel>
+    <div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="name"
+            disabled={form.formState.isSubmitting}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>School Name</FormLabel>
 
-              <FormControl>
-                <Input placeholder="ex. Centennial High School" {...field} />
-              </FormControl>
+                <FormControl>
+                  <Input placeholder="ex. Centennial High School" {...field} />
+                </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="image"
-          disabled={form.formState.isSubmitting}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Logo URL</FormLabel>
+          <FormField
+            control={form.control}
+            name="timezone"
+            disabled={form.formState.isSubmitting}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Timezone</FormLabel>
 
-              <FormControl>
-                <Input
-                  type="file"
-                  placeholder="Select image of logo"
-                  {...field}
+                <FormControl>
+                  <TimezoneSelector
+                    initialValue={field.value || ''}
+                    setTimezone={(value) => {
+                      form.setValue('timezone', value);
+                    }}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="openingAt"
+            disabled={form.formState.isSubmitting}
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Opening At</FormLabel>
+
+                <DateTimePicker
+                  timezone={school.timezone}
+                  value={field.value}
+                  setValue={(d: string) => form.setValue('openingAt', d)}
                 />
-              </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormDescription>
+                  <div className="flex space-x-1">
+                    <span>Displayed in {school.timezone}</span>
+                    {Intl.DateTimeFormat().resolvedOptions().timeZone !==
+                    school.timezone ? (
+                      <div>
+                        (local:{' '}
+                        {Intl.DateTimeFormat().resolvedOptions().timeZone})
+                      </div>
+                    ) : undefined}
+                  </div>
+                </FormDescription>
 
-        <FormField
-          control={form.control}
-          name="timezone"
-          disabled={form.formState.isSubmitting}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Timezone</FormLabel>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-              <FormControl>
-                <TimezoneSelector
-                  initialValue={field.value || ''}
-                  setTimezone={(value) => {
-                    form.setValue('timezone', value);
-                  }}
-                />
-              </FormControl>
+          <FormField
+            control={form.control}
+            name="quota"
+            disabled={form.formState.isSubmitting}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quota</FormLabel>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
 
-        <FormField
-          control={form.control}
-          name="openingAt"
-          disabled={form.formState.isSubmitting}
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Opening At</FormLabel>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-              <DateTimePicker
-                timezone={school.timezone}
-                value={field.value}
-                setValue={(d: string) => form.setValue('openingAt', d)}
-              />
+          <FormField
+            control={form.control}
+            name="maxAssigned"
+            disabled={form.formState.isSubmitting}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Max Assigned</FormLabel>
 
-              <FormDescription>
-                <div className="flex space-x-1">
-                  <span>Displayed in {school.timezone}</span>
-                  {Intl.DateTimeFormat().resolvedOptions().timeZone !==
-                  school.timezone ? (
-                    <div>
-                      (local: {Intl.DateTimeFormat().resolvedOptions().timeZone}
-                      )
-                    </div>
-                  ) : undefined}
-                </div>
-              </FormDescription>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="quota"
-          disabled={form.formState.isSubmitting}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Quota</FormLabel>
+          <FormField
+            control={form.control}
+            name="dropEnabled"
+            render={({ field }) => (
+              <FormItem className="flex items-center">
+                <FormLabel>Drop Enabled</FormLabel>
 
-              <FormControl>
-                <Input type="number" {...field} />
-              </FormControl>
+                <FormControl className="!mt-0 ml-3">
+                  <Checkbox
+                    disabled={form.formState.isSubmitting}
+                    checked={field.value}
+                    onCheckedChange={(c: boolean) =>
+                      form.setValue('dropEnabled', c)
+                    }
+                  />
+                </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="maxAssigned"
-          disabled={form.formState.isSubmitting}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Max Assigned</FormLabel>
-
-              <FormControl>
-                <Input type="number" {...field} />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="dropEnabled"
-          render={({ field }) => (
-            <FormItem className="flex items-center">
-              <FormLabel>Drop Enabled</FormLabel>
-
-              <FormControl className="!mt-0 ml-3">
-                <Checkbox
-                  disabled={form.formState.isSubmitting}
-                  checked={field.value}
-                  onCheckedChange={(c: boolean) =>
-                    form.setValue('dropEnabled', c)
-                  }
-                />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button type="submit" disabled={form.formState.isSubmitting}>
-          Save
-        </Button>
-      </form>
-    </Form>
+          <Button type="submit" disabled={form.formState.isSubmitting}>
+            Save
+          </Button>
+        </form>
+      </Form>
+      <div>
+        <Separator className="mt-4 mb-2" />
+        <ImageUploader image={school.image} school_id={school.id} />
+      </div>
+    </div>
   );
 }
