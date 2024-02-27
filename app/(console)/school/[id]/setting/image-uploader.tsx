@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import RemoveImage from '@/lib/actions/remove-image';
 import UploadImage, { ModifySchoolImage } from '@/lib/actions/upload-image';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -15,7 +14,6 @@ export default function ImageUploader({
 }) {
   const [filename, setFilename] = useState('');
   const inputFile = useRef(null);
-  const router = useRouter();
   const [disabled, setDisabled] = useState(false);
 
   const handleClick = () => {
@@ -68,13 +66,13 @@ export default function ImageUploader({
         <Image
           src={image}
           alt="logo"
-          width={80}
-          height={80}
-          className="rounded-lg"
+          width={120}
+          height={120}
+          className="rounded-lg shadow-md"
         />
         <div className="flex gap-3">
           <Button variant="outline" onClick={handleClick}>
-            Upload
+            Upload new image
           </Button>
           <span>{filename}</span>
         </div>

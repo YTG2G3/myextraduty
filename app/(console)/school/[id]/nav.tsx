@@ -106,11 +106,16 @@ function NavItem({
   return (
     <Link
       className={
-        'hover:underline hover:text-black text-muted-foreground flex items-center gap-2'
+        'hover:underline hover:text-black text-muted-foreground flex items-center gap-1'
       }
       href={`${pathway}/${to}`}
     >
-      <span className={path === to ? 'text-black' : ''}>{icon}</span>
+      <span
+        className={path === to ? 'text-black' : ''}
+        style={{ transform: 'scale(0.7)' }}
+      >
+        {icon}
+      </span>
       <span className={path === to ? 'text-black' : ''}>{name}</span>
     </Link>
   );

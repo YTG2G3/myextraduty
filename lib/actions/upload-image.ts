@@ -9,7 +9,7 @@ export default async function UploadImage(image_base64: string) {
 
   // convert base64 to buffer
   const buffer = await sharp(Buffer.from(image_base64, 'base64'))
-    .resize(300, 300, { fit: 'contain' })
+    .resize(300, 300, { fit: 'contain', background: '#FFFFFF' })
     .toFormat('png', { quality: 100 })
     .toBuffer();
 

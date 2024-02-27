@@ -13,7 +13,6 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
 import { TimezoneSelector } from '@/components/ui/timezone-selector';
 import { School } from '@/prisma/client';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -70,9 +69,15 @@ export default function Manager({
   }
 
   return (
-    <div>
+    <div className="w-full h-full flex gap-2 py-4">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 w-[500px] border-r-2 border-gray-200 pr-8"
+        >
+          <h1 className="text-2xl font-semibold font-grotesque">
+            Manage Basic Information
+          </h1>
           <FormField
             control={form.control}
             name="name"
@@ -128,7 +133,9 @@ export default function Manager({
 
                 <FormDescription>
                   <div className="flex space-x-1">
-                    <span>Displayed in {school.timezone}</span>
+                    <span className="text-black">
+                      Displayed in {school.timezone}
+                    </span>
                     {Intl.DateTimeFormat().resolvedOptions().timeZone !==
                     school.timezone ? (
                       <div>
@@ -205,8 +212,7 @@ export default function Manager({
           </Button>
         </form>
       </Form>
-      <div>
-        <Separator className="mt-4 mb-2" />
+      <div className="px-2">
         <ImageUploader image={school.image} school_id={school.id} />
       </div>
     </div>
