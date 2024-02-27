@@ -3,7 +3,7 @@
 import { Invitation, School, User } from '@/prisma/client';
 import getServerSession from '../get-server-session';
 
-export async function decide(
+export async function invitationDecide(
   data: { invitation: Invitation; school: School; owner: User }[],
   index: number,
   accept: boolean

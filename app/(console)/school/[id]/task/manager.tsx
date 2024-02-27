@@ -3,7 +3,7 @@
 import AuthSession from '@/lib/auth-session';
 import { Enrollment, Invitation, School, Task } from '@/prisma/client';
 import { useState } from 'react';
-import SearchBar from './search-bar';
+import SearchBar from '../../../../../components/utils/search-bar';
 
 // TODO - manage tasks
 export default function Manager({
