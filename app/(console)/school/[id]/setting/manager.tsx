@@ -69,11 +69,14 @@ export default function Manager({
   }
 
   return (
-    <div className="w-full h-full flex gap-2 py-4">
+    <div
+      className="w-full h-full grid gap-2 py-4"
+      style={{ gridTemplateColumns: 'auto auto' }}
+    >
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-[500px] border-r-2 border-gray-200 pr-8"
+          className="space-y-8 border-r-2 border-gray-200 pr-8"
         >
           <h1 className="text-2xl font-semibold font-grotesque">
             Manage Basic Information

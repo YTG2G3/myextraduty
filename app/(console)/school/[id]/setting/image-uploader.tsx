@@ -12,7 +12,6 @@ export default function ImageUploader({
   image: string;
   school_id: string;
 }) {
-  const [filename, setFilename] = useState('');
   const inputFile = useRef(null);
   const [disabled, setDisabled] = useState(false);
 
@@ -38,7 +37,6 @@ export default function ImageUploader({
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setDisabled(true);
-      setFilename(e.target.files[0].name);
 
       toast.loading('Uploading image...', { id: 'uploading' });
 
@@ -81,7 +79,6 @@ export default function ImageUploader({
           <Button variant="outline" onClick={handleClick}>
             Upload new image
           </Button>
-          <span>{filename}</span>
         </div>
         <input
           type="file"
