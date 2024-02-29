@@ -15,7 +15,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { TimezoneSelector } from '@/components/ui/timezone-selector';
-import { useSubmitting } from '@/hooks/states';
 import { createSchool } from '@/lib/actions/create-school';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -25,6 +24,17 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { create } from 'zustand';
+
+export interface SubmittingState {
+  submitting: boolean;
+  setSubmitting: (loading: boolean) => void;
+}
+
+const useSubmitting = create<SubmittingState>((set) => ({
+  submitting: false,
+  setSubmitting: (submitting) => set({ submitting })
+}));
 
 const formSchema = z.object({
   timezone: z.string().min(1),

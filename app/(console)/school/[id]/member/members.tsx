@@ -30,6 +30,7 @@ import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import moment from 'moment-timezone';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { useMemberTable } from './manager';
 
 interface Member {
   id: string;
@@ -51,6 +52,7 @@ export default function MemberTable({
   school: School;
   enrollments: MemberEnrollmentProp[];
 }) {
+  const setReady = useMemberTable((state) => state.setReady);
   const [data, setData] = useState<Member[]>([]);
   const [columns, setColumns] = useState<ColumnDef<Member>[]>([]);
 
@@ -148,7 +150,7 @@ export default function MemberTable({
         header: ({ column }) => {
           return (
             <div className="flex items-center gap-2">
-              Joined At
+              Joined At ({school.timezone})
               <Button
                 variant="ghost"
                 onClick={() =>
@@ -216,7 +218,8 @@ export default function MemberTable({
       });
       setData(members);
     }
-  }, [enrollments, school]);
+    setReady(true);
+  }, [enrollments, school, setReady]);
 
   const table = useReactTable({
     data,

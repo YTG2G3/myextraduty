@@ -30,6 +30,7 @@ import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import moment from 'moment-timezone';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { useInvitationTable } from './manager';
 
 interface InvitationTable {
   id: string;
@@ -46,6 +47,7 @@ export default function InvitationTable({
   school: School;
   invitations: Invitation[];
 }) {
+  const setReady = useInvitationTable((state) => state.setReady);
   const [data, setData] = useState<InvitationTable[]>([]);
   const [columns, setColumns] = useState<ColumnDef<InvitationTable>[]>([]);
 
@@ -124,7 +126,7 @@ export default function InvitationTable({
         header: ({ column }) => {
           return (
             <div className="flex items-center gap-2">
-              Invited At
+              Invited At ({school.timezone})
               <Button
                 variant="ghost"
                 onClick={() =>
@@ -188,7 +190,8 @@ export default function InvitationTable({
       });
       setData(invitation);
     }
-  }, [invitations, school]);
+    setReady(true);
+  }, [invitations, school, setReady]);
 
   const table = useReactTable({
     data,
