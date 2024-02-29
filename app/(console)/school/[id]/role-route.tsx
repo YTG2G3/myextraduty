@@ -42,7 +42,10 @@ export default async function RoleRoute({
     ? await prisma.invitation.findMany({ where: { schoolId: id } })
     : null;
   let enrollments = manager
-    ? await prisma.enrollment.findMany({ where: { schoolId: id } })
+    ? await prisma.enrollment.findMany({
+        where: { schoolId: id },
+        include: { user: true }
+      })
     : null;
 
   if (manager)
