@@ -53,6 +53,7 @@ export default function SchoolSelector({
                       alt={`${enrollment.school.name} logo`}
                       width={150}
                       height={150}
+                      priority={true}
                     />
                   </Link>
                   <span>{enrollment.school.name}</span>

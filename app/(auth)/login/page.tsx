@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 export default function SignIn() {
   return (
-    <div className="h-screen w-screen">
+    <div className="h-screen w-screen overflow-hidden">
       <div className="flex justify-center mt-4 items-center">
         <Link href="/" className={navigationMenuTriggerStyle()}>
           <span className="text-xl text-center font-grotesque font-light">

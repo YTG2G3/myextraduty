@@ -90,7 +90,7 @@ export default function Manager({
                 <FormLabel>School Name</FormLabel>
 
                 <FormControl>
-                  <Input placeholder="ex. Centennial High School" {...field} />
+                  <Input placeholder="Centennial High School" {...field} />
                 </FormControl>
 
                 <FormMessage />
@@ -142,7 +142,7 @@ export default function Manager({
                     {Intl.DateTimeFormat().resolvedOptions().timeZone !==
                     school.timezone ? (
                       <div>
-                        (local:{' '}
+                        (Local:{' '}
                         {Intl.DateTimeFormat().resolvedOptions().timeZone})
                       </div>
                     ) : undefined}

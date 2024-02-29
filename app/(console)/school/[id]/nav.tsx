@@ -44,6 +44,7 @@ export default function NavClient({
             width={80}
             height={80}
             className="rounded-md shadow-md"
+            priority={true}
           />
           <span>{data.school.name}</span>
         </div>

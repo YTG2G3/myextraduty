@@ -74,6 +74,7 @@ export default function ImageUploader({
           width={120}
           height={120}
           className="rounded-lg shadow-md"
+          priority={true}
         />
         <div className="flex gap-3">
           <Button variant="outline" onClick={handleClick}>
