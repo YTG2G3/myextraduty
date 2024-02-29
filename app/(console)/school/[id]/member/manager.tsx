@@ -17,7 +17,6 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import { useSearch } from '@/hooks/states';
 import AuthSession from '@/lib/auth-session';
 import { Enrollment, Invitation, School, Task, User } from '@/prisma/client';
 import {
@@ -60,16 +59,11 @@ export default function Manager({
   invitations: Invitation[];
   enrollments: MemberEnrollmentProp[];
 }) {
-  const [query, clearQuery] = useSearch((props) => [
-    props.query,
-    props.clearQuery
-  ]);
   const [data, setData] = useState<Member[]>([]);
-  const [memberColumns, setMemberColumns] = useState<ColumnDef<Member>[]>([]);
+  const [columns, setColumns] = useState<ColumnDef<Member>[]>([]);
 
-  useEffect(() => {
-    clearQuery();
-  }, [clearQuery]);
+  const [rowSelection, setRowSelection] = useState({});
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const checkAllSelected = (table) => {
     return (
@@ -79,7 +73,7 @@ export default function Manager({
   };
 
   useEffect(() => {
-    setMemberColumns([
+    setColumns([
       {
         id: 'select',
         header: ({ table }) => (
@@ -232,29 +226,6 @@ export default function Manager({
     }
   }, [enrollments, school]);
 
-  // TODO - finish this based on proper logic to load member names
-  return (
-    <HeaderWrapper title="Members">
-      <div className="flex flex-col gap-2">
-        <div>menuarea</div>
-        <DataTable columns={memberColumns} data={data} />
-      </div>
-    </HeaderWrapper>
-  );
-}
-
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}
-
-export function DataTable<TData, TValue>({
-  columns,
-  data
-}: DataTableProps<TData, TValue>) {
-  const [rowSelection, setRowSelection] = useState({});
-  const [sorting, setSorting] = useState<SortingState>([]);
-
   const table = useReactTable({
     data,
     columns,
@@ -268,67 +239,62 @@ export function DataTable<TData, TValue>({
     }
   });
 
-  useEffect(() => {
-    if (table.getState().columnFilters[0]?.id === 'fullName') {
-      if (table.getState().sorting[0]?.id !== 'fullName') {
-        table.setSorting([{ id: 'fullName', desc: false }]);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [table.getState().columnFilters[0]?.id]);
-
+  // TODO - finish this based on proper logic to load member names
   return (
-    <div>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+    <HeaderWrapper title="Members">
+      <div className="flex flex-col gap-2">
+        <div>menuarea</div>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
-    </div>
+    </HeaderWrapper>
   );
 }
