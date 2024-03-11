@@ -3,7 +3,6 @@
 import AuthSession from '@/lib/auth-session';
 import { Enrollment, Invitation, School, Task } from '@/prisma/client';
 import { useState } from 'react';
-import SearchBar from '../../../../../components/utils/search-bar';
 
 // TODO - manage tasks
 export default function Manager({
@@ -21,9 +20,5 @@ export default function Manager({
 }) {
   let [search, setSearch] = useState('');
 
-  return (
-    <div>
-      <SearchBar search={search} setSearch={setSearch} />
-    </div>
-  );
+  return <div>{/* <SearchBar search={search} setSearch={setSearch} /> */}</div>;
 }
