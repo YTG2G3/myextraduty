@@ -106,11 +106,7 @@ export default function Manager({
         id="masonry"
         src="https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
       />
-      <div
-        className="w-full"
-        data-masonry='{ "itemSelector": ".grid-item", "columnWidth": "grid-size,"percentPosition: true }'
-      >
-        <div id="grid-size" className="w-1/3" />
+      <div className="w-full" data-masonry='{ "itemSelector": ".grid-item"}'>
         {randomTask.map((task) => (
           <TaskCard key={task.id} task={task} />
         ))}
@@ -121,7 +117,7 @@ export default function Manager({
 
 function TaskCard({ task }: { task: Task }) {
   return (
-    <Card className="break-all grid-item w-1/3">
+    <Card className="break-all float-left grid-item w-[31%] mr-4 mb-4">
       <CardHeader>
         <CardTitle>{task.title}</CardTitle>
         <CardDescription>Category: {task.category}</CardDescription>
