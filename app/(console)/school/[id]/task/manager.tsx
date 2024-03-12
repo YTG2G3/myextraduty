@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card';
 import AuthSession from '@/lib/auth-session';
 import { Enrollment, Invitation, School, Task } from '@/prisma/client';
+import Script from 'next/script';
 import { useState } from 'react';
 
 // TODO - manage tasks
@@ -28,12 +29,99 @@ export default function Manager({
 }) {
   let [search, setSearch] = useState('');
 
-  return <div>{/* <SearchBar search={search} setSearch={setSearch} /> */}</div>;
+  const randomTask: Task[] = [
+    {
+      id: 'asdf',
+      schoolId: 'sadf',
+      category: 'asdf',
+      title: 'title',
+      description:
+        'asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf',
+      startingDate: new Date(),
+      endingDate: new Date(),
+      startingTime: new Date(),
+      endingTime: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: 'asdf',
+      schoolId: 'sadf',
+      category: 'asdf',
+      title: 'title',
+      description: 'asdf',
+      startingDate: new Date(),
+      endingDate: new Date(),
+      startingTime: new Date(),
+      endingTime: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: 'asdf',
+      schoolId: 'sadf',
+      category: 'asdf',
+      title: 'title',
+      description: 'asdf',
+      startingDate: new Date(),
+      endingDate: new Date(),
+      startingTime: new Date(),
+      endingTime: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: 'asdf',
+      schoolId: 'sadf',
+      category: 'asdf',
+      title: 'title',
+      description: 'asdf',
+      startingDate: new Date(),
+
+      endingDate: new Date(),
+      startingTime: new Date(),
+      endingTime: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: 'asdf',
+      schoolId: 'sadf',
+      category: 'asdf',
+      title: 'title',
+      description: 'asdf',
+      startingDate: new Date(),
+
+      endingDate: new Date(),
+      startingTime: new Date(),
+      endingTime: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  ];
+
+  return (
+    <div>
+      <Script
+        id="masonry"
+        src="https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
+      />
+      <div
+        className="w-full"
+        data-masonry='{ "itemSelector": ".grid-item", "columnWidth": "grid-size,"percentPosition: true }'
+      >
+        <div id="grid-size" className="w-1/3" />
+        {randomTask.map((task) => (
+          <TaskCard key={task.id} task={task} />
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function TaskCard({ task }: { task: Task }) {
   return (
-    <Card>
+    <Card className="break-all grid-item w-1/3">
       <CardHeader>
         <CardTitle>{task.title}</CardTitle>
         <CardDescription>Category: {task.category}</CardDescription>
