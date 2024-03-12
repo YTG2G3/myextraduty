@@ -86,7 +86,7 @@ export default function SchoolSelector({
           )}
         </div>
         <Link href="/boarding" className={navigationMenuTriggerStyle()}>
-          <span className="flex gap-2 items-center text-muted-background text-sm">
+          <span className="flex gap-2 items-center text-muted-foreground text-sm">
             <Plus className="w-4 h-4" />
             Create a new school
           </span>
