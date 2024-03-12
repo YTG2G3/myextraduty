@@ -26,7 +26,7 @@ export default function NavClient({
 
   return (
     <nav
-      className="grid h-screen w-72 gap-2 bg-gray-200 border-r-2 border-gray-300 p-6"
+      className="grid h-screen w-72 gap-2 bg-secondary p-6 pr-2"
       style={{ gridTemplateRows: 'auto auto 1fr auto' }}
     >
       <div className="mb-2">
@@ -72,7 +72,7 @@ export default function NavClient({
         ) : undefined}
       </div>
 
-      <div className="flex items-center justify-center overflow-hidden">
+      <div className="flex items-center overflow-hidden">
         <Avatar>
           <AvatarImage src={session.user.image} />
           <AvatarFallback>{session.user.name}</AvatarFallback>
