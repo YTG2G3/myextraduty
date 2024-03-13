@@ -7,6 +7,7 @@ import InvitationDialog from '@/components/utils/invitation-dialog';
 import useClientSession from '@/lib/use-client-session';
 import { Invitation, School, User } from '@/prisma/client';
 import { Plus } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { SchoolSelectorData } from './page';
@@ -30,8 +31,24 @@ export default function SchoolSelector({
   return (
     <div className="w-screen">
       <div className="flex flex-col justify-around items-center h-screen">
-        <div className="font-grotesque text-3xl font-semibold">
+        <div className="font-grotesque text-3xl font-semibold flex flex-col items-center gap-2">
           Select school to continue
+          <span className="text-sm font-light flex flex-row items-center gap-1.5">
+            <img
+              alt="pfp"
+              width={20}
+              height={20}
+              className="rounded-full"
+              src={session.user.image}
+            />
+            <span>Logged in as {session.user.name}</span>
+            <span
+              className="text-muted-foreground hover:text-gray-700 cursor-pointer"
+              onClick={() => signOut()}
+            >
+              Sign out
+            </span>
+          </span>
         </div>
         <div className="flex flex-col justify-center items-center gap-2">
           {data.length > 0 ? (
