@@ -1,12 +1,19 @@
 'use client';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip';
 import useClientSession from '@/lib/use-client-session';
 import { Enrollment, School } from '@/prisma/client';
 import { Separator } from '@radix-ui/react-separator';
 import {
   Bell,
   ChevronLeft,
+  ChevronLeftCircle,
   ChevronRight,
   ClipboardPenLine,
   Cog,
@@ -54,8 +61,13 @@ export default function NavClient({
           className={`flex text-sm text-muted-foreground hover:underline hover:text-black items-center gap-1
                       ${collapsed ? 'justify-center' : ''}`}
         >
-          <ChevronLeft size={collapsed ? 18 : 15} />
-          {collapsed ? '' : 'Select another school'}
+          {collapsed ? (
+            <ChevronLeftCircle size={20} />
+          ) : (
+            <div>
+              <ChevronLeft size={15} /> Select another school
+            </div>
+          )}
         </Link>
         <div className="mt-4 flex gap-4 items-center">
           <Image
@@ -66,9 +78,13 @@ export default function NavClient({
             className="rounded-md shadow-md"
             priority={true}
           />
-          <span className="text-sm text-muted-foreground">
-            {data.school.name}
-          </span>
+          {collapsed ? (
+            ''
+          ) : (
+            <span className="text-sm text-muted-foreground">
+              {data.school.name}
+            </span>
+          )}
         </div>
       </div>
 
@@ -83,7 +99,9 @@ export default function NavClient({
 
         {data.enrollment.manager ? (
           <>
-            <Separator className="h-[1.5px] bg-black opacity-15" />
+            <Separator
+              className={`h-[1.5px] bg-black opacity-15 ${collapsed ? 'w-[48px]' : ''}`}
+            />
             {collapsed ? '' : <p className="text-sm ml-3">Manager Only</p>}
             <div className="flex flex-col gap-1">
               <NavItem to="member" name="Members" icon={<Users />} />
@@ -102,8 +120,10 @@ export default function NavClient({
             <AvatarImage src={session.user.image} />
             <AvatarFallback>{session.user.name}</AvatarFallback>
           </Avatar>
-          <div className="ml-3 overflow-hidden">
-            <p className="truncate">{!collapsed ? session.user.name : <></>}</p>
+          <div className="overflow-hidden">
+            <p className="truncate ml-3">
+              {!collapsed ? session.user.name : undefined}
+            </p>
           </div>
         </div>
         <div
@@ -111,7 +131,7 @@ export default function NavClient({
           onClick={() => setCollapsed(!collapsed)}
         >
           {collapsed ? <ChevronRight /> : <ChevronLeft />}
-          {collapsed ? '' : 'Collapse'}
+          {collapsed ? undefined : 'Collapse'}
         </div>
       </div>
     </Nav>
@@ -143,13 +163,22 @@ function NavItem({
 
   if (collapsed) {
     return (
-      <Link href={`${pathway}/${to}`} className="flex items-center">
-        <div
-          className={`flex items-center hover:bg-gray-200 text-muted-foreground rounded-full p-3 ${active ? 'bg-gray-200' : ''}`}
-        >
-          <span className={active ? 'text-black' : ''}>{icon}</span>
-        </div>
-      </Link>
+      <TooltipProvider>
+        <Tooltip delayDuration={0}>
+          <TooltipTrigger>
+            <Link href={`${pathway}/${to}`} className="flex items-center">
+              <div
+                className={`flex items-center hover:bg-gray-200 text-muted-foreground rounded-full p-3 ${active ? 'bg-gray-200' : ''}`}
+              >
+                <span className={active ? 'text-black' : ''}>{icon}</span>
+              </div>
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="right" sideOffset={18}>
+            <p>{name}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   } else {
     return (
