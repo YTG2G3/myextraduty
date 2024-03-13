@@ -7,6 +7,9 @@ const nextConfig = {
         hostname: 'myed.s3.amazonaws.com'
       }
     ]
+  },
+  compiler: {
+    styledComponents: true
   }
 };
 
