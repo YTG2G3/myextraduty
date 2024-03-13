@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
-import RemoveImage from '@/lib/actions/remove-image';
-import UploadImage, { ModifySchoolImage } from '@/lib/actions/upload-image';
+import removeImage from '@/lib/actions/remove-image';
+import uploadImage, { modifySchoolImage } from '@/lib/actions/upload-image';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -46,12 +46,12 @@ export default function ImageUploader({
         return;
       }
 
-      await RemoveImage(image);
+      await removeImage(image);
       try {
         const new_image = await getBase64(e.target.files[0]);
 
-        const key = await UploadImage(new_image);
-        await ModifySchoolImage(key, school_id);
+        const key = await uploadImage(new_image);
+        await modifySchoolImage(key, school_id);
         toast.success('Image uploaded', { id: 'uploading' });
       } catch {
         toast.error('Failed to upload image', { id: 'uploading' });

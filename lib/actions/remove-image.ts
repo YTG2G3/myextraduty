@@ -2,7 +2,7 @@
 import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { s3 } from '../amazon';
 
-export default async function RemoveImage(url: string) {
+export default async function removeImage(url: string) {
   let key = url.split('/').pop();
   // replace + with space
   key = key.replace(/\+/g, ' ');

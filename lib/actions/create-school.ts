@@ -1,6 +1,6 @@
 'use server';
 
-import UploadImage from '@/lib/actions/upload-image';
+import uploadImage from '@/lib/actions/upload-image';
 import getServerSession from '@/lib/get-server-session';
 import { z } from 'zod';
 
@@ -22,7 +22,7 @@ export async function createSchool(value: z.infer<typeof formSchema>) {
 
   // upload image
   try {
-    const image_key = await UploadImage(value.image);
+    const image_key = await uploadImage(value.image);
     // create school
     const school = await prisma.school.create({
       data: {

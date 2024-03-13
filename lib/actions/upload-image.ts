@@ -4,7 +4,7 @@ import { PutObjectCommand } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
 import { v4 } from 'uuid';
 
-export default async function UploadImage(image_base64: string) {
+export default async function uploadImage(image_base64: string) {
   const key = v4();
 
   // convert base64 to buffer
@@ -29,7 +29,7 @@ export default async function UploadImage(image_base64: string) {
   }
 }
 
-export async function ModifySchoolImage(key: string, school_id: string) {
+export async function modifySchoolImage(key: string, school_id: string) {
   const full_url = `https://${process.env.AWS_BUCKET}.s3.amazonaws.com/${key}.png`;
   try {
     await prisma.school.update({

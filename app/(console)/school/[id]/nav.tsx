@@ -26,7 +26,7 @@ export default function NavClient({
 
   return (
     <nav
-      className="grid h-screen w-72 gap-2 bg-secondary p-6 pr-2"
+      className="grid h-screen min-w-72 gap-2 bg-secondary p-6 pr-2"
       style={{ gridTemplateRows: 'auto auto 1fr auto' }}
     >
       <div className="mb-2">

@@ -7,6 +7,16 @@ import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -15,11 +25,13 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import inviteMember from '@/lib/actions/invite-member';
 import { ColDef } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css'; // Mandatory
 import 'ag-grid-community/styles/ag-theme-quartz.css'; // Optional Theme applied to the grid
 import { AgGridReact } from 'ag-grid-react';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, Search, SendHorizonal, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { create } from 'zustand';
 
@@ -78,6 +90,9 @@ export default function Manager({
 
   const [quickMemberFilter, setQuickMemberFilter] = useState('');
   const [quickInvitationFilter, setQuickInvitationFilter] = useState('');
+
+  const [isMemberSearching, setIsMemberSearching] = useState(false);
+  const [isInvitationSearching, setIsInvitationSearching] = useState(false);
 
   const [memberColumns] = useState<ColDef[]>([
     {
@@ -163,13 +178,35 @@ export default function Manager({
   return (
     <div>
       <div className="flex flex-col gap-4 w-full h-screen overflow-auto p-12">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           <h1 className="text-4xl font-semibold">Invitations</h1>
-          <Input
-            type="text"
-            placeholder="Search from invitations"
-            onChange={(e) => setQuickInvitationFilter(e.target.value)}
-          />
+          {isInvitationSearching ? (
+            <div className="flex gap-2">
+              <Button
+                onClick={() => {
+                  setQuickInvitationFilter('');
+                  setIsInvitationSearching(false);
+                }}
+              >
+                <X />
+              </Button>
+              <Input
+                type="text"
+                placeholder="Search from invitations"
+                onChange={(e) => setQuickInvitationFilter(e.target.value)}
+              />
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <Button
+                onClick={() => setIsInvitationSearching(true)}
+                className="flex"
+              >
+                <Search />
+              </Button>
+              <InviteDialog />
+            </div>
+          )}
           <div className="w-full h-60 ag-theme-quartz">
             <AgGridReact<InvitationTable>
               rowData={invitationData}
@@ -185,13 +222,34 @@ export default function Manager({
             />
           </div>
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           <h1 className="text-4xl font-semibold">Members</h1>
-          <Input
-            type="text"
-            placeholder="Search from members"
-            onChange={(e) => setQuickMemberFilter(e.target.value)}
-          />
+          {isMemberSearching ? (
+            <div className="flex gap-2">
+              <Button
+                onClick={() => {
+                  setQuickInvitationFilter('');
+                  setIsMemberSearching(false);
+                }}
+              >
+                <X />
+              </Button>
+              <Input
+                type="text"
+                placeholder="Search from members"
+                onChange={(e) => setQuickMemberFilter(e.target.value)}
+              />
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <Button
+                onClick={() => setIsMemberSearching(true)}
+                className="flex"
+              >
+                <Search />
+              </Button>
+            </div>
+          )}
           <div className="w-full h-96 ag-theme-quartz">
             <AgGridReact<Member>
               rowData={memberData}
@@ -297,5 +355,82 @@ function MemberAction(props) {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+  );
+}
+
+function InviteDialog() {
+  const [email, setEmail] = useState('');
+  const [disabled, setDisabled] = useState(false);
+
+  const handleInvite = async () => {
+    setDisabled(true);
+    toast.loading('Inviting user...', { id: 'invite' });
+    const emailregex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailregex.test(email)) {
+      toast.error('Email is invalid.', { id: 'invite' });
+      setDisabled(false);
+      return;
+    }
+    try {
+      await inviteMember(SchoolState.getState().school.id, email);
+      toast.success('User invited.', { id: 'invite' });
+    } catch (e) {
+      if (e instanceof Error) toast.error(e.message);
+      else toast.error('Failed to invite user.', { id: 'invite' });
+    } finally {
+      setDisabled(false);
+    }
+  };
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" className="flex flex-row gap-2">
+          <SendHorizonal /> Invite
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Invite member</DialogTitle>
+          <DialogDescription>
+            Put in the email address of the person you want to invite.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex items-center space-x-2">
+          <div className="grid flex-1 gap-2">
+            <Label htmlFor="link" className="sr-only">
+              Email
+            </Label>
+            <Input
+              value={email}
+              id="email"
+              placeholder="mingeon.kim@algorix.io"
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              disabled={disabled}
+            />
+          </div>
+        </div>
+        <DialogFooter className="sm:justify-start">
+          <div className="w-full flex flex-col items-end">
+            <div>
+              <DialogClose asChild>
+                <Button variant="outline" className="mr-2" disabled={disabled}>
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button
+                onClick={() => handleInvite()}
+                className="mt-2"
+                disabled={disabled}
+              >
+                Invite
+              </Button>
+            </div>
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
