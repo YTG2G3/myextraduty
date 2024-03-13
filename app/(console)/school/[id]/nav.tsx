@@ -7,6 +7,7 @@ import { Separator } from '@radix-ui/react-separator';
 import {
   Bell,
   ChevronLeft,
+  ChevronRight,
   ClipboardPenLine,
   Cog,
   LayoutDashboard,
@@ -107,9 +108,9 @@ export default function NavClient({
         </div>
         <div
           className={`flex flex-row gap-3 p-3 hover:bg-gray-200 cursor-default ${collapsed ? 'rounded-full' : 'rounded-md'}`}
-          onClick={() => setCollapsed(true)}
+          onClick={() => setCollapsed(!collapsed)}
         >
-          <ChevronLeft />
+          {collapsed ? <ChevronRight /> : <ChevronLeft />}
           {collapsed ? '' : 'Collapse'}
         </div>
       </div>
@@ -142,9 +143,9 @@ function NavItem({
 
   if (collapsed) {
     return (
-      <Link href={`${pathway}/${to}`} className="flex items-center w-full">
+      <Link href={`${pathway}/${to}`} className="flex items-center">
         <div
-          className={`flex items-center hover:bg-gray-200 text-muted-foreground rounded-full p-3 w-full ${active ? 'bg-gray-200' : ''}`}
+          className={`flex items-center hover:bg-gray-200 text-muted-foreground rounded-full p-3 ${active ? 'bg-gray-200' : ''}`}
         >
           <span className={active ? 'text-black' : ''}>{icon}</span>
         </div>
