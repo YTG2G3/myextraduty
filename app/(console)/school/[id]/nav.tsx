@@ -145,7 +145,7 @@ export default function NavClient({
         </TooltipProvider>
       ) : (
         <div className="flex flex-col gap-1 font-medium">
-          <div className="flex items-center overflow-hidden p-3 hover:bg-gray-200 rounded-md">
+          <div className="flex items-center overflow-hidden p-3 hover:bg-gray-200 cursor-pointer rounded-md">
             <Avatar className="w-6 h-6">
               <AvatarImage src={session.user.image} />
               <AvatarFallback>{session.user.name}</AvatarFallback>
@@ -154,11 +154,14 @@ export default function NavClient({
               <p className="truncate ml-3">{session.user.name}</p>
             </div>
           </div>
-          <div className="flex flex-row items-center hover:bg-gray-200 gap-3 truncate p-3 rounded-md">
+          <div
+            onClick={() => router.push('/school')}
+            className="flex flex-row items-center cursor-pointer hover:bg-gray-200 gap-3 truncate p-3 rounded-md"
+          >
             <SchoolIcon /> Select another school
           </div>
           <div
-            className="flex flex-row gap-3 p-3 hover:bg-gray-200 cursor-default rounded-md"
+            className="flex flex-row gap-3 p-3 hover:bg-gray-200 cursor-pointer rounded-md"
             onClick={() => setCollapsed(true)}
           >
             <ChevronLeft /> <span>Collapse</span>
