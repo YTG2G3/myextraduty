@@ -90,7 +90,6 @@ export default function NavClient({
             <Separator
               className={`h-[1.5px] bg-black opacity-15 ${collapsed ? 'w-[48px]' : ''}`}
             />
-            {collapsed ? '' : <p className="text-sm ml-3">Manager Only</p>}
             <div className="flex flex-col gap-1">
               <NavItem to="member" name="Members" icon={<Users />} />
               <NavItem to="report" name="Reports" icon={<ClipboardPenLine />} />
