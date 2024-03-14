@@ -13,17 +13,17 @@ import { Separator } from '@radix-ui/react-separator';
 import {
   Bell,
   ChevronLeft,
-  ChevronLeftCircle,
   ChevronRight,
   ClipboardPenLine,
   Cog,
   LayoutDashboard,
   ListTodo,
+  SchoolIcon,
   Users
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { create } from 'zustand';
@@ -44,6 +44,7 @@ export default function NavClient({
   data: { enrollment: Enrollment; school: School };
 }) {
   const session = useClientSession();
+  const router = useRouter();
   const [collapsed, setCollapsed] = navState((state) => [
     state.collapsed,
     state.setCollapsed
@@ -52,24 +53,11 @@ export default function NavClient({
   return (
     <Nav
       $collapsed={collapsed}
-      className="grid h-screen gap-2 bg-secondary p-6 pr-2"
+      className="grid h-screen gap-2 bg-secondary p-6 pr-2 select-none"
       style={{ gridTemplateRows: 'auto auto 1fr auto' }}
     >
-      <div className="m-2 mb-1">
-        <Link
-          href="/school"
-          className={`flex text-sm text-muted-foreground hover:underline hover:text-black items-center gap-1
-                      ${collapsed ? 'justify-center' : ''}`}
-        >
-          {collapsed ? (
-            <ChevronLeftCircle size={20} />
-          ) : (
-            <div>
-              <ChevronLeft size={15} /> Select another school
-            </div>
-          )}
-        </Link>
-        <div className="mt-4 flex gap-4 items-center">
+      <div className="my-1 px-2">
+        <div className="flex gap-4 items-center">
           <Image
             src={data.school.image}
             alt={`${data.school.name} logo`}
@@ -81,7 +69,7 @@ export default function NavClient({
           {collapsed ? (
             ''
           ) : (
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-muted-foreground truncate">
               {data.school.name}
             </span>
           )}
@@ -112,28 +100,72 @@ export default function NavClient({
         ) : undefined}
       </div>
 
-      <div className="flex flex-col gap-1 font-medium">
-        <div
-          className={`flex items-center overflow-hidden p-3 hover:bg-gray-200 ${collapsed ? 'rounded-full' : 'rounded-md'}`}
-        >
-          <Avatar className="w-6 h-6">
-            <AvatarImage src={session.user.image} />
-            <AvatarFallback>{session.user.name}</AvatarFallback>
-          </Avatar>
-          <div className="overflow-hidden">
-            <p className="truncate ml-3">
-              {!collapsed ? session.user.name : undefined}
-            </p>
+      {collapsed ? (
+        <TooltipProvider>
+          <div className="flex flex-col gap-1 font-medium">
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger>
+                <div className="flex hover:bg-gray-200 items-center p-3 rounded-full">
+                  <Avatar className="w-6 h-6">
+                    <AvatarImage src={session.user.image} />
+                    <AvatarFallback>{session.user.name}</AvatarFallback>
+                  </Avatar>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p className="font-normal">{session.user.name}</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger>
+                <div
+                  onClick={() => router.push('/school')}
+                  className="flex hover:bg-gray-200 items-center p-3 rounded-full"
+                >
+                  <SchoolIcon />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p className="font-normal">Select another school</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger>
+                <div
+                  onClick={() => setCollapsed(false)}
+                  className="flex hover:bg-gray-200 items-center p-3 rounded-full"
+                >
+                  <ChevronRight />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p className="font-normal">Expand</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
+      ) : (
+        <div className="flex flex-col gap-1 font-medium">
+          <div className="flex items-center overflow-hidden p-3 hover:bg-gray-200 rounded-md">
+            <Avatar className="w-6 h-6">
+              <AvatarImage src={session.user.image} />
+              <AvatarFallback>{session.user.name}</AvatarFallback>
+            </Avatar>
+            <div className="overflow-hidden">
+              <p className="truncate ml-3">{session.user.name}</p>
+            </div>
+          </div>
+          <div className="flex flex-row items-center hover:bg-gray-200 gap-3 truncate p-3 rounded-md">
+            <SchoolIcon /> Select another school
+          </div>
+          <div
+            className="flex flex-row gap-3 p-3 hover:bg-gray-200 cursor-default rounded-md"
+            onClick={() => setCollapsed(true)}
+          >
+            <ChevronLeft /> <span>Collapse</span>
           </div>
         </div>
-        <div
-          className={`flex flex-row gap-3 p-3 hover:bg-gray-200 cursor-default ${collapsed ? 'rounded-full' : 'rounded-md'}`}
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          {collapsed ? <ChevronRight /> : <ChevronLeft />}
-          {collapsed ? undefined : 'Collapse'}
-        </div>
-      </div>
+      )}
     </Nav>
   );
 }
@@ -174,7 +206,7 @@ function NavItem({
               </div>
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right" sideOffset={18}>
+          <TooltipContent side="right">
             <p>{name}</p>
           </TooltipContent>
         </Tooltip>
@@ -197,7 +229,7 @@ function NavItem({
 }
 
 const Nav = styled.div<{ $collapsed: boolean }>`
-  transition: all 0.2s ease-out;
+  transition: all 0.15s ease-in-out;
   min-width: ${(props) => (props.$collapsed ? '72px' : '288px')};
   width: ${(props) => (props.$collapsed ? '72px' : '288px')};
 `;
