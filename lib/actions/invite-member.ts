@@ -1,6 +1,10 @@
 'use server';
 
-export default async function inviteMember(school_id: string, email: string) {
+export default async function inviteMember(
+  school_id: string,
+  email: string,
+  manager: boolean = false
+) {
   const result = await prisma.enrollment.findFirst({
     where: {
       schoolId: school_id,
@@ -27,7 +31,8 @@ export default async function inviteMember(school_id: string, email: string) {
     await prisma.invitation.create({
       data: {
         schoolId: school_id,
-        email: email
+        email: email,
+        manager: manager
       }
     });
   } catch {
