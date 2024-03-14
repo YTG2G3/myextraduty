@@ -2,6 +2,14 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -18,9 +26,13 @@ import {
   Cog,
   LayoutDashboard,
   ListTodo,
+  LogOut,
+  Moon,
   SchoolIcon,
+  Sun,
   Users
 } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -49,6 +61,7 @@ export default function NavClient({
     state.collapsed,
     state.setCollapsed
   ]);
+  const { theme, setTheme } = useTheme();
 
   return (
     <Nav
@@ -88,7 +101,7 @@ export default function NavClient({
         {data.enrollment.manager ? (
           <>
             <Separator
-              className={`h-[1.5px] bg-black opacity-15 ${collapsed ? 'w-[48px]' : ''}`}
+              className={`h-[1.5px] bg-primary opacity-15 ${collapsed ? 'w-[48px]' : ''}`}
             />
             <div className="flex flex-col gap-1">
               <NavItem to="member" name="Members" icon={<Users />} />
@@ -104,7 +117,20 @@ export default function NavClient({
           <div className="flex flex-col gap-1 font-medium">
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
-                <div className="flex hover:bg-gray-200 items-center p-3 rounded-full">
+                <div
+                  onClick={() => router.push('/school')}
+                  className="flex hover:bg-background items-center p-3 rounded-full"
+                >
+                  <SchoolIcon />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p className="font-normal">Select another school</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger>
+                <div className="flex hover:bg-background items-center p-3 rounded-full">
                   <Avatar className="w-6 h-6">
                     <AvatarImage src={session.user.image} />
                     <AvatarFallback>{session.user.name}</AvatarFallback>
@@ -118,21 +144,8 @@ export default function NavClient({
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
                 <div
-                  onClick={() => router.push('/school')}
-                  className="flex hover:bg-gray-200 items-center p-3 rounded-full"
-                >
-                  <SchoolIcon />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p className="font-normal">Select another school</p>
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip delayDuration={0}>
-              <TooltipTrigger>
-                <div
                   onClick={() => setCollapsed(false)}
-                  className="flex hover:bg-gray-200 items-center p-3 rounded-full"
+                  className="flex hover:bg-background items-center p-3 rounded-full"
                 >
                   <ChevronRight />
                 </div>
@@ -145,23 +158,59 @@ export default function NavClient({
         </TooltipProvider>
       ) : (
         <div className="flex flex-col gap-1 font-medium">
-          <div className="flex items-center overflow-hidden p-3 hover:bg-gray-200 cursor-pointer rounded-md">
-            <Avatar className="w-6 h-6">
-              <AvatarImage src={session.user.image} />
-              <AvatarFallback>{session.user.name}</AvatarFallback>
-            </Avatar>
-            <div className="overflow-hidden">
-              <p className="truncate ml-3">{session.user.name}</p>
-            </div>
-          </div>
           <div
             onClick={() => router.push('/school')}
-            className="flex flex-row items-center cursor-pointer hover:bg-gray-200 gap-3 truncate p-3 rounded-md"
+            className="flex flex-row items-center cursor-pointer hover:bg-background gap-3 truncate p-3 rounded-md"
           >
             <SchoolIcon /> Select another school
           </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <div className="flex items-center overflow-hidden p-3 hover:bg-background cursor-pointer rounded-md">
+                <Avatar className="w-6 h-6">
+                  <AvatarImage src={session.user.image} />
+                  <AvatarFallback>{session.user.name}</AvatarFallback>
+                </Avatar>
+                <div className="overflow-hidden">
+                  <p className="truncate ml-3">{session.user.name}</p>
+                </div>
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              side="right"
+              align="end"
+              className="font-normal p-2"
+            >
+              <DropdownMenuLabel>{session.user.name}</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-sm text-muted-foreground">
+                {session.user.email}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {theme === 'light' ? (
+                <DropdownMenuItem
+                  onClick={() => setTheme('dark')}
+                  className="flex flex-row gap-2"
+                >
+                  <Moon />
+                  <span>Switch to dark mode</span>
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onClick={() => setTheme('light')}
+                  className="flex flex-row gap-2"
+                >
+                  <Sun />
+                  <span>Switch to light mode</span>
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem className="flex flex-row gap-2">
+                <LogOut />
+                <span>Sign out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <div
-            className="flex flex-row gap-3 p-3 hover:bg-gray-200 cursor-pointer rounded-md"
+            className="flex flex-row gap-3 p-3 hover:bg-background cursor-pointer rounded-md"
             onClick={() => setCollapsed(true)}
           >
             <ChevronLeft /> <span>Collapse</span>
@@ -184,7 +233,7 @@ function NavItem({
   const pathname = usePathname();
   const collapsed = navState((state) => state.collapsed);
 
-  let pathway = pathname.substring(0, pathname.lastIndexOf('/'));
+  const school_id = pathname.split('/')[2];
 
   const [active, setActive] = useState(
     pathname.substring(pathname.lastIndexOf('/') + 1) === to
@@ -200,11 +249,14 @@ function NavItem({
       <TooltipProvider>
         <Tooltip delayDuration={0}>
           <TooltipTrigger>
-            <Link href={`${pathway}/${to}`} className="flex items-center">
+            <Link
+              href={`/school/${school_id}/${to}`}
+              className="flex items-center"
+            >
               <div
-                className={`flex items-center hover:bg-gray-200 text-muted-foreground rounded-full p-3 ${active ? 'bg-gray-200' : ''}`}
+                className={`flex items-center hover:bg-background text-muted-foreground rounded-full p-3 ${active ? 'bg-background' : ''}`}
               >
-                <span className={active ? 'text-black' : ''}>{icon}</span>
+                <span className={active ? 'text-primary' : ''}>{icon}</span>
               </div>
             </Link>
           </TooltipTrigger>
@@ -216,13 +268,16 @@ function NavItem({
     );
   } else {
     return (
-      <Link href={`${pathway}/${to}`} className="flex items-center w-full">
+      <Link
+        href={`/school/${school_id}/${to}`}
+        className="flex items-center w-full"
+      >
         <div
-          className={`flex items-center hover:bg-gray-200 text-muted-foreground rounded-md p-3 w-full ${active ? 'bg-gray-200' : ''}`}
+          className={`flex items-center hover:bg-background text-muted-foreground rounded-md p-3 w-full ${active ? 'bg-background' : ''}`}
         >
-          <span className={active ? 'text-black' : ''}>{icon}</span>
+          <span className={active ? 'text-primary' : ''}>{icon}</span>
           <span className="ml-3 overflow-hidden font-medium">
-            <p className={active ? 'text-black' : ''}>{name}</p>
+            <p className={active ? 'text-primary' : ''}>{name}</p>
           </span>
         </div>
       </Link>

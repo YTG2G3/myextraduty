@@ -1,4 +1,5 @@
 import RootProvider from '@/components/utils/root-provider';
+import { ThemeProvider } from '@/components/utils/theme-provider';
 import { bricolage, inter } from '@/lib/fonts';
 import getServerSession from '@/lib/get-server-session';
 import type { Metadata } from 'next';
@@ -17,9 +18,15 @@ export default async function RootLayout({
   let session = await getServerSession(false);
 
   return (
-    <html lang="en" className={`${inter.variable} ${bricolage.variable}`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${bricolage.variable}`}
+      suppressHydrationWarning
+    >
       <body className="font-sans">
-        <RootProvider session={session}>{children}</RootProvider>
+        <ThemeProvider defaultTheme="light" attribute="class">
+          <RootProvider session={session}>{children}</RootProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

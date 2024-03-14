@@ -44,7 +44,7 @@ export default function SchoolSelector({
             />
             <span>Logged in as {session.user.name}</span>
             <span
-              className="text-muted-foreground hover:text-destructive cursor-pointer"
+              className="text-muted-foreground hover:text-destructive-foreground cursor-pointer"
               onClick={() => signOut()}
             >
               Sign out
@@ -57,30 +57,35 @@ export default function SchoolSelector({
               {data.map((enrollment) => (
                 <div
                   key={enrollment.school.id}
-                  className={'flex flex-col items-center justify-center gap-2'}
+                  className={
+                    'border hover:border-4 p-4 duration-300 cursor-pointer rounded-lg'
+                  }
                 >
-                  <span className="text-muted-foreground text-sm font-grotesque font-semibold">
-                    {getSchoolRole(enrollment.school.id)}
-                  </span>
                   <Link
                     href={`/school/${enrollment.school.id}/dashboard`}
-                    className="rounded-lg p-4 cursor-pointer duration-300 border hover:border-4"
+                    className="flex flex-col items-center justify-center gap-2 "
                   >
+                    <span className="text-muted-foreground text-sm font-grotesque font-semibold">
+                      {getSchoolRole(enrollment.school.id)}
+                    </span>
+
                     <Image
                       src={enrollment.school.image}
                       alt={`${enrollment.school.name} logo`}
+                      className="p-1.5 shadow-lg rounded-md"
                       width={150}
                       height={150}
                       priority={true}
                     />
+                    <span>{enrollment.school.name}</span>
                   </Link>
-                  <span>{enrollment.school.name}</span>
                 </div>
               ))}
             </div>
           ) : (
             <div className="text-muted-foreground text-sm">
-              No school is available. Create a new school.
+              No school is available. Create a new school
+              {invitations.length > 0 && ' or accept pending invitations'}.
             </div>
           )}
           {invitations.length > 0 && (

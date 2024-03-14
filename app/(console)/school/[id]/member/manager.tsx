@@ -7,16 +7,6 @@ import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog';
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -25,13 +15,13 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import inviteMember from '@/lib/actions/invite-member';
 import { ColDef } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css'; // Mandatory
 import 'ag-grid-community/styles/ag-theme-quartz.css'; // Optional Theme applied to the grid
 import { AgGridReact } from 'ag-grid-react';
-import { MoreHorizontal, Search, SendHorizonal, X } from 'lucide-react';
+import { MoreHorizontal, Search, Send, X } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import { create } from 'zustand';
 
@@ -79,6 +69,7 @@ export default function Manager({
   enrollments: MemberEnrollmentProp[];
 }) {
   const setSchool = SchoolState((state) => state.setSchool);
+  const { theme } = useTheme();
 
   const [memberData, setMemberData] = useState<Member[]>([]);
   const [invitationData, setInvitationData] = useState<InvitationTable[]>([]);
@@ -204,10 +195,17 @@ export default function Manager({
               >
                 <Search />
               </Button>
-              <InviteDialog />
+              <Link href={`/school/${school.id}/member/invite`}>
+                <Button variant="outline" className="flex flex-row gap-2">
+                  <Send />
+                  Invite
+                </Button>
+              </Link>
             </div>
           )}
-          <div className="w-full h-60 ag-theme-quartz">
+          <div
+            className={`w-full h-60 ${theme === 'light' ? 'ag-theme-quartz' : 'ag-theme-quartz-dark'}`}
+          >
             <AgGridReact<InvitationTable>
               rowData={invitationData}
               columnDefs={invitationColumns}
@@ -216,6 +214,9 @@ export default function Manager({
               onGridReady={(params) => {
                 onInvitationGridReady();
                 params.api.sizeColumnsToFit();
+              }}
+              onSelectionChanged={(params) => {
+                setSelectedInvitation(params.api.getSelectedRows());
               }}
               quickFilterText={quickInvitationFilter}
               suppressHorizontalScroll={true}
@@ -250,7 +251,9 @@ export default function Manager({
               </Button>
             </div>
           )}
-          <div className="w-full h-96 ag-theme-quartz">
+          <div
+            className={`w-full h-96 ${theme === 'light' ? 'ag-theme-quartz' : 'ag-theme-quartz-dark'}`}
+          >
             <AgGridReact<Member>
               rowData={memberData}
               columnDefs={memberColumns}
@@ -291,13 +294,10 @@ function InvitationAction() {
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuItem>Subscription</DropdownMenuItem>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem className="text-destructive-foreground justify-end">
+            Cancel invitation
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -332,13 +332,14 @@ function MemberAction(props) {
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" className="text-right">
           <DropdownMenuLabel>{props.data.name}</DropdownMenuLabel>
           <DropdownMenuLabel className="text-muted-foreground font-normal text-xs">
             {assignmentCount} of {school.quota} required assigned
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem
+            className="justify-end"
             onClick={() => {
               navigator.clipboard.writeText(props.data.id);
               toast.success('User ID copied to clipboard');
@@ -347,90 +348,17 @@ function MemberAction(props) {
             Copy user ID
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Modify user</DropdownMenuItem>
-          <DropdownMenuItem>View user&apos;s assignments</DropdownMenuItem>
-          <DropdownMenuItem className="text-red-600">
+          <DropdownMenuItem className="justify-end">
+            Modify user
+          </DropdownMenuItem>
+          <DropdownMenuItem className="justify-end">
+            View user&apos;s assignments
+          </DropdownMenuItem>
+          <DropdownMenuItem className="text-destructive-foreground justify-end">
             Remove user from school
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-  );
-}
-
-function InviteDialog() {
-  const [email, setEmail] = useState('');
-  const [disabled, setDisabled] = useState(false);
-
-  const handleInvite = async () => {
-    setDisabled(true);
-    toast.loading('Inviting user...', { id: 'invite' });
-    const emailregex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    if (!emailregex.test(email)) {
-      toast.error('Email is invalid.', { id: 'invite' });
-      setDisabled(false);
-      return;
-    }
-    try {
-      await inviteMember(SchoolState.getState().school.id, email);
-      toast.success('User invited.', { id: 'invite' });
-    } catch (e) {
-      if (e instanceof Error) toast.error(e.message);
-      else toast.error('Failed to invite user.', { id: 'invite' });
-    } finally {
-      setDisabled(false);
-    }
-  };
-
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="flex flex-row gap-2">
-          <SendHorizonal /> Invite
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Invite member</DialogTitle>
-          <DialogDescription>
-            Put in the email address of the person you want to invite.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex items-center space-x-2">
-          <div className="grid flex-1 gap-2">
-            <Label htmlFor="link" className="sr-only">
-              Email
-            </Label>
-            <Input
-              value={email}
-              id="email"
-              placeholder="mingeon.kim@algorix.io"
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-              disabled={disabled}
-            />
-          </div>
-        </div>
-        <DialogFooter className="sm:justify-start">
-          <div className="w-full flex flex-col items-end">
-            <div>
-              <DialogClose asChild>
-                <Button variant="outline" className="mr-2" disabled={disabled}>
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button
-                onClick={() => handleInvite()}
-                className="mt-2"
-                disabled={disabled}
-              >
-                Invite
-              </Button>
-            </div>
-          </div>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
   );
 }

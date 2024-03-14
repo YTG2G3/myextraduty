@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/card';
 import AuthSession from '@/lib/auth-session';
 import { Enrollment, Invitation, School, Task } from '@/prisma/client';
-import Script from 'next/script';
 import { useState } from 'react';
 
 // TODO - manage tasks
@@ -102,14 +101,12 @@ export default function Manager({
 
   return (
     <div>
-      <Script
-        id="masonry"
-        src="https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
-      />
-      <div className="w-full" data-masonry='{ "itemSelector": ".grid-item"}'>
-        {randomTask.map((task) => (
-          <TaskCard key={task.id} task={task} />
-        ))}
+      <div className="w-full">
+        <div className="flex flex-row gap-4 flex-wrap">
+          {randomTask.map((task) => (
+            <TaskCard key={task.id} task={task} />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -117,15 +114,15 @@ export default function Manager({
 
 function TaskCard({ task }: { task: Task }) {
   return (
-    <Card className="break-all float-left grid-item w-[31%] mr-4 mb-4">
+    <Card className="break-all float-left grid-item w-72 h-48 overflow-hidden">
       <CardHeader>
         <CardTitle>{task.title}</CardTitle>
         <CardDescription>Category: {task.category}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="overflow-hidden max-h-36">
         <p>{task.description}</p>
       </CardContent>
-      <CardFooter></CardFooter>
+      <CardFooter>migi</CardFooter>
     </Card>
   );
 }
