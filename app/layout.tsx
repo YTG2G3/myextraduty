@@ -17,7 +17,7 @@ export default async function RootLayout({
   let session = await getServerSession(false);
 
   return (
-    <html lang="en" className={`${inter.variable} ${bricolage.variable} dark`}>
+    <html lang="en" className={`${inter.variable} ${bricolage.variable}`}>
       <body className="font-sans">
         <RootProvider session={session}>{children}</RootProvider>
       </body>
