@@ -29,11 +29,12 @@ export default function SchoolSelector({
   }
 
   return (
-    <div className="w-screen">
-      <div className="flex flex-col justify-around items-center h-screen">
+    <div className="w-full h-full">
+      <div className="flex flex-col justify-around items-center h-full">
         <div className="font-grotesque text-3xl font-semibold flex flex-col items-center gap-2">
           Select school to continue
           <span className="text-sm font-light flex flex-row items-center gap-1.5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt="pfp"
               width={20}
@@ -43,7 +44,7 @@ export default function SchoolSelector({
             />
             <span>Logged in as {session.user.name}</span>
             <span
-              className="text-muted-foreground hover:text-gray-700 cursor-pointer"
+              className="text-muted-foreground hover:text-destructive cursor-pointer"
               onClick={() => signOut()}
             >
               Sign out
@@ -63,7 +64,7 @@ export default function SchoolSelector({
                   </span>
                   <Link
                     href={`/school/${enrollment.school.id}/dashboard`}
-                    className="rounded-lg p-4 shadow-md hover:shadow-xl cursor-pointer duration-300"
+                    className="rounded-lg p-4 cursor-pointer duration-300 border hover:border-4"
                   >
                     <Image
                       src={enrollment.school.image}

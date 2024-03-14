@@ -25,7 +25,7 @@ export default async function SchoolLayout({
     <div className="flex h-screen w-screen">
       <Nav data={data} />
       <main className="h-[100vh] w-full p-4 overflow-hidden bg-secondary">
-        <div className="h-full rounded-md bg-white overflow-scroll">
+        <div className="h-full rounded-md bg-background overflow-scroll">
           <Suspense>{children}</Suspense>
         </div>
       </main>

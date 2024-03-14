@@ -37,5 +37,11 @@ export default async function SchoolInit() {
       );
     });
 
-  return <SchoolSelector data={schools} invitations={invitations} />;
+  return (
+    <div className="w-screen h-screen bg-secondary p-4">
+      <div className="h-full w-full rounded-md bg-background overflow-scroll">
+        <SchoolSelector data={schools} invitations={invitations} />
+      </div>
+    </div>
+  );
 }
