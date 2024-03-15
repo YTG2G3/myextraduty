@@ -28,7 +28,7 @@ export default function Nav() {
 
   return (
     <nav
-      className="fixed top-0 z-20 grid w-screen px-7 py-4 bg-background"
+      className="fixed top-0 z-20 grid w-screen px-7 py-4 bg-background/80"
       style={{ gridTemplateColumns: ' 1fr 1fr 1fr' }}
     >
       <Link href="/">
