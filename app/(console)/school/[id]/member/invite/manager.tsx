@@ -13,6 +13,13 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import inviteMember from '@/lib/actions/invite-member';
 import { School } from '@/prisma/client';
@@ -26,6 +33,7 @@ export default function InviteMember({ school }: { school: School }) {
   const [emails, setEmails] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState<string[]>([]);
+  const [manager, setManager] = useState<boolean[]>([]);
 
   const addEmail = (value) => {
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -166,8 +174,17 @@ export default function InviteMember({ school }: { school: School }) {
           </AlertDialog>
         </div>
         {emails.map((email, index) => (
-          <div key={index} className="flex items-center space-x-4">
+          <div key={email} className="flex items-center space-x-4">
             <Input value={email} disabled />
+            <Select>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="student">Student</SelectItem>
+                <SelectItem value="manager">Manager</SelectItem>
+              </SelectContent>
+            </Select>
             <Button
               onClick={() => {
                 setEmails(emails.filter((_, i) => i !== index));

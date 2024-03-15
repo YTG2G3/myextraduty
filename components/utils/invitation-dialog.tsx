@@ -54,7 +54,7 @@ export default function InvitationDialog({
         <TooltipProvider>
           {data.map((d, i) => (
             <div
-              key={i}
+              key={d.school.id}
               className="grid items-center !mb-0 !ml-0 !mr-0 !mt-2"
               style={{ gridTemplateColumns: '1fr auto' }}
             >
