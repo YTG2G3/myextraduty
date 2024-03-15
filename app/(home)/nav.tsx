@@ -28,13 +28,13 @@ export default function Nav() {
 
   return (
     <nav
-      className="fixed top-0 z-20 grid w-screen px-7 py-4"
+      className="fixed top-0 z-20 grid w-screen px-7 py-4 bg-background"
       style={{ gridTemplateColumns: ' 1fr 1fr 1fr' }}
     >
       <Link href="/">
         <p
           style={{ letterSpacing: '-0.05em' }}
-          className="select-none font-grotesque text-4xl font-extrabold"
+          className="select-none font-grotesque text-4xl font-extrabold cursor-pointer"
         >
           MyED
         </p>
