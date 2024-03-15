@@ -295,7 +295,12 @@ function InvitationAction() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem className="text-destructive-foreground justify-end">
+          <DropdownMenuItem
+            className="text-destructive-foreground justify-end"
+            onClick={() => {
+              toast.error('not yet implemented!');
+            }}
+          >
             Cancel invitation
           </DropdownMenuItem>
         </DropdownMenuContent>

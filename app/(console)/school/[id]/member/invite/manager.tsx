@@ -33,7 +33,7 @@ export default function InviteMember({ school }: { school: School }) {
   const [emails, setEmails] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState<string[]>([]);
-  const [manager, setManager] = useState<boolean[]>([]);
+  const [manager, setManager] = useState<string[]>([]);
 
   const addEmail = (value) => {
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -56,7 +56,11 @@ export default function InviteMember({ school }: { school: School }) {
 
     for (const email of emails) {
       try {
-        await inviteMember(school.id, email);
+        if (manager.includes(email)) {
+          await inviteMember(school.id, email, true);
+        } else {
+          await inviteMember(school.id, email);
+        }
       } catch (e) {
         if (e instanceof Error) {
           toast.error(`Failed to send invitation to ${email}: ${e.message}`);
@@ -72,6 +76,7 @@ export default function InviteMember({ school }: { school: School }) {
       { id: 'invite' }
     );
     setEmails([]);
+    setManager([]);
     setLoading(false);
   };
 
@@ -176,7 +181,18 @@ export default function InviteMember({ school }: { school: School }) {
         {emails.map((email, index) => (
           <div key={email} className="flex items-center space-x-4">
             <Input value={email} disabled />
-            <Select>
+            <Select
+              value={manager.includes(email) ? 'manager' : 'student'}
+              onValueChange={(e) => {
+                if (e === 'manager') {
+                  if (!manager.includes(email)) {
+                    setManager([...manager, email]);
+                  }
+                } else {
+                  setManager(manager.filter((m) => m !== email));
+                }
+              }}
+            >
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
