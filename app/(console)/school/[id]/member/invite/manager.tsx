@@ -24,11 +24,14 @@ import { Separator } from '@/components/ui/separator';
 import inviteMember from '@/lib/actions/invite-member';
 import { School } from '@/prisma/client';
 import { RotateCcw, Send, Trash } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import HeaderWrapper from '../../header-wrapper';
 
 export default function InviteMember({ school }: { school: School }) {
+  const router = useRouter();
+
   const [input, setInput] = useState('');
   const [emails, setEmails] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -78,6 +81,7 @@ export default function InviteMember({ school }: { school: School }) {
     setEmails([]);
     setManager([]);
     setLoading(false);
+    router.refresh();
   };
 
   return (
@@ -117,7 +121,7 @@ export default function InviteMember({ school }: { school: School }) {
         <Separator />
         {failed.length > 0 && (
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-destructive-foreground">
+            <span className="text-sm bg-destructive py-1 px-2 rounded-md text-destructive-foreground">
               There {failed.length === 1 ? 'is' : 'are'} {failed.length} failed
               email address{failed.length === 1 ? '' : 'es'} to invite:{' '}
               {failed.join(', ')}

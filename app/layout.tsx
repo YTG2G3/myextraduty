@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'MyExtraDuty',
+  title: 'MyED',
   description: 'An easy way to manage your extra duties. Powered by Algorix.'
 };
 

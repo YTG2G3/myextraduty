@@ -3,7 +3,7 @@
 import AuthSession from '@/lib/auth-session';
 import { Enrollment, Invitation, School, Task, User } from '@/prisma/client';
 import moment from 'moment-timezone';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -15,13 +15,15 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import cancelInvitation from '@/lib/actions/cancel-invitation';
 import { ColDef } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css'; // Mandatory
 import 'ag-grid-community/styles/ag-theme-quartz.css'; // Optional Theme applied to the grid
 import { AgGridReact } from 'ag-grid-react';
-import { MoreHorizontal, Search, Send, X } from 'lucide-react';
+import { Download, MoreHorizontal, Search, Send, Trash, X } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { create } from 'zustand';
 
@@ -70,6 +72,7 @@ export default function Manager({
 }) {
   const setSchool = SchoolState((state) => state.setSchool);
   const { theme } = useTheme();
+  const router = useRouter();
 
   const [memberData, setMemberData] = useState<Member[]>([]);
   const [invitationData, setInvitationData] = useState<InvitationTable[]>([]);
@@ -78,6 +81,15 @@ export default function Manager({
   const [selectedInvitation, setSelectedInvitation] = useState<
     InvitationTable[]
   >([]);
+
+  const memberSelected = useMemo<boolean>(
+    () => !!(selectedMember.length === 0),
+    [selectedMember]
+  );
+  const invitationSelected = useMemo<boolean>(
+    () => !!(selectedInvitation.length === 0),
+    [selectedInvitation]
+  );
 
   const [quickMemberFilter, setQuickMemberFilter] = useState('');
   const [quickInvitationFilter, setQuickInvitationFilter] = useState('');
@@ -162,6 +174,50 @@ export default function Manager({
     }
   };
 
+  const invitationDownload = () => {
+    // id, email, role, createdAt
+    // change createdat to school timezone
+    const csv = invitationData.map((invitation) => {
+      return `${invitation.id},${invitation.email},${invitation.role},${moment.tz(invitation.createdAt, school.timezone).format('YYYY/MM/DD HH:mm:ss')}`;
+    });
+    let csvData = csv.join('\n');
+    csvData = 'id,email,role,createdAt\n' + csvData;
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const time = moment().tz(school.timezone).format('YYYY-MM-DD-HH-mm-ss');
+    a.download = `invitations-${time}.csv`;
+    a.click();
+    toast.success('Invitations downloaded', { id: 'download-invitations' });
+    // cleanup
+    window.URL.revokeObjectURL(url);
+  };
+
+  const invitationBulkCancel = async () => {
+    toast.loading('Cancelling invitations', { id: 'bulk-cancel' });
+    let failcount = 0;
+    for (const inv of selectedInvitation) {
+      try {
+        await cancelInvitation(school.id, inv.email);
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(
+            `Failed to cancel invitation to ${inv.email}: ${error.message}`
+          );
+        } else {
+          toast.error(`Failed to cancel invitation to ${inv.email}`);
+        }
+        failcount++;
+      }
+    }
+    toast.success(
+      `Cancelled ${selectedInvitation.length - failcount} invitations`,
+      { id: 'bulk-cancel' }
+    );
+    router.refresh();
+  };
+
   useEffect(() => {
     setSchool(school);
   }, [school, setSchool]);
@@ -201,6 +257,24 @@ export default function Manager({
                   Invite
                 </Button>
               </Link>
+              <Button
+                variant="outline"
+                className="flex flex-row gap-2"
+                disabled={invitationSelected}
+                onClick={invitationDownload}
+              >
+                <Download />
+                Download
+              </Button>
+              <Button
+                variant="destructive"
+                className="flex flex-row gap-2"
+                disabled={invitationSelected}
+                onClick={invitationBulkCancel}
+              >
+                <Trash />
+                Cancel invitation
+              </Button>
             </div>
           )}
           <div
@@ -284,7 +358,23 @@ export default function Manager({
   );
 }
 
-function InvitationAction() {
+function InvitationAction(props) {
+  const school = SchoolState((state) => state.school);
+  const router = useRouter();
+
+  const cancelInv = async () => {
+    toast.loading('Cancelling invitation', { id: props.data.id + '-cancel' });
+    try {
+      await cancelInvitation(school.id, props.data.email);
+      toast.success('Invitation cancelled', { id: props.data.id + '-cancel' });
+      router.refresh();
+    } catch (error) {
+      toast.error('Failed to cancel invitation', {
+        id: props.data.id + '-cancel'
+      });
+    }
+  };
+
   return (
     <div className="flex justify-center items-center h-full">
       <DropdownMenu>
@@ -297,9 +387,7 @@ function InvitationAction() {
         <DropdownMenuContent align="end">
           <DropdownMenuItem
             className="text-destructive-foreground justify-end"
-            onClick={() => {
-              toast.error('not yet implemented!');
-            }}
+            onClick={cancelInv}
           >
             Cancel invitation
           </DropdownMenuItem>
@@ -311,7 +399,6 @@ function InvitationAction() {
 
 function MemberAction(props) {
   const school = SchoolState((state) => state.school);
-  const [disabled, setDisabled] = useState(false);
   const [assignmentCount, setAssignmentCount] = useState(0);
   // props.data.id // get row_id
 
@@ -327,6 +414,10 @@ function MemberAction(props) {
 
     fetchData();
   }, [school.id, props.data.id]);
+
+  const removeMember = async () => {
+    console.log('remove member');
+  };
 
   return (
     <div className="flex justify-center items-center h-full w-full">
@@ -354,10 +445,12 @@ function MemberAction(props) {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="justify-end">
-            Modify user
-          </DropdownMenuItem>
-          <DropdownMenuItem className="justify-end">
-            View user&apos;s assignments
+            <Link
+              href={`/school/${school.id}/member/${props.data.id}`}
+              className="w-full"
+            >
+              View details
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="text-destructive-foreground justify-end">
             Remove user from school

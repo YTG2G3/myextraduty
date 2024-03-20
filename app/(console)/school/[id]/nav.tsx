@@ -146,19 +146,21 @@ export default function NavClient({
                 <p className="font-normal">Select another school</p>
               </TooltipContent>
             </Tooltip>
-            <Tooltip delayDuration={0}>
-              <TooltipTrigger>
-                <div className="flex hover:bg-background items-center p-3 rounded-full">
-                  <Avatar className="w-6 h-6">
-                    <AvatarImage src={session.user.image} />
-                    <AvatarFallback>{session.user.name}</AvatarFallback>
-                  </Avatar>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p className="font-normal">{session.user.name}</p>
-              </TooltipContent>
-            </Tooltip>
+            <UserDropdown>
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger>
+                  <div className="flex hover:bg-background items-center p-3 rounded-full">
+                    <Avatar className="w-6 h-6">
+                      <AvatarImage src={session.user.image} />
+                      <AvatarFallback>{session.user.name}</AvatarFallback>
+                    </Avatar>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p className="font-normal">{session.user.name}</p>
+                </TooltipContent>
+              </Tooltip>
+            </UserDropdown>
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
                 <div
@@ -182,51 +184,17 @@ export default function NavClient({
           >
             <SchoolIcon /> Select another school
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <div className="flex items-center overflow-hidden p-3 hover:bg-background cursor-pointer rounded-full">
-                <Avatar className="w-6 h-6">
-                  <AvatarImage src={session.user.image} />
-                  <AvatarFallback>{session.user.name}</AvatarFallback>
-                </Avatar>
-                <div className="overflow-hidden">
-                  <p className="truncate ml-3">{session.user.name}</p>
-                </div>
+          <UserDropdown>
+            <div className="flex items-center overflow-hidden p-3 hover:bg-background cursor-pointer rounded-full">
+              <Avatar className="w-6 h-6">
+                <AvatarImage src={session.user.image} />
+                <AvatarFallback>{session.user.name}</AvatarFallback>
+              </Avatar>
+              <div className="overflow-hidden">
+                <p className="truncate ml-3">{session.user.name}</p>
               </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              side="right"
-              align="end"
-              className="font-normal p-2"
-            >
-              <DropdownMenuLabel>{session.user.name}</DropdownMenuLabel>
-              <DropdownMenuLabel className="text-sm text-muted-foreground">
-                {session.user.email}
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {theme === 'light' ? (
-                <DropdownMenuItem
-                  onClick={() => setTheme('dark')}
-                  className="flex flex-row gap-2"
-                >
-                  <Moon />
-                  <span>Switch to dark mode</span>
-                </DropdownMenuItem>
-              ) : (
-                <DropdownMenuItem
-                  onClick={() => setTheme('light')}
-                  className="flex flex-row gap-2"
-                >
-                  <Sun />
-                  <span>Switch to light mode</span>
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuItem className="flex flex-row gap-2">
-                <LogOut />
-                <span>Sign out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </div>
+          </UserDropdown>
           <div
             className="flex flex-row gap-3 p-3 hover:bg-background cursor-pointer rounded-full"
             onClick={() => setPreCollapsed(true)}
@@ -301,6 +269,45 @@ function NavItem({
       </Link>
     );
   }
+}
+
+function UserDropdown({ children }: { children: React.ReactNode }) {
+  const session = useClientSession();
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger>{children}</DropdownMenuTrigger>
+      <DropdownMenuContent side="right" align="end" className="font-normal p-2">
+        <DropdownMenuLabel>{session.user.name}</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-sm text-muted-foreground">
+          {session.user.email}
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {theme === 'light' ? (
+          <DropdownMenuItem
+            onClick={() => setTheme('dark')}
+            className="flex flex-row gap-2"
+          >
+            <Moon />
+            <span>Switch to dark mode</span>
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem
+            onClick={() => setTheme('light')}
+            className="flex flex-row gap-2"
+          >
+            <Sun />
+            <span>Switch to light mode</span>
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem className="flex flex-row gap-2">
+          <LogOut />
+          <span>Sign out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 }
 
 const Nav = styled.div<{ $collapsed: boolean }>`
