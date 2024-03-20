@@ -41,11 +41,15 @@ import styled from 'styled-components';
 import { create } from 'zustand';
 
 interface INavState {
+  preCollapsed: boolean;
+  setPreCollapsed: (preCollapsed: boolean) => void;
   collapsed: boolean;
   setCollapsed: (collapsed: boolean) => void;
 }
 
 const navState = create<INavState>((set) => ({
+  preCollapsed: false,
+  setPreCollapsed: (preCollapsed) => set({ preCollapsed }),
   collapsed: false,
   setCollapsed: (collapsed) => set({ collapsed })
 }));
@@ -61,11 +65,25 @@ export default function NavClient({
     state.collapsed,
     state.setCollapsed
   ]);
+  const [preCollapsed, setPreCollapsed] = navState((state) => [
+    state.preCollapsed,
+    state.setPreCollapsed
+  ]);
+
+  useEffect(() => {
+    if (preCollapsed === true) {
+      setTimeout(() => {
+        setCollapsed(preCollapsed);
+      }, 150);
+    } else {
+      setCollapsed(preCollapsed);
+    }
+  }, [preCollapsed, setCollapsed]);
   const { theme, setTheme } = useTheme();
 
   return (
     <Nav
-      $collapsed={collapsed}
+      $collapsed={preCollapsed}
       className="grid h-screen gap-2 bg-secondary p-6 pr-2 select-none"
       style={{ gridTemplateRows: 'auto auto 1fr auto' }}
     >
@@ -101,7 +119,7 @@ export default function NavClient({
         {data.enrollment.manager ? (
           <>
             <Separator
-              className={`h-[1.5px] bg-primary opacity-15 ${collapsed ? 'w-[48px]' : ''}`}
+              className={`h-[1.5px] bg-primary opacity-15 transition-all ${preCollapsed ? 'w-[48px]' : ''}`}
             />
             <div className="flex flex-col gap-1">
               <NavItem to="member" name="Members" icon={<Users />} />
@@ -144,7 +162,7 @@ export default function NavClient({
             <Tooltip delayDuration={0}>
               <TooltipTrigger>
                 <div
-                  onClick={() => setCollapsed(false)}
+                  onClick={() => setPreCollapsed(false)}
                   className="flex hover:bg-background items-center p-3 rounded-full"
                 >
                   <ChevronRight />
@@ -160,13 +178,13 @@ export default function NavClient({
         <div className="flex flex-col gap-1 font-medium">
           <div
             onClick={() => router.push('/school')}
-            className="flex flex-row items-center cursor-pointer hover:bg-background gap-3 truncate p-3 rounded-md"
+            className="flex flex-row items-center cursor-pointer hover:bg-background gap-3 truncate p-3 rounded-full"
           >
             <SchoolIcon /> Select another school
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <div className="flex items-center overflow-hidden p-3 hover:bg-background cursor-pointer rounded-md">
+              <div className="flex items-center overflow-hidden p-3 hover:bg-background cursor-pointer rounded-full">
                 <Avatar className="w-6 h-6">
                   <AvatarImage src={session.user.image} />
                   <AvatarFallback>{session.user.name}</AvatarFallback>
@@ -210,8 +228,8 @@ export default function NavClient({
             </DropdownMenuContent>
           </DropdownMenu>
           <div
-            className="flex flex-row gap-3 p-3 hover:bg-background cursor-pointer rounded-md"
-            onClick={() => setCollapsed(true)}
+            className="flex flex-row gap-3 p-3 hover:bg-background cursor-pointer rounded-full"
+            onClick={() => setPreCollapsed(true)}
           >
             <ChevronLeft /> <span>Collapse</span>
           </div>
@@ -273,7 +291,7 @@ function NavItem({
         className="flex items-center w-full"
       >
         <div
-          className={`flex items-center hover:bg-background text-muted-foreground rounded-md p-3 w-full ${active ? 'bg-background' : ''}`}
+          className={`flex items-center hover:bg-background text-muted-foreground rounded-full p-3 w-full ${active ? 'bg-background' : ''}`}
         >
           <span className={active ? 'text-primary' : ''}>{icon}</span>
           <span className="ml-3 overflow-hidden font-medium">
@@ -286,7 +304,9 @@ function NavItem({
 }
 
 const Nav = styled.div<{ $collapsed: boolean }>`
-  transition: all 0.15s ease-in-out;
+  transition-duration: 150ms;
+  transition-property: width, min-width;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   min-width: ${(props) => (props.$collapsed ? '72px' : '288px')};
   width: ${(props) => (props.$collapsed ? '72px' : '288px')};
 `;
